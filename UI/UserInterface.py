@@ -9,6 +9,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from builder_ui import BuilderWindow
 
 
 class Ui_MainWindow(object):
@@ -18,18 +19,25 @@ class Ui_MainWindow(object):
         MainWindow.setDockNestingEnabled(True)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
+
         self.tabWidget = QtWidgets.QTabWidget(self.centralwidget)
         self.tabWidget.setGeometry(QtCore.QRect(10, 0, 1101, 811))
         self.tabWidget.setObjectName("tabWidget")
-        self.tab = QtWidgets.QWidget()
-        self.tab.setObjectName("tab")
-        self.tabWidget.addTab(self.tab, "")
-        self.tab_2 = QtWidgets.QWidget()
-        self.tab_2.setObjectName("tab_2")
-        self.tabWidget.addTab(self.tab_2, "")
-        self.runner_tab = QtWidgets.QWidget()
+
+        #Creating Causation Extractor tab
+        self.causation_tab = BuilderWindow() #Change this to CausationExtractorWindow()
+        self.causation_tab.setObjectName("Causation Extractor")
+        self.tabWidget.addTab(self.causation_tab, "")
+        #Creating Builder tab
+        self.builder_tab = BuilderWindow()
+        self.builder_tab.setObjectName("Builder")
+        self.tabWidget.addTab(self.builder_tab, "")
+        #Creating Runner tab
+        self.runner_tab = QtWidgets.QWidget() #Change this to RunnerWindow()
         self.runner_tab.setAccessibleName("")
         self.runner_tab.setObjectName("runner_tab")
+
+        #Move this to its own runner ui file
         self.script_menu = QtWidgets.QComboBox(self.runner_tab)
         self.script_menu.setGeometry(QtCore.QRect(0, 0, 361, 22))
         self.script_menu.setFocusPolicy(QtCore.Qt.WheelFocus)
@@ -140,8 +148,8 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Tab 1"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("MainWindow", "Tab 2"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.causation_tab), _translate("MainWindow", "Causation Extractor"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.builder_tab), _translate("MainWindow", "Builder"))
         self.script_menu.setCurrentText(_translate("MainWindow", "Script1"))
         self.script_menu.setItemText(0, _translate("MainWindow", "Script1"))
         self.script_menu.setItemText(1, _translate("MainWindow", "Script2"))
