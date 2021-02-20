@@ -17,8 +17,11 @@ class Ui_MainWindow(object):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(558, 600)
         MainWindow.setDockNestingEnabled(True)
+        self.layout = QtWidgets.QVBoxLayout()
+
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
+        self.centralwidget.setLayout(self.layout)
 
         self.tabWidget = QtWidgets.QTabWidget(self.centralwidget)
         self.tabWidget.setGeometry(QtCore.QRect(10, 0, 1101, 811))
@@ -36,6 +39,9 @@ class Ui_MainWindow(object):
         self.runner_tab = QtWidgets.QWidget() #Change this to RunnerWindow()
         self.runner_tab.setAccessibleName("")
         self.runner_tab.setObjectName("runner_tab")
+
+        #Add all our tabs into our main windows layout
+        self.layout.addWidget(self.tabWidget)
 
         #Move this to its own runner ui file
         self.script_menu = QtWidgets.QComboBox(self.runner_tab)
@@ -144,6 +150,8 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         self.tabWidget.setCurrentIndex(2)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
