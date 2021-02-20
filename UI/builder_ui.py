@@ -45,12 +45,6 @@ class BuilderWindow(QWidget):
     def openArtifacts(self):
         self.artifacts_window.show()
 
-
-
-
-
-
-
 class SalientArtifactWindow(QWidget):
 
     def __init__(self):

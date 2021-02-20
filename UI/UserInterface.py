@@ -10,6 +10,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from builder_ui import BuilderWindow
+from runner_widget import Ui_RunnerTab
 
 
 class Ui_MainWindow(object):
@@ -36,42 +37,14 @@ class Ui_MainWindow(object):
         self.builder_tab.setObjectName("Builder")
         self.tabWidget.addTab(self.builder_tab, "")
         #Creating Runner tab
-        self.runner_tab = QtWidgets.QWidget() #Change this to RunnerWindow()
+        self.runner_tab = Ui_RunnerTab() #Change this to RunnerWindow()
         self.runner_tab.setAccessibleName("")
         self.runner_tab.setObjectName("runner_tab")
+        self.tabWidget.addTab(self.runner_tab, "")
 
         #Add all our tabs into our main windows layout
         self.layout.addWidget(self.tabWidget)
 
-        #Move this to its own runner ui file
-        self.script_menu = QtWidgets.QComboBox(self.runner_tab)
-        self.script_menu.setGeometry(QtCore.QRect(0, 0, 361, 22))
-        self.script_menu.setFocusPolicy(QtCore.Qt.WheelFocus)
-        self.script_menu.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
-        self.script_menu.setAcceptDrops(True)
-        self.script_menu.setEditable(True)
-        self.script_menu.setObjectName("script_menu")
-        self.script_menu.addItem("")
-        self.script_menu.addItem("")
-        self.script_menu.addItem("")
-        self.script_display = QtWidgets.QGraphicsView(self.runner_tab)
-        self.script_display.setGeometry(QtCore.QRect(0, 30, 361, 491))
-        self.script_display.setObjectName("script_display")
-        self.run_button = QtWidgets.QPushButton(self.runner_tab)
-        self.run_button.setGeometry(QtCore.QRect(370, 480, 151, 41))
-        self.run_button.setObjectName("run_button")
-        self.script_progress_terminal = QtWidgets.QGraphicsView(self.runner_tab)
-        self.script_progress_terminal.setGeometry(QtCore.QRect(370, 30, 151, 411))
-        self.script_progress_terminal.setObjectName("script_progress_terminal")
-        self.script_progress_bar = QtWidgets.QProgressBar(self.runner_tab)
-        self.script_progress_bar.setGeometry(QtCore.QRect(370, 0, 161, 20))
-        self.script_progress_bar.setProperty("value", 24)
-        self.script_progress_bar.setObjectName("script_progress_bar")
-        self.script_timeout = QtWidgets.QSpinBox(self.runner_tab)
-        self.script_timeout.setGeometry(QtCore.QRect(370, 450, 151, 22))
-        self.script_timeout.setMinimum(1)
-        self.script_timeout.setObjectName("script_timeout")
-        self.tabWidget.addTab(self.runner_tab, "")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 558, 21))
@@ -148,7 +121,7 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuHelp.menuAction())
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(2)
+        self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
 
@@ -158,12 +131,8 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.causation_tab), _translate("MainWindow", "Causation Extractor"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.builder_tab), _translate("MainWindow", "Builder"))
-        self.script_menu.setCurrentText(_translate("MainWindow", "Script1"))
-        self.script_menu.setItemText(0, _translate("MainWindow", "Script1"))
-        self.script_menu.setItemText(1, _translate("MainWindow", "Script2"))
-        self.script_menu.setItemText(2, _translate("MainWindow", "Script3"))
-        self.run_button.setText(_translate("MainWindow", "Run"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.runner_tab), _translate("MainWindow", "Runner"))
+
         self.menuFile.setTitle(_translate("MainWindow", "File"))
         self.menuEdit.setTitle(_translate("MainWindow", "Edit"))
         self.menuView.setTitle(_translate("MainWindow", "View"))
