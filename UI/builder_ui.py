@@ -23,20 +23,25 @@ class BuilderWindow(QWidget):
         self.label = QLabel('Builder', self)
         self.label.setObjectName(u"label")
         self.label.setFont(QFont('MS Shell Dlg 2', 12))
-        self.gridLayout.addWidget(self.label, 0, 0, 1, 1)
+        self.gridLayout.addWidget(self.label, 0, 1)
 
         self.search_button = QPushButton('Search', self)
-        self.gridLayout.addWidget(self.search_button, 0, 0, 1, 1)
+        self.gridLayout.addWidget(self.search_button, 1,2,1,1)
 
         self.lineEdit = QLineEdit(self)
-        self.gridLayout.addWidget(self.lineEdit, 0, 1, 1, 1)
+        self.gridLayout.addWidget(self.lineEdit, 1,1,1,1)
 
         self.listthing = QListWidget(self)
-        self.gridLayout.addWidget(self.listthing, 5, 1, 1, 1)
+        self.gridLayout.addWidget(self.listthing, 2, 1)
 
         self.add_artifact_button = QPushButton('Add Salient Artifact', self)
-        self.gridLayout.addWidget(self.add_artifact_button, 5, 1, 1, 1)
+        self.gridLayout.addWidget(self.add_artifact_button, 1, 0)
         self.add_artifact_button.clicked.connect(self.openArtifacts)
+
+        self.save_button = QPushButton('Save Project', self)
+        self.gridLayout.addWidget(self.save_button, 3, 2)
+
+        self.setLayout(self.gridLayout)
     def openArtifacts(self):
         self.artifacts_window.show()
 
