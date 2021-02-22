@@ -26,7 +26,6 @@ class PackagerWidget(QWidget):
     def UI(self):
         self.gridLayout = QGridLayout(self)
         self.gridLayout.setObjectName("gridLayout")
-        self.gridLayout.setColumnStretch(1, 1)
 
         # Project layout
         self.projectLayout = QHBoxLayout()
@@ -34,15 +33,15 @@ class PackagerWidget(QWidget):
 
         # List of project files
         self.VMList = QtWidgets.QListWidget()
-        self.VMList.setLineWidth(1)
         self.VMList.setLayoutMode(QtWidgets.QListView.SinglePass)
-        self.VMList.setGridSize(QtCore.QSize(1, 10))
         self.VMList.setViewMode(QtWidgets.QListView.ListMode)
         self.VMList.setUniformItemSizes(True)
-        self.VMList.setWordWrap(False)
+        self.VMList.setWordWrap(True)
         self.VMList.setObjectName("VMList")
 
         # Sample VMs - These will be read from project files
+        item = QtWidgets.QListWidgetItem()
+        self.VMList.addItem(item)
         item = QtWidgets.QListWidgetItem()
         self.VMList.addItem(item)
         item = QtWidgets.QListWidgetItem()
@@ -108,11 +107,14 @@ class PackagerWidget(QWidget):
 
         # This might need to be done programatically instead of hardcoded
         item = self.VMList.item(0)
-        item.setText(_translate("Widget", "VM1 (Main) Testing Agent: Kali Linux"))
+        item.setText(_translate("Widget", "Project root:\t\t/usr/x/abs/p1/"))
         item = self.VMList.item(1)
-        item.setText(_translate("Widget", "VM2 Web Server: Kali Linux"))
+        item.setText(_translate("Widget", "VM 2:\t\t/usr/x/abs/p1/webserver_kali.ova"))
         item = self.VMList.item(2)
-        item.setText(_translate("Widget", "VM3 Web Client: Kali Linux"))
+        item.setText(_translate("Widget", "VM 3:\t\t/usr/x/abs/p1/webclient_kali.ova"))
+        item = self.VMList.item(3)
+        item.setText(_translate("Widget", "VM 1:\t\t/usr/x/abs/p1/test_kali.ova"))
+        
 
         self.packageProjectButton.setText(_translate("Widget", "Package Project..."))
         self.importVMButton.setText(_translate("Widget", "Import VM to Project..."))

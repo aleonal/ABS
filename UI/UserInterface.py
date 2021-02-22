@@ -13,7 +13,6 @@ from builder_widget import BuilderWidget
 from runner_widget import RunnerWidget
 from packager_widget import PackagerWidget
 
-
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -143,7 +142,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Agent Build System"))
         # self.tabWidget.setTabText(self.tabWidget.indexOf(self.causation_tab), _translate("MainWindow", "Causation Extractor"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.builder_tab), _translate("MainWindow", "Builder"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.runner_tab), _translate("MainWindow", "Runner"))
