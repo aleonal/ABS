@@ -9,14 +9,15 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from builder_ui import BuilderWindow
-from runner_widget import Ui_RunnerTab
+from builder_widget import BuilderWidget
+from runner_widget import RunnerWidget
+from packager_widget import PackagerWidget
 
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(558, 600)
+        MainWindow.resize(960, 720)
         MainWindow.setDockNestingEnabled(True)
         self.layout = QtWidgets.QVBoxLayout()
 
@@ -29,23 +30,33 @@ class Ui_MainWindow(object):
         self.tabWidget.setObjectName("tabWidget")
 
         #Creating Causation Extractor tab
-        self.causation_tab = BuilderWindow() #Change this to CausationExtractorWindow()
-        self.causation_tab.setObjectName("Causation Extractor")
-        self.tabWidget.addTab(self.causation_tab, "")
+        # self.causation_tab = CausationWidget() #Change this to CausationExtractorWindow()
+        # self.causation_tab.setObjectName("Causation Extractor")
+        # self.tabWidget.addTab(self.causation_tab, "")
+
+        #Creating Packager tab
+        self.packager_tab = PackagerWidget()
+        self.packager_tab.setAccessibleName("PackagerWidget")
+        self.packager_tab.setObjectName("packager_tab")
+        self.tabWidget.addTab(self.packager_tab, "")
+
         #Creating Builder tab
-        self.builder_tab = BuilderWindow()
-        self.builder_tab.setObjectName("Builder")
+        self.builder_tab = BuilderWidget()
+        self.builder_tab.setAccessibleName("BuilderWidget")
+        self.builder_tab.setObjectName("builder_tab")
         self.tabWidget.addTab(self.builder_tab, "")
+
         #Creating Runner tab
-        self.runner_tab = Ui_RunnerTab() #Change this to RunnerWindow()
-        self.runner_tab.setAccessibleName("")
+        self.runner_tab = RunnerWidget()
+        self.runner_tab.setAccessibleName("RunnerWidget")
         self.runner_tab.setObjectName("runner_tab")
         self.tabWidget.addTab(self.runner_tab, "")
 
         #Add all our tabs into our main windows layout
         self.layout.addWidget(self.tabWidget)
-
         MainWindow.setCentralWidget(self.centralwidget)
+
+        #Setup menu bar
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 558, 21))
         self.menubar.setObjectName("menubar")
@@ -60,9 +71,13 @@ class Ui_MainWindow(object):
         self.menuHelp = QtWidgets.QMenu(self.menubar)
         self.menuHelp.setObjectName("menuHelp")
         MainWindow.setMenuBar(self.menubar)
+
+        #Setup statusbar
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
+
+        #Setup actions
         self.actionNew_Project = QtWidgets.QAction(MainWindow)
         self.actionNew_Project.setObjectName("actionNew_Project")
         self.actionOpen_Project = QtWidgets.QAction(MainWindow)
@@ -97,6 +112,8 @@ class Ui_MainWindow(object):
         self.actionOpen_Builder.setObjectName("actionOpen_Builder")
         self.actionOpen_Packager = QtWidgets.QAction(MainWindow)
         self.actionOpen_Packager.setObjectName("actionOpen_Packager")
+
+        #Add actions to menu buttons
         self.menuFile.addAction(self.actionNew_Project)
         self.menuFile.addAction(self.actionOpen_Project)
         self.menuFile.addAction(self.actionImport_Raw_Data)
@@ -124,14 +141,13 @@ class Ui_MainWindow(object):
         self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-
-
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.causation_tab), _translate("MainWindow", "Causation Extractor"))
+        # self.tabWidget.setTabText(self.tabWidget.indexOf(self.causation_tab), _translate("MainWindow", "Causation Extractor"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.builder_tab), _translate("MainWindow", "Builder"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.runner_tab), _translate("MainWindow", "Runner"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.packager_tab), _translate("MainWindow", "Packager"))
 
         self.menuFile.setTitle(_translate("MainWindow", "File"))
         self.menuEdit.setTitle(_translate("MainWindow", "Edit"))

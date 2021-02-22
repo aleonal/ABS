@@ -14,7 +14,7 @@ from PyQt5.QtGui import QStandardItem
 from PyQt5.QtCore import *
 
 
-class Ui_RunnerTab(QWidget):
+class RunnerWidget(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Runner")
