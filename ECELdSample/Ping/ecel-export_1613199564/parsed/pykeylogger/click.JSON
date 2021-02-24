@@ -1,0 +1,64 @@
+[
+	{"clicks_id" : 0,
+	"content" : "\/home\/kali\/eceld-netsys\/eceld\/plugins\/collectors\/pykeylogger\/raw\/click_images\/1613199489.4751263_qterminal_root.png",
+	"type" : "point",
+	"classname" : "imgPoint",
+	"start" : "2021-02-13T06:58:09"
+	},
+
+	{"clicks_id" : 1,
+	"content" : "\/home\/kali\/eceld-netsys\/eceld\/plugins\/collectors\/pykeylogger\/raw\/click_images\/1613199557.9399116_main.py_root.png",
+	"type" : "point",
+	"classname" : "imgPoint",
+	"start" : "2021-02-13T06:59:17"
+	},
+
+	{"clicks_id" : 2,
+	"content" : "\/home\/kali\/eceld-netsys\/eceld\/plugins\/collectors\/pykeylogger\/raw\/click_images\/1613199470.1520133_qterminal_root.png",
+	"type" : "point",
+	"classname" : "imgPoint",
+	"start" : "2021-02-13T06:57:50"
+	},
+
+	{"clicks_id" : 3,
+	"content" : "\/home\/kali\/eceld-netsys\/eceld\/plugins\/collectors\/pykeylogger\/raw\/click_images\/1613199465.6152987_qterminal_root.png",
+	"type" : "point",
+	"classname" : "imgPoint",
+	"start" : "2021-02-13T06:57:45"
+	},
+
+	{"clicks_id" : 4,
+	"content" : "\/home\/kali\/eceld-netsys\/eceld\/plugins\/collectors\/pykeylogger\/raw\/click_images\/1613199453.5309389_qterminal_root.png",
+	"type" : "point",
+	"classname" : "imgPoint",
+	"start" : "2021-02-13T06:57:33"
+	},
+
+	{"clicks_id" : 5,
+	"content" : "\/home\/kali\/eceld-netsys\/eceld\/plugins\/collectors\/pykeylogger\/raw\/click_images\/1613199451.9464753_qterminal_root.png",
+	"type" : "point",
+	"classname" : "imgPoint",
+	"start" : "2021-02-13T06:57:31"
+	},
+
+	{"clicks_id" : 6,
+	"content" : "\/home\/kali\/eceld-netsys\/eceld\/plugins\/collectors\/pykeylogger\/raw\/click_images\/1613199553.653576_qterminal_root.png",
+	"type" : "point",
+	"classname" : "imgPoint",
+	"start" : "2021-02-13T06:59:13"
+	},
+
+	{"clicks_id" : 7,
+	"content" : "\/home\/kali\/eceld-netsys\/eceld\/plugins\/collectors\/pykeylogger\/raw\/click_images\/1613199454.2060354_qterminal_root.png",
+	"type" : "point",
+	"classname" : "imgPoint",
+	"start" : "2021-02-13T06:57:34"
+	},
+
+	{"clicks_id" : 8,
+	"content" : "\/home\/kali\/eceld-netsys\/eceld\/plugins\/collectors\/pykeylogger\/raw\/click_images\/1613199461.1700222_qterminal_root.png",
+	"type" : "point",
+	"classname" : "imgPoint",
+	"start" : "2021-02-13T06:57:41"
+	}
+]
