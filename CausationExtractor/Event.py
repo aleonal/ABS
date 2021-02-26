@@ -1,0 +1,108 @@
+import datetime
+
+class Event:
+    def __init__(self):
+        self.id = 0
+        self.content = ""
+        self.className = ""
+        self.start = None
+    
+    def set_id(self,id):
+        self.id = id 
+    def get_id(self):
+        return self.id 
+
+    def set_content(self,content):
+        self.content = content 
+    def get_content(self):
+        return self.content 
+
+    def set_className(self, className):
+        self.className = className 
+    def get_className(self):
+        return self.className 
+    
+    def set_start(self, start):
+        self.start = datetime.datetime.strptime(start, '%Y-%m-%dT%H:%M:%S')
+    def get_start(self):
+        return self.start
+    def get_start_tostring(self):
+        return self.start.strftime("%m/%d/%YT%H:%M:%S")
+
+class auditd(Event):
+    def __init__(self, id, content, className, start):
+        self.set_id(id)
+        self.set_content(content)
+        self.set_className(className)
+        self.set_start(start)
+    def tojson(self):
+        return {'auditd_id' : self.get_id(), 'content' : self.get_content(), 'className' : self.get_className(), 'start' : self.get_start_tostring()}
+
+class clicks(Event):
+    def __init__(self, id, content, type, className, start):
+        self.set_id(id)
+        self.set_content(content)
+        self.set_className(className)
+        self.set_start(start)
+        self.type = type
+    def get_type(self):
+        return self.type
+    def tojson(self):
+        return {'clicks_id' : self.get_id(), 'content' : self.get_content(), 'type' : self.get_type(), 'classname' : self.get_className(), 'start' : self.get_start_tostring()}
+
+class keypresses(Event):
+    def __init__(self, id, content, className, start):
+        self.set_id(id)
+        self.set_content(content)
+        self.set_className(className)
+        self.set_start(start)
+    def tojson(self):
+        return {'keypresses_id' : self.get_id(), 'content' : self.get_content(), 'className' : self.get_className(), 'start' : self.get_start_tostring()}
+
+class traffic(Event):
+    def __init__(self, id, content, className, title, start):
+        self.set_id(id)
+        self.set_content(content)
+        self.set_className(className)
+        self.set_start(start)
+        self.title = title
+    def get_title(self):
+        return self.title
+    def tojson(self):
+        return {'traffic_all_id' : self.get_id(), 'content' : self.get_content(), 'className' : self.get_className(), 'title' : self.get_title(), 'start' : self.get_start_tostring()}
+
+class trafficThroughput(Event):
+    def __init__(self, id, className, start, y):
+        self.set_id(id)
+        self.set_className(className)
+        self.set_start(start)
+        self.y = y
+    def get_y(self):
+        return self.y
+    def tojson(self):
+        return {'traffic_xy_id' : self.get_id(), 'className' : self.get_className(), 'start' : self.get_start_tostring(), 'y' : self.get_y()}
+
+class timed(Event):
+    def __init__(self, id, type, className, content, start):
+        self.set_id(id)
+        self.set_content(content)
+        self.set_className(className)
+        self.set_start(start)
+        self.type = type 
+    def get_type(self):
+        return self.type
+    def tojson(self):
+        return {'timed_id' : self.get_id(), 'type' : self.get_type(), 'classname' : self.get_className(), 'content' : self.get_content(), 'start' : self.get_start_tostring()}
+
+class suricata(Event):
+    def __init__(self, id, rule, content, className, start):
+        self.set_id(id)
+        self.rule = rule
+        self.set_content(content)
+        self.set_className(className)
+        self.set_start(start)
+    def get_rule(self):
+        return self.rule
+    def tojson(self):
+        return {"suricata_id" : self.get_id(), "suricata_rule_id" : self.get_rule(), "content" : self.get_content(), "className" : self.get_className(), "start" : self.get_start_tostring()}
+   
