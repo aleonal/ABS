@@ -1,0 +1,15 @@
+[
+	{"timed_id" : 0,
+	"type" : "point",
+	"classname" : "imgPoint",
+	"content" : "\/home\/kali\/eceld-netsys\/eceld\/plugins\/collectors\/pykeylogger\/raw\/timed_screenshots\/1614328607.812868_screenshot.png",
+	"start" : "2021-02-26T08:36:47"
+	},
+
+	{"timed_id" : 1,
+	"type" : "point",
+	"classname" : "imgPoint",
+	"content" : "\/home\/kali\/eceld-netsys\/eceld\/plugins\/collectors\/pykeylogger\/raw\/timed_screenshots\/1614328619.6401157_screenshot.png",
+	"start" : "2021-02-26T08:36:59"
+	}
+]
