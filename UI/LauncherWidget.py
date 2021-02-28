@@ -14,6 +14,8 @@ from PyQt5.QtGui import *
 from PyQt5.QtGui import QStandardItem
 from PyQt5.QtCore import *
 
+from CreateProject import CreateProject
+
 class LauncherWidget(QWidget):
 
     def __init__(self):
@@ -59,6 +61,7 @@ class LauncherWidget(QWidget):
         sizePolicy.setHeightForWidth(self.open_button.sizePolicy().hasHeightForWidth())
         self.open_button.setSizePolicy(sizePolicy)
         self.open_button.setObjectName("open_button")
+        self.open_button.clicked.connect(self.openProject)
 
         # Layout that structures buttons
         self.button_layout = QtWidgets.QGridLayout()
@@ -89,18 +92,23 @@ class LauncherWidget(QWidget):
         
         self.file_browser = QFileDialog()
         self.file_browser.setFileMode(QFileDialog.ExistingFile)
-        dlg.setFilter("JSON Files (*.json)")
+        # self.file_browser.setFilter("JSON Files (*.json)")
 
-        filename = QStringList()
+        # filename = QStringList()
 
         if self.file_browser.exec_():
-            filename = self.file_browser.selectedFiiles()
+            filename = self.file_browser.selectedFiles()
 
             with open(filename[0], 'r') as f:
                 #(TODO): read project from file
                 #(TODO): send it to create widget
                 print("debug")
-                
+                self.create = CreateProject()
+                self.create.show()
+                self.hide()
+            
+
+
     def newProject(self):
         self.creator = CreateWidget()
         self.creator.show()
