@@ -10,4 +10,6 @@ class SalientArtifact:
     def get_type(self):
         return self._type
 
+    def to_str(self):
+        return "Type: " + str(self._type) + ", Artifact: " + str(self._artifact)
     
