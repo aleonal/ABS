@@ -13,7 +13,7 @@ class CausationExtractor:
         self._sorted_by_time = []
         self._grouped_by_salient_artifact = [] #grouped_by_salient_artifact = [[obj_sa1, ob_sa1, obj_sa1], [obj_sa2, obj_sa2]]
         self._grouped_by_time = [] # grouped_by_time = [[obj_group1, ob_group1, obj_group1], [obj_group2, obj_group2]]
-        self._project_info = {"time_frame" : "", "project_root" : "", "output_folder": "", "project_name": ""}
+        self._project_info = {"time_frame" : "", "project_root" : "", "output_folder": "", "project_name": "", "salient_artifact": ""}
         
     #Setters    
     def set_time_frame(self, t):
@@ -42,6 +42,10 @@ class CausationExtractor:
         self._project_info["project_root"] = self._eceld_project_root
         self._project_info["output_folder"] = self._output_folder
         self._project_info["project_name"] = self._project_name
+        count = 1
+        for sa in self._salient_artifacts:
+            self._project_info["salient_artifact"] += (str(count) + ") " + sa.to_str() + "\n")
+            count += 1
         return self._project_info
     
     # adds salient artifact object to list of artifacts
