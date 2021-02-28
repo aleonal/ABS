@@ -14,7 +14,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtGui import QStandardItem
 from PyQt5.QtCore import *
 
-from CreateProject import CreateProject
+from CreateProject import CreateProjectWidget
 
 class LauncherWidget(QWidget):
 
@@ -52,6 +52,7 @@ class LauncherWidget(QWidget):
         self.new_button.setSizePolicy(sizePolicy)
         self.new_button.setDefault(False)
         self.new_button.setObjectName("new_button")
+        self.new_button.clicked.connect(self.newProject)
 
         # Button to open existing project
         self.open_button = QtWidgets.QPushButton(self)
@@ -103,14 +104,9 @@ class LauncherWidget(QWidget):
                 #(TODO): read project from file
                 #(TODO): send it to create widget
                 print("debug")
-                self.create = CreateProject()
-                self.create.show()
-                self.hide()
             
-
-
     def newProject(self):
-        self.creator = CreateWidget()
+        self.creator = CreateProjectWidget()
         self.creator.show()
         self.hide()
 

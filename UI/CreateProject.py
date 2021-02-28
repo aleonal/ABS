@@ -16,7 +16,7 @@ from PyQt5.QtGui import *
 
 from PyQt5.QtCore import *
 
-class CreateProjectWidgets(QtWidgets.QWidget):
+class CreateProjectWidget(QtWidgets.QWidget):
     def __init__(self, projectInfo=None, project_status=True):
         super().__init__()
         self.projectInfo = projectInfo
