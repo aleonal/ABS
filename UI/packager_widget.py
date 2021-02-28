@@ -17,7 +17,7 @@ from PyQt5.QtCore import *
 
 class PackagerWidget(QWidget):
 
-    def __init__(self):
+    def __init__(self, project=None):
         super().__init__()
         self.setWindowTitle("Packager")
         self.UI()

@@ -7,7 +7,7 @@ import os
 
 class BuilderWidget(QWidget):
 
-    def __init__(self):
+    def __init__(self, project=None):
         super().__init__()
         self.setGeometry(50, 50, 482, 432)
         self.setWindowTitle("Builder")

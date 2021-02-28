@@ -15,7 +15,7 @@ from PyQt5.QtCore import *
 
 
 class RunnerWidget(QWidget):
-    def __init__(self):
+    def __init__(self, project=None):
         super().__init__()
         self.setWindowTitle("Runner")
         self.UI()
