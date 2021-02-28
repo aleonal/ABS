@@ -113,13 +113,18 @@ class CreateProjectWidget(QtWidgets.QWidget):
     
     def CausationExtractor(self):
         self.CEWidget = CausationExtractorWidget()
+        self.CEWidget.pushButton2.clicked.connect(self.cancel_CE)
         self.CEWidget.show()
         self.hide()
+
+    def cancel_CE(self):
+        self.CEWidget.hide()
+        self.show()
 
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    ui = CreateProjectWidgets()
+    ui = CreateProjectWidget()
     ui.UI()
     ui.show()
     sys.exit(app.exec_())

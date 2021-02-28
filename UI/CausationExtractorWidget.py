@@ -14,21 +14,27 @@ from PyQt5.QtGui import *
 from PyQt5.QtGui import QStandardItem
 from PyQt5.QtCore import *
 
-
 from ProjectInfoWidget import ProjectInfoWidget
-from CreateProject import CreateProjectWidgets
 
-class CausationExtractorWidget(object):
-    def setupUi(self, Widget):
-        Widget.setObjectName("Widget")
-        Widget.resize(320, 240)
+class CausationExtractorWidget(QWidget):
+
+    def __init__(self):
+        super().__init__()
+        self.UI()
+        self.show()
+
+    def UI(self):
+        self.setObjectName("Widget")
+        self.resize(320, 240)
+
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(Widget.sizePolicy().hasHeightForWidth())
-        Widget.setSizePolicy(sizePolicy)
-        Widget.setMinimumSize(QtCore.QSize(320, 240))
-        self.layoutWidget = QtWidgets.QWidget(Widget)
+        sizePolicy.setHeightForWidth(self.sizePolicy().hasHeightForWidth())
+        self.setSizePolicy(sizePolicy)
+        self.setMinimumSize(QtCore.QSize(320, 240))
+
+        self.layoutWidget = QtWidgets.QWidget(self)
         self.layoutWidget.setGeometry(QtCore.QRect(10, 10, 301, 221))
         self.layoutWidget.setObjectName("layoutWidget")
         self.widget_layout = QtWidgets.QGridLayout(self.layoutWidget)
@@ -61,7 +67,6 @@ class CausationExtractorWidget(object):
         self.pushButton2.setFlat(False)
         self.pushButton2.setObjectName("pushButton")
         self.widget_layout.addWidget(self.pushButton2, 2, 0, 1, 1, QtCore.Qt.AlignRight)#Cancel
-        self.pushButton2.clicked.connect(self.launchCreateProject)
 
         self.progress_text = QtWidgets.QLabel(self.layoutWidget)
         self.progress_text.setAlignment(QtCore.Qt.AlignCenter)
@@ -81,11 +86,6 @@ class CausationExtractorWidget(object):
     def launchProjectInfoWidget(self):
         self.pushButton = ProjectInfoWidget()
         self.pushButton.show()
-
-    def launchCreateProject(self):
-        self.pushButton2 = CreateProject()
-        self.pushButton2.show()
-
 
 if __name__ == "__main__":
     import sys

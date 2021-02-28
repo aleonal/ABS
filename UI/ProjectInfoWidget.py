@@ -13,9 +13,6 @@ from PyQt5.QtGui import *
 from PyQt5.QtGui import QStandardItem
 from PyQt5.QtCore import *
 
-from builder_widget import BuilderWidget
-from runner_widget import RunnerWidget
-
 class ProjectInfoWidget(QWidget):
     def __init__(self, project=None, project_status=True):
         super().__init__()
@@ -148,13 +145,13 @@ class ProjectInfoWidget(QWidget):
 
     #(TODO): REFACTOR THESE INTO 1 WITH SWITCH FOR WINDOW TYPE
     def launchBuilder(self):
-        self.builder = BuilderWidget()
-        self.builder.show()
+        # self.builder = BuilderWidget()
+        # self.builder.show()
         self.hide()
 
     def launchRunner(self):
-        self.runner = RunnerWidget()
-        self.runner.show()
+        # self.runner = RunnerWidget()
+        # self.runner.show()
         self.hide()
 
 if __name__ == "__main__":
