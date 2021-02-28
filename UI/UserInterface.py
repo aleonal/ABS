@@ -12,6 +12,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from builder_widget import BuilderWidget
 from runner_widget import RunnerWidget
 from packager_widget import PackagerWidget
+import os
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -79,7 +80,7 @@ class Ui_MainWindow(object):
         #Setup actions
         self.actionNew_Project = QtWidgets.QAction(MainWindow)
         self.actionNew_Project.setObjectName("actionNew_Project")
-        self.actionOpen_Project = QtWidgets.QAction(MainWindow)
+        self.actionOpen_Project = QtWidgets.QAction(MainWindow, triggered=self.open_directory)
         self.actionOpen_Project.setObjectName("actionOpen_Project")
         self.actionImport_Raw_Data = QtWidgets.QAction(MainWindow)
         self.actionImport_Raw_Data.setObjectName("actionImport_Raw_Data")
@@ -89,7 +90,9 @@ class Ui_MainWindow(object):
         self.actionSave.setObjectName("actionSave")
         self.actionSave_Project = QtWidgets.QAction(MainWindow)
         self.actionSave_Project.setObjectName("actionSave_Project")
-        self.actionSave_Project_As = QtWidgets.QAction(MainWindow)
+        self.actionSave_Project_As = QtWidgets.QAction(MainWindow, triggered=self.save_file)
+
+
         self.actionSave_Project_As.setObjectName("actionSave_Project_As")
         self.actionExit = QtWidgets.QAction(MainWindow)
         self.actionExit.setObjectName("actionExit")
@@ -139,6 +142,16 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+    def open_directory(self):
+        directory = str(QtWidgets.QFileDialog.getExistingDirectory(QtWidgets.QFileDialog(), "Select Directory", directory=os.path.realpath(os.getcwd())))
+        #set directory as text for wherever we set our directory
+        #we might want to add checks to make sure this is a ECELd directory, maybe check if there is a parsed folder.
+
+    def save_file(self):
+        file = str(QtWidgets.QFileDialog.getSaveFileName(QtWidgets.QFileDialog(), "Save File", directory=os.path.realpath(os.getcwd())))
+        #save file
+        #We will get the file name, now we have to write to it
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate

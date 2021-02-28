@@ -65,34 +65,30 @@ class SalientArtifactWindow(QWidget):
         self.gridLayout.addWidget(self.label_2, 0, 0, 1, 1)
 
         # Creating table
-        self.reportTable = QTableWidget(0, 2, self)
+        self.artifactsTable = QTableWidget(0, 2, self)
 
         # Creating headers for columns in table
         lineNumHeader = QTableWidgetItem('Artifact Number')
-        self.reportTable.setHorizontalHeaderItem(0, lineNumHeader)
+        self.artifactsTable.setHorizontalHeaderItem(0, lineNumHeader)
         descriptionHeader = QTableWidgetItem('Description')
-        self.reportTable.setHorizontalHeaderItem(1, descriptionHeader)
+        self.artifactsTable.setHorizontalHeaderItem(1, descriptionHeader)
 
         emptyHeader = QTableWidgetItem()
-        self.reportTable.horizontalHeader().setStretchLastSection(True)
-        self.reportTable.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.artifactsTable.horizontalHeader().setStretchLastSection(True)
+        self.artifactsTable.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
 
-        self.gridLayout.addWidget(self.reportTable, 1, 0, 1, 4)
+        self.gridLayout.addWidget(self.artifactsTable, 1, 0, 1, 4)
 
-        self.enforcementLabel = QLabel('Salient Artifacts', self)
-        self.enforcementLabel.setObjectName(u"artifactLabel")
-        self.enforcementLabel.setFont(font)
-        self.gridLayout.addWidget(self.enforcementLabel, 0, 1, 1, 1)
+        self.artifactsLabel = QLabel('Salient Artifacts', self)
+        self.artifactsLabel.setObjectName(u"artifactLabel")
+        self.artifactsLabel.setFont(font)
+        self.gridLayout.addWidget(self.artifactsLabel, 0, 1, 1, 1)
 
         self.cancelButton = QPushButton('Cancel', self)
         self.cancelButton.setObjectName(u"cancelButton")
-        self.cancelButton.clicked.connect(self.window().close)
+        self.cancelButton.clicked.connect(self.close)
         self.gridLayout.addWidget(self.cancelButton, 2, 4, 1, 2)
         self.setLayout(self.gridLayout)
-
-
-    def close(self):
-        self.close()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
