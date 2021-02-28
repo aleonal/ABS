@@ -1,5 +1,6 @@
 import json, datetime
-from Event import Event, auditd, clicks, keypresses, traffic, trafficThroughput, timed, suricata
+from CausationExtractor.Event import Event, auditd, clicks, keypresses, traffic, trafficThroughput, timed, suricata
+from CausationExtractor.SalientArtifact import SalientArtifact
 
 class CausationExtractor:
 
@@ -57,7 +58,13 @@ class CausationExtractor:
             if self._salient_artifacts[i].get_artifact() == artifact:
                 del self._salient_artifacts[i]
                 break
-
+    def load_salient_artifacts(self):
+        fileObject = open("/home/kali/Desktop/practicum/testRoot/salientArtifacts.JSON", "r")
+        jsonContent = fileObject.read()
+        tempList = json.loads(jsonContent)
+        for artifact in tempList:
+            newArtifact = SalientArtifact(artifact['type'],artifact['content'])
+            self.add_salient_artifact(newArtifact)
     #Import events
     def import_events(self):
         self._import_event("auditd", "/parsed/auditd/auditdData.JSON")
