@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtGui import QStandardItem
 from PyQt5.QtCore import *
+from CausationExtractor.CausationExtractor import CausationExtractor
 import os
 
 class BuilderWidget(QWidget):
@@ -51,6 +52,8 @@ class SalientArtifactWindow(QWidget):
         super().__init__()
         self.setGeometry(50, 50, 482, 432)
         self.setWindowTitle("Salient Artifacts")
+        causationInstance = CausationExtractor()
+        self.artifactsList = causationInstance.get_salient_artifacts()
         self.UI()
 
     def UI(self):
@@ -65,11 +68,11 @@ class SalientArtifactWindow(QWidget):
         self.gridLayout.addWidget(self.label_2, 0, 0, 1, 1)
 
         # Creating table
-        self.artifactsTable = QTableWidget(0, 2, self)
+        self.artifactsTable = QTableWidget(len(self.artifactsList), 2, self)
 
         # Creating headers for columns in table
-        lineNumHeader = QTableWidgetItem('Artifact Number')
-        self.artifactsTable.setHorizontalHeaderItem(0, lineNumHeader)
+        type_header = QTableWidgetItem('Artifact Type')
+        self.artifactsTable.setHorizontalHeaderItem(0, type_header)
         descriptionHeader = QTableWidgetItem('Description')
         self.artifactsTable.setHorizontalHeaderItem(1, descriptionHeader)
 
@@ -88,7 +91,35 @@ class SalientArtifactWindow(QWidget):
         self.cancelButton.setObjectName(u"cancelButton")
         self.cancelButton.clicked.connect(self.close)
         self.gridLayout.addWidget(self.cancelButton, 2, 4, 1, 2)
+
+        self.saveChangesButton = QPushButton('Save Changes', self)
+        self.saveChangesButton.setObjectName(u"saveChangesButton")
+        self.saveChangesButton.clicked.connect(self.saveArtifacts)
+        self.gridLayout.addWidget(self.saveChangesButton, 1, 4, 1, 2)
+
+        self.populate_table(self.artifactsList)
+        print(self.artifactsList)
+
         self.setLayout(self.gridLayout)
+
+    def populate_table(self, artifacts_list):
+        self.artifactsTable.setRowCount(len(artifacts_list))
+
+        for i in range(len(artifacts_list)):
+            artifact = artifacts_list[i]
+            artifactType = QTableWidgetItem(artifact.get_type)
+            artifactDescription = QTableWidgetItem(artifact.get_artifact)
+            #Create a dropdown item and use setcellwidget to have the type. Use artifact type to set the selected type in the widget
+
+            self.artifactsTable.setItem(i, 0, artifactType)
+            self.artifactsTable.setItem(i, 1, artifactDescription)
+
+            self.table.setCellWidget(i, 2, QPushButton('Delete'))
+            #self.table.cellWidget(i, 2).clicked.connect()
+
+    def saveArtifacts(self):
+        artifactsList = ""
+        #save whatever is in the table to json file
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
