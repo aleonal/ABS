@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Widget</class>
- <widget class="QWidget" name="Widget">
+ <class>CreateProjectWidget</class>
+ <widget class="QWidget" name="CreateProjectWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -44,7 +44,7 @@
        <number>0</number>
       </property>
       <property name="horizontalSpacing">
-       <number>-1</number>
+       <number>7</number>
       </property>
       <property name="verticalSpacing">
        <number>0</number>
@@ -124,6 +124,9 @@ separated by a comma</string>
         </property>
         <property name="text">
          <string>Create Project</string>
+        </property>
+        <property name="default">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
