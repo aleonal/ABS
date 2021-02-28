@@ -113,6 +113,9 @@ class SalientArtifactWindow(QWidget):
     def populate_table(self, artifacts_list):
         self.artifactsTable.setRowCount(len(artifacts_list))
 
+        #fileObject = open("/home/kali/Desktop/practicum/testRoot/salientArtifacts.JSON", "r")
+        #jsonContent = fileObject.read()
+        #tempList = json.loads(jsonContent)
         for i in range(len(artifacts_list)):
             artifact = artifacts_list[i]
             artifactType = QTableWidgetItem(artifact.get_type())
