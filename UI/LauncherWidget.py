@@ -14,11 +14,13 @@ from PyQt5.QtGui import QStandardItem
 from PyQt5.QtCore import *
 
 from CreateProject import CreateProjectWidget
+from ProjectInfoWidget import ProjectInfoWidget
 
 class LauncherWidget(QWidget):
 
-    def __init__(self):
+    def __init__(self, previous_window=None):
         super().__init__()
+        self.previous_window = previous_window
         self.UI()
         self.show()
 
@@ -88,8 +90,6 @@ class LauncherWidget(QWidget):
         self.open_button.setText(_translate("Widget", "Open Project..."))
 
     def openProject(self):
-        #(TODO): use python file browser to load the project
-        
         self.file_browser = QFileDialog()
         self.file_browser.setFileMode(QFileDialog.ExistingFile)
         # self.file_browser.setFilter("JSON Files (*.json)")
@@ -101,11 +101,12 @@ class LauncherWidget(QWidget):
 
             with open(filename[0], 'r') as f:
                 #(TODO): read project from file
-                #(TODO): send it to create widget
-                print("debug")
+                self.project_info = ProjectInfoWidget(previous_window = self)
+                self.project_info.show()
+                self.hide()
             
     def newProject(self):
-        self.creator = CreateProjectWidget()
+        self.creator = CreateProjectWidget(previous_window = self)
         self.creator.show()
         self.hide()
 

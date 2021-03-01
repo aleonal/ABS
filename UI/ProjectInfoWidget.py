@@ -13,10 +13,14 @@ from PyQt5.QtGui import *
 from PyQt5.QtGui import QStandardItem
 from PyQt5.QtCore import *
 
+import BuilderWidget
+import RunnerWidget
+
 class ProjectInfoWidget(QWidget):
-    def __init__(self, project=None, project_status=True):
+    def __init__(self, project=None, previous_window=None):
         super().__init__()
         self.project = project
+        self.previous_window = previous_window
         self.UI()
         self.show()
 
@@ -70,9 +74,9 @@ class ProjectInfoWidget(QWidget):
         self.runner_button.setObjectName("runner_button")
         self.runner_button.clicked.connect(self.launchRunner)
 
-        # Assumes project object has property "isNew" labling new project
-        if not self.project or self.project.isNew:
-            self.runner_button.setEnabled(False)
+        # # Assumes project object has property "isNew" labling new project
+        # if not self.project or self.project.isNew:
+        #     self.runner_button.setEnabled(False)
 
         # Builder component button
         self.builder_button = QtWidgets.QPushButton(self)
@@ -141,17 +145,26 @@ class ProjectInfoWidget(QWidget):
 
     def closeRoutine(self):
         #(TODO): SAVE PROJECT BEFORE CLOSING (call backend)
-        self.close()
+        
+        if self.previous_window:
+            temp_window = self.previous_window
+            
+            while temp_window.previous_window:
+                temp_window = temp_window.previous_window
+            
+            temp_window.show()
+            self.hide()
+        else:
+            self.close()
 
-    #(TODO): REFACTOR THESE INTO 1 WITH SWITCH FOR WINDOW TYPE
     def launchBuilder(self):
-        # self.builder = BuilderWidget()
-        # self.builder.show()
+        self.builder = BuilderWidget.BuilderWidget()
+        self.builder.show()
         self.hide()
 
     def launchRunner(self):
-        # self.runner = RunnerWidget()
-        # self.runner.show()
+        self.runner = RunnerWidget.RunnerWidget()
+        self.runner.show()
         self.hide()
 
 if __name__ == "__main__":

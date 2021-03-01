@@ -16,10 +16,11 @@ from PyQt5.QtGui import *
 
 from PyQt5.QtCore import *
 
-class CreateProjectWidget(QtWidgets.QWidget):
-    def __init__(self, projectInfo=None, project_status=True):
+class CreateProjectWidget(QWidget):
+    def __init__(self, projectInfo=None, project_status=True, previous_window=None):
         super().__init__()
         self.projectInfo = projectInfo
+        self.previous_window = previous_window
         self.UI()
         self.show()
     def UI(self):
@@ -64,6 +65,7 @@ class CreateProjectWidget(QtWidgets.QWidget):
         self.widget_layout.addLayout(self.input_layout)
         self.button_layout = QtWidgets.QGridLayout()
         self.button_layout.setObjectName("button_layout")
+        
         self.cancel_button = QtWidgets.QPushButton(self.verticalLayoutWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -72,6 +74,8 @@ class CreateProjectWidget(QtWidgets.QWidget):
         self.cancel_button.setSizePolicy(sizePolicy)
         self.cancel_button.setObjectName("cancel_button")
         self.button_layout.addWidget(self.cancel_button, 0, 0, 1, 1)
+        self.cancel_button.pressed.connect(self.closeRoutine)
+        
         self.salientart_button = QtWidgets.QPushButton(self.verticalLayoutWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -80,6 +84,7 @@ class CreateProjectWidget(QtWidgets.QWidget):
         self.salientart_button.setSizePolicy(sizePolicy)
         self.salientart_button.setObjectName("salientart_button")
         self.button_layout.addWidget(self.salientart_button, 0, 1, 1, 1)
+        
         self.create_button = QtWidgets.QPushButton(self.verticalLayoutWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -112,14 +117,19 @@ class CreateProjectWidget(QtWidgets.QWidget):
         self.create_button.setText(_translate("Widget", "Create Project"))
     
     def CausationExtractor(self):
-        self.CEWidget = CausationExtractorWidget()
-        self.CEWidget.pushButton2.clicked.connect(self.cancel_CE)
+        self.CEWidget = CausationExtractorWidget(previous_window=self)
         self.CEWidget.show()
         self.hide()
 
-    def cancel_CE(self):
-        self.CEWidget.hide()
-        self.show()
+    def closeRoutine(self):
+        #(TODO): show dialog confirming action. If yes, close, if not continue
+
+        if self.previous_window:
+            self.previous_window.show()
+            self.hide()
+        else:
+            self.hide()
+
 
 if __name__ == "__main__":
     import sys

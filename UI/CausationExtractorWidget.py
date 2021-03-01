@@ -18,8 +18,9 @@ from ProjectInfoWidget import ProjectInfoWidget
 
 class CausationExtractorWidget(QWidget):
 
-    def __init__(self):
+    def __init__(self, previous_window=None):
         super().__init__()
+        self.previous_window = previous_window
         self.UI()
         self.show()
 
@@ -60,6 +61,7 @@ class CausationExtractorWidget(QWidget):
         self.pushButton.setObjectName("pushButton")
         self.widget_layout.addWidget(self.pushButton, 2, 0, 1, 1, QtCore.Qt.AlignLeft)#Continue
         self.pushButton.clicked.connect(self.launchProjectInfoWidget)
+        self.pushButton2.clicked.connect(self.closeRoutine)
         self.pushButton2.setSizePolicy(sizePolicy)
         self.pushButton2.setCheckable(False)
         self.pushButton2.setAutoDefault(False)
@@ -73,25 +75,33 @@ class CausationExtractorWidget(QWidget):
         self.progress_text.setObjectName("progress_text")
         self.widget_layout.addWidget(self.progress_text, 0, 0, 1, 1)
 
-        self.retranslateUi(Widget)
-        QtCore.QMetaObject.connectSlotsByName(Widget)
+        self.retranslateUi()
+        QtCore.QMetaObject.connectSlotsByName(self)
 
-    def retranslateUi(self, Widget):
+    def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
-        Widget.setWindowTitle(_translate("Widget", "Causation Extractor"))
+        self.setWindowTitle(_translate("Widget", "Causation Extractor"))
         self.pushButton.setText(_translate("Widget", "Continue"))
         self.pushButton2.setText(_translate("Widget", "Cancel"))
         self.progress_text.setText(_translate("Widget", "Progress info"))
 
     def launchProjectInfoWidget(self):
-        self.pushButton = ProjectInfoWidget()
-        self.pushButton.show()
+        self.project_info_widget = ProjectInfoWidget(previous_window=self)
+        self.project_info_widget.show()
+        self.hide()
+
+    def closeRoutine(self):
+    #(TODO): show dialog confirming action. If yes, close (cancel ingestion), if not continue
+
+        if self.previous_window:
+            self.previous_window.show()
+            self.hide()
+        else:
+            self.hide()
 
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    Widget = QtWidgets.QWidget()
-    ui = Ui_Widget()
-    ui.setupUi(Widget)
-    Widget.show()
+    ui = CausationExtractorWidget()
+    ui.show()
     sys.exit(app.exec_())

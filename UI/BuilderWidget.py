@@ -102,7 +102,8 @@ class SalientArtifactWindow(QWidget):
         self.addArtifactButton.clicked.connect(self.addArtifact)
         self.gridLayout.addWidget(self.addArtifactButton, 0, 4, 1, 2)
 
-        self.populate_table()
+        #(TODO): add try-catch to function body to address file not found errors
+        # self.populate_table()
 
         self.setLayout(self.gridLayout)
 
