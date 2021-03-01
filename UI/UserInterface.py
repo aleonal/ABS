@@ -9,7 +9,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from builder_widget import BuilderWidget
+from BuilderWidget import BuilderWidget
 from runner_widget import RunnerWidget
 from packager_widget import PackagerWidget
 import os
