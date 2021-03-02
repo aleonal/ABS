@@ -2,10 +2,10 @@ import datetime
 
 class Event:
     def __init__(self):
-        self.id = 0
-        self.content = ""
-        self.className = ""
-        self.start = None
+        self._id = 0
+        self._content = ""
+        self._className = ""
+        self._start = None
     
     def set_id(self,id):
         self.id = id 
