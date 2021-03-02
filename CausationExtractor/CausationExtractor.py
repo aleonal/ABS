@@ -1,7 +1,7 @@
 import json
 import datetime
-from CausationExtractor.Event import Event, auditd, clicks, keypresses, traffic, trafficThroughput, timed, suricata
-from CausationExtractor.SalientArtifact import SalientArtifact
+from Event import Event, Auditd, Clicks, Keypresses, Traffic, TrafficThroughput, Timed, Suricata
+from SalientArtifact import SalientArtifact
 
 class CausationExtractor:
 
@@ -39,6 +39,8 @@ class CausationExtractor:
         return self._output_folder
     def get_project_name(self):
         return self._project_name
+    def get_event_list(self):
+        return self._event_list
     def get_project_info(self):
         self._project_info["time_frame"] = str(self._time_frame)
         self._project_info["project_root"] = self._eceld_project_root
@@ -99,9 +101,6 @@ class CausationExtractor:
                 self._event_list[type].append(obj)
         except Exception:
             print("Failed to import " + type)
-
-    def get_event_list(self):
-        return self._event_list
 
     #sort all events by time
     def _sort_by_time(self):
