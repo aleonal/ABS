@@ -61,6 +61,7 @@ class CausationExtractor:
         for artifact in tempList:
             newArtifact = SalientArtifact(artifact['type'],artifact['content'])
             self.add_salient_artifact(newArtifact)
+    
     #Import events
     def import_events(self):
         self._import_event("auditd", "/parsed/auditd/auditdData.JSON")
@@ -96,7 +97,7 @@ class CausationExtractor:
             else:
                 self._event_list[type].append(obj)
         except Exception:
-            pass
+            print("Failed to import " + type)
 
     def get_event_list(self):
         return self._event_list
@@ -108,7 +109,13 @@ class CausationExtractor:
             for obj in self._event_list[event]:
                 self._sorted_by_time.append(obj)
         self._sorted_by_time.sort(key=lambda x: x.get_start())
-            
+
+    #Creates JSON of all imported events sorted by timestamp   
+    def output_sorted_by_time_to_json(self):
+        self._sort_by_time()
+        self._output_to_json(self._sorted_by_time,"eventsSortedByTime")
+
+
     #group all events by time
     #outputs groupings into .JSON files in output folder
     def group_by_time(self):
