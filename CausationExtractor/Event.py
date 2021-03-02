@@ -8,26 +8,26 @@ class Event:
         self._start = None
     
     def set_id(self,id):
-        self.id = id 
+        self._id = id 
     def get_id(self):
-        return self.id 
+        return self._id 
 
     def set_content(self,content):
-        self.content = content 
+        self._content = content 
     def get_content(self):
-        return self.content 
+        return self._content 
 
     def set_className(self, className):
-        self.className = className 
+        self._className = className 
     def get_className(self):
-        return self.className 
+        return self._className 
     
     def set_start(self, start):
-        self.start = datetime.datetime.strptime(start, '%Y-%m-%dT%H:%M:%S')
+        self._start = datetime.datetime.strptime(start, '%Y-%m-%dT%H:%M:%S')
     def get_start(self):
-        return self.start
+        return self._start
     def get_start_tostring(self):
-        return self.start.strftime("%m/%d/%YT%H:%M:%S")
+        return self._start.strftime("%m/%d/%YT%H:%M:%S")
 
 class auditd(Event):
     def __init__(self, id, content, className, start):
