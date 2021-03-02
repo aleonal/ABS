@@ -80,19 +80,19 @@ class CausationExtractor:
                 for d in data:
                     e = d
                     if type == "auditd":
-                        obj = auditd(e['auditd_id'], e['content'], "auditd", e['start'])
+                        obj = Auditd(e['auditd_id'], e['content'], "auditd", e['start'])
                     elif type == "clicks":
-                        obj = clicks(e['clicks_id'], e['content'], e['type'], e['classname'], e['start'])
+                        obj = Clicks(e['clicks_id'], e['content'], e['type'], e['classname'], e['start'])
                     elif type == "keypresses":
-                        obj = keypresses(e['keypresses_id'], e['content'], e['className'], e['start'])
+                        obj = Keypresses(e['keypresses_id'], e['content'], e['className'], e['start'])
                     elif type == "timed":
-                        obj = timed(e["timed_id"], e['type'], e['classname'], e['content'], e['start'])
+                        obj = Timed(e["timed_id"], e['type'], e['classname'], e['content'], e['start'])
                     elif type == "traffic":
-                        obj = traffic(e['traffic_all_id'], e['content'], e['className'], e['title'], e['start'])
+                        obj = Traffic(e['traffic_all_id'], e['content'], e['className'], e['title'], e['start'])
                     elif type == "trafficThroughput":
-                        obj = trafficThroughput(e['traffic_xy_id'], e['className'], e['start'], e['y'])
+                        obj = TrafficThroughput(e['traffic_xy_id'], e['className'], e['start'], e['y'])
                     elif type == "suricata":
-                        obj = suricata(e['suricata_id'], e['suricata_rule_id'], e['content'], e['className'], e['start'])
+                        obj = Suricata(e['suricata_id'], e['suricata_rule_id'], e['content'], e['className'], e['start'])
             if type not in self._event_list:
                 self._event_list[type] = [obj]
             else:

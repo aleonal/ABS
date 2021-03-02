@@ -29,7 +29,7 @@ class Event:
     def get_start_tostring(self):
         return self._start.strftime("%m/%d/%YT%H:%M:%S")
 
-class auditd(Event):
+class Auditd(Event):
     def __init__(self, id, content, className, start):
         self.set_id(id)
         self.set_content(content)
