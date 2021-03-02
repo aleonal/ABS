@@ -52,12 +52,8 @@ class CausationExtractor:
     # adds salient artifact object to list of artifacts
     def add_salient_artifact(self, salient_artifact):
         self._salient_artifacts.append(salient_artifact)
-    # removes salient artifact object from list of artifacts
-    def remove_salient_artifact(self, artifact):
-        for i in range(len(self._salient_artifacts)):
-            if self._salient_artifacts[i].get_artifact() == artifact:
-                del self._salient_artifacts[i]
-                break
+
+
     def load_salient_artifacts(self):
         fileObject = open("/home/kali/Desktop/practicum/testRoot/salientArtifacts.JSON", "r")
         jsonContent = fileObject.read()
