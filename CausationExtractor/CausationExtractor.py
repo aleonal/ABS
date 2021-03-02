@@ -1,4 +1,5 @@
-import json, datetime
+import json
+import datetime
 from CausationExtractor.Event import Event, auditd, clicks, keypresses, traffic, trafficThroughput, timed, suricata
 from CausationExtractor.SalientArtifact import SalientArtifact
 
