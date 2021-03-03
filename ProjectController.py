@@ -141,7 +141,7 @@ class ProjectController:
     @classmethod
     def load_project(cls, directory):
         full_directory = Path(directory)
-        # return dictionary with information from loaded JSON
+        # TODO: Check that directory contains project_config, salientArtifacts and other files before loading
         try:
             with open(full_directory / 'project_config.JSON', 'r') as f:
                 json_data = json.load(f)
@@ -152,8 +152,6 @@ class ProjectController:
 
         except FileNotFoundError:
             print("File not found")
-
-            #need to update all components with current project info, maybe a reload function or something?
 
     @classmethod
     def create_project(cls, eceld_root, project_directory, project_name, timeframe):

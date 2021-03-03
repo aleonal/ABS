@@ -36,9 +36,9 @@ class BuilderWidget(QWidget):
         self.listthing = QListWidget(self)
         self.gridLayout.addWidget(self.listthing, 2, 1)
 
-        self.add_artifact_button = QPushButton('Add Salient Artifact', self)
-        self.gridLayout.addWidget(self.add_artifact_button, 1, 0)
-        self.add_artifact_button.clicked.connect(self.openArtifacts)
+        self.edit_artifacts_button = QPushButton('Edit Salient Artifacts', self)
+        self.gridLayout.addWidget(self.edit_artifacts_button, 1, 0)
+        self.edit_artifacts_button.clicked.connect(self.openArtifacts)
 
         self.save_button = QPushButton('Save Project', self)
         self.gridLayout.addWidget(self.save_button, 3, 2)
@@ -49,8 +49,7 @@ class BuilderWidget(QWidget):
             self.artifacts_window.populate_table()
             self.artifacts_window.show()
         else:
-            # (TODO): Consider making a separate dialog for no project loaded to be reused in the system
-            print("No project is currently loaded")
+            QMessageBox.critical(self, "Project Error", "No project is currently loaded.")
 
 class SalientArtifactWindow(QWidget):
 
@@ -63,15 +62,12 @@ class SalientArtifactWindow(QWidget):
     def UI(self):
         self.gridLayout = QGridLayout(self)
         self.gridLayout.setObjectName(u"gridLayout")
-        self.label_2 = QLabel(self)
-        self.label_2.setObjectName(u"label_2")
+
         font = QFont()
         font.setPointSize(16)
-        self.label_2.setFont(font)
 
-        self.gridLayout.addWidget(self.label_2, 0, 0, 1, 1)
 
-        # Creating table
+        # Creating table with no rows
         self.artifactsTable = QTableWidget(0, 3, self)
 
         # Creating headers for columns in table
@@ -86,27 +82,27 @@ class SalientArtifactWindow(QWidget):
         self.artifactsTable.horizontalHeader().setStretchLastSection(True)
         self.artifactsTable.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
 
-        self.gridLayout.addWidget(self.artifactsTable, 1, 0, 1, 4)
+        self.gridLayout.addWidget(self.artifactsTable, 1, 0)
 
         self.artifactsLabel = QLabel('Salient Artifacts', self)
         self.artifactsLabel.setObjectName(u"artifactLabel")
         self.artifactsLabel.setFont(font)
-        self.gridLayout.addWidget(self.artifactsLabel, 0, 1, 1, 1)
+        self.gridLayout.addWidget(self.artifactsLabel, 0, 0)
 
         self.cancelButton = QPushButton('Cancel', self)
         self.cancelButton.setObjectName(u"cancelButton")
         self.cancelButton.clicked.connect(self.close)
-        self.gridLayout.addWidget(self.cancelButton, 2, 4, 1, 2)
+        self.gridLayout.addWidget(self.cancelButton, 2, 1)
 
         self.saveChangesButton = QPushButton('Save Changes', self)
         self.saveChangesButton.setObjectName(u"saveChangesButton")
         self.saveChangesButton.clicked.connect(self.saveArtifacts)
-        self.gridLayout.addWidget(self.saveChangesButton, 1, 4, 1, 2)
+        self.gridLayout.addWidget(self.saveChangesButton, 1, 1)
 
         self.addArtifactButton = QPushButton('Add Artifact', self)
         self.addArtifactButton.setObjectName(u"saveChangesButton")
         self.addArtifactButton.clicked.connect(self.addArtifact)
-        self.gridLayout.addWidget(self.addArtifactButton, 0, 4, 1, 2)
+        self.gridLayout.addWidget(self.addArtifactButton, 0, 1)
 
         self.setLayout(self.gridLayout)
 

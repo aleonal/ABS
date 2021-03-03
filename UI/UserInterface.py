@@ -9,9 +9,13 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
 from BuilderWidget import BuilderWidget
 from RunnerWidget import RunnerWidget
 from PackagerWidget import PackagerWidget
+from CreateProject import CreateProjectWidget
 from ProjectController import ProjectController
 import os
 
@@ -80,7 +84,7 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
 
         #Setup actions
-        self.actionNew_Project = QtWidgets.QAction(MainWindow)
+        self.actionNew_Project = QtWidgets.QAction(MainWindow, triggered=self.new_project)
         self.actionNew_Project.setObjectName("actionNew_Project")
         self.actionOpen_Project = QtWidgets.QAction(MainWindow, triggered=self.open_directory)
         self.actionOpen_Project.setObjectName("actionOpen_Project")
@@ -145,11 +149,18 @@ class Ui_MainWindow(object):
         self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
+    def new_project(self):
+        self.project_window = CreateProjectWidget()
+        self.project_window.show()
+
     def open_directory(self):
         directory = str(QtWidgets.QFileDialog.getExistingDirectory(QtWidgets.QFileDialog(), "Select Directory", directory=os.path.realpath(os.getcwd())))
-        #set directory as text for wherever we set our directory
-        #we might want to add checks to make sure this is a ECELd directory, maybe check if there is a parsed folder.
         ProjectController.load_project(directory)
+
+        if(ProjectController.is_project_loaded):
+            QMessageBox.information(self.centralwidget, "Success", "Project has been loaded successfully.")
+        else:
+            QMessageBox.critical(self.centralwidget, "Project Failure", "Project could not be loaded. Check that directory contains appropriate files")
 
     def save_file(self):
         file = str(QtWidgets.QFileDialog.getSaveFileName(QtWidgets.QFileDialog(), "Save File", directory=os.path.realpath(os.getcwd())))
