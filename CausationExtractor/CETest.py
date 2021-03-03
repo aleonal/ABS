@@ -5,11 +5,11 @@ from CausationExtractor import CausationExtractor
 from SalientArtifact import SalientArtifact
 
 def main():
-    #test_var_setters_getters()
-    #test_artifacts()
-    #test_import_events()
-    #test_output_sorted_by_time_to_json()
-    #test_group_by_time()
+    test_var_setters_getters()
+    test_artifacts()
+    test_import_events()
+    test_output_sorted_by_time_to_json()
+    test_group_by_time()
     test_group_by_salient_artifacts()
 
 def test_var_setters_getters():
@@ -94,6 +94,8 @@ def test_import_events():
         print("import_events() traffic: FAIL")
     if len(e_l["trafficThroughput"]) != 18:
         print("import_events() trafficThroughput: FAIL")
+    if len(e_l["suricata"]) != 2:
+        print("import_events() suricatad: FAIL")
     else:
         print("import_events(): PASS")
 
@@ -114,7 +116,7 @@ def test_group_by_time():
     ce.import_events()
     ce.set_time_frame("00:00:02")
     ce.group_by_time()
-    print("Check test folder for 4 groupings by 00:00:02 seconds")
+    print("Check test folder for 6 groupings by 00:00:02 seconds")
 
 def test_group_by_salient_artifacts():
     ce = CausationExtractor()

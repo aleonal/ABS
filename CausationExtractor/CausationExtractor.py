@@ -72,7 +72,7 @@ class CausationExtractor:
         self._import_event("timed", "/parsed/pykeylogger/timed.JSON")
         self._import_event("traffic", "/parsed/tshark/networkDataAll.JSON")
         self._import_event("trafficThroughput", "/parsed/tshark/networkDataXY.JSON")
-        self._import_event("suricata", "")
+        self._import_event("suricata", "/parsed/suricata/suricata.JSON")
 
     def _import_event(self, type, directory):
         try:
