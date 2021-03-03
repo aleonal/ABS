@@ -46,7 +46,7 @@ class Clicks(Event):
         self.set_start(start)
         self._type = type
     def get_type(self):
-        return self.type
+        return self._type
     def tojson(self):
         return {'clicks_id' : self.get_id(), 'content' : self.get_content(), 'type' : self.get_type(), 'classname' : self.get_className(), 'start' : self.get_start_tostring()}
 

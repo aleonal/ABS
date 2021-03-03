@@ -58,12 +58,11 @@ class CausationExtractor:
 
 
     def load_salient_artifacts(self):
-        fileObject = open("/home/kali/Desktop/practicum/testRoot/salientArtifacts.JSON", "r")
-        jsonContent = fileObject.read()
-        tempList = json.loads(jsonContent)
-        for artifact in tempList:
-            newArtifact = SalientArtifact(artifact['type'],artifact['content'])
-            self.add_salient_artifact(newArtifact)
+        with open(self._eceld_project_root+"/salientArtifacts.JSON") as f:
+            data = json.load(f)
+            for d in data:
+                sa = d
+                self.add_salient_artifact(SalientArtifact(sa["type"], sa["artifact"]))
     
     #Import events
     def import_events(self):
@@ -95,10 +94,10 @@ class CausationExtractor:
                         obj = TrafficThroughput(e['traffic_xy_id'], e['className'], e['start'], e['y'])
                     elif type == "suricata":
                         obj = Suricata(e['suricata_id'], e['suricata_rule_id'], e['content'], e['className'], e['start'])
-            if type not in self._event_list:
-                self._event_list[type] = [obj]
-            else:
-                self._event_list[type].append(obj)
+                    if type not in self._event_list:
+                        self._event_list[type] = [obj]
+                    else:
+                        self._event_list[type].append(obj)
         except Exception:
             print("Failed to import " + type)
 
@@ -113,7 +112,7 @@ class CausationExtractor:
     #Creates JSON of all imported events sorted by timestamp   
     def output_sorted_by_time_to_json(self):
         self._sort_by_time()
-        self._output_to_json(self._sorted_by_time,"eventsSortedByTime")
+        self._output_to_json([self._sorted_by_time],"eventsSortedByTime")
 
 
     #group all events by time
