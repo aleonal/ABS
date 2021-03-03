@@ -18,8 +18,6 @@ import os
 class Ui_MainWindow(object):
 
     def setupUi(self, MainWindow):
-        self.controller = ProjectController()
-
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(960, 720)
         MainWindow.setDockNestingEnabled(True)
@@ -151,10 +149,7 @@ class Ui_MainWindow(object):
         directory = str(QtWidgets.QFileDialog.getExistingDirectory(QtWidgets.QFileDialog(), "Select Directory", directory=os.path.realpath(os.getcwd())))
         #set directory as text for wherever we set our directory
         #we might want to add checks to make sure this is a ECELd directory, maybe check if there is a parsed folder.
-        self.controller.load_project(directory)
-        
-        print(self.controller.get_eceld_project_root())
-        print(self.controller.get_output_folder())
+        ProjectController.load_project(directory)
 
     def save_file(self):
         file = str(QtWidgets.QFileDialog.getSaveFileName(QtWidgets.QFileDialog(), "Save File", directory=os.path.realpath(os.getcwd())))

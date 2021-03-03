@@ -5,6 +5,7 @@ from PyQt5.QtGui import QStandardItem
 from PyQt5.QtCore import *
 import os
 import json
+from ProjectController import ProjectController
 
 class BuilderWidget(QWidget):
 
@@ -44,7 +45,12 @@ class BuilderWidget(QWidget):
 
         self.setLayout(self.gridLayout)
     def openArtifacts(self):
-        self.artifacts_window.show()
+        if ProjectController.is_project_loaded():
+            self.artifacts_window.populate_table()
+            self.artifacts_window.show()
+        else:
+            # (TODO): Consider making a separate dialog for no project loaded to be reused in the system
+            print("No project is currently loaded")
 
 class SalientArtifactWindow(QWidget):
 
@@ -102,38 +108,43 @@ class SalientArtifactWindow(QWidget):
         self.addArtifactButton.clicked.connect(self.addArtifact)
         self.gridLayout.addWidget(self.addArtifactButton, 0, 4, 1, 2)
 
-        #(TODO): add try-catch to function body to address file not found errors
-        # self.populate_table()
-
         self.setLayout(self.gridLayout)
 
     def populate_table(self):
-        fileObject = open("../testRoot/salientArtifacts.JSON", "r")
-        jsonContent = fileObject.read()
-        artifacts_list = json.loads(jsonContent)
+        artifacts_list = ProjectController.get_salient_artifacts_json()
         self.artifactsTable.setRowCount(len(artifacts_list))
         i=0
         for artifact in artifacts_list:
             artifactType = QTableWidgetItem(str(artifact['type']))
             artifactDescription = QTableWidgetItem(str(artifact['content']))
-            #Create a dropdown item and use setcellwidget to have the type. Use artifact type to set the selected type in the widget
 
+            # (TODO): Create a dropdown item and use setcellwidget to have the type. Use artifact type to set the selected type in the widget
             self.artifactsTable.setItem(i, 0, artifactType)
             self.artifactsTable.setItem(i, 1, artifactDescription)
 
-            self.artifactsTable.setCellWidget(i, 2, QPushButton('Delete'))
+            deleteButton = QPushButton('Delete')
+            deleteButton.clicked.connect(self.deleteRow)
+            self.artifactsTable.setCellWidget(i, 2, deleteButton)
             i += 1
-            #self.table.cellWidget(i, 2).clicked.connect()
+
+    def deleteRow(self):
+        button = self.sender()
+        if button:
+            row = self.artifactsTable.indexAt(button.pos()).row()
+            self.artifactsTable.removeRow(row)
 
     def saveArtifacts(self):
         artifactsList = ""
-        #save whatever is in the table to json file
+        #save whatever is in the table to json file in the correct format
     def addArtifact(self):
         self.artifactsTable.setRowCount(self.artifactsTable.rowCount()+1)
         current_row_pos = self.artifactsTable.rowCount()-1
         self.artifactsTable.setItem(current_row_pos, 0, QTableWidgetItem("artifact Type"))
         self.artifactsTable.setItem(current_row_pos, 1, QTableWidgetItem("artifact Description"))
-        self.artifactsTable.setCellWidget(current_row_pos, 2, QPushButton('Delete'))
+
+        deleteButton = QPushButton('Delete')
+        deleteButton.clicked.connect(self.deleteRow)
+        self.artifactsTable.setCellWidget(current_row_pos, 2, deleteButton)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
