@@ -1,0 +1,4 @@
+[
+	{"suricata_id" : 0, "suricata_rule_id" : "[1:1:0]", "content" : "PING ", "className" : "suricataAlert", "start" : "2021-02-13T06:57:57"},
+	{"suricata_id" : 1, "suricata_rule_id" : "[1:1:0]", "content" : "PING ", "className" : "suricataAlert", "start" : "2021-02-13T06:58:41"}
+]
