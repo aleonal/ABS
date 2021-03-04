@@ -1,4 +1,0 @@
-[
-    {"type" : "traffic", "artifact" : "icmp"},
-    {"type" : "clicks", "artifact" : "terminal"}
-]
