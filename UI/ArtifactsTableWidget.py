@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtGui import QStandardItem
 from PyQt5.QtCore import *
-from ProjectController import ProjectController
+from src.ProjectController import ProjectController
 
 class SalientArtifactWindow(QWidget):
 

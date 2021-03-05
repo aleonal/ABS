@@ -119,7 +119,7 @@ class ProjectController:
 
     @classmethod
     def load_salient_artifacts_objects(cls):
-        fileObject = open("/home/kali/Desktop/practicum/testRoot/salientArtifacts.JSON", "r")
+        fileObject = open("/testRoot/salientArtifacts.JSON", "r")
         jsonContent = fileObject.read()
         tempList = json.loads(jsonContent)
         for artifact in tempList:

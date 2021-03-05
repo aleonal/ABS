@@ -5,7 +5,7 @@ from PyQt5.QtGui import QStandardItem
 from PyQt5.QtCore import *
 import os
 import json
-from ProjectController import ProjectController
+from src.ProjectController import ProjectController
 from ArtifactsTableWidget import SalientArtifactWindow
 
 class BuilderWidget(QWidget):

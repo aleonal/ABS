@@ -12,6 +12,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtGui import QStandardItem
 from PyQt5.QtCore import *
+from src.ProjectController import ProjectController
 
 import BuilderWidget
 import RunnerWidget
@@ -116,6 +117,7 @@ class ProjectInfoWidget(QWidget):
         self.verticalLayout.setStretch(1, 1)
 
         self.retranslateUi()
+        self.update_project_display()
         QtCore.QMetaObject.connectSlotsByName(self)
         
     def retranslateUi(self):
@@ -142,6 +144,20 @@ class ProjectInfoWidget(QWidget):
         self.runner_button.setText(_translate("Widget", "Launch Runner"))
         self.builder_button.setText(_translate("Widget", "Launch Builder"))
         self.close_button.setText(_translate("Widget", "Close Project"))
+
+    def update_project_display(self):
+        _translate = QtCore.QCoreApplication.translate
+        item = self.project_info.item(0)
+        item.setText(_translate("Widget", "Salient Artifacts: 6"))
+        item = self.project_info.item(1)
+        item.setText(_translate("Widget", "Dependencies: 10"))
+        item = self.project_info.item(2)
+        item.setText(_translate("Widget", "Root Directory: " + ProjectController.get_project_directory()))
+        item = self.project_info.item(3)
+        item.setText(_translate("Widget", "Imported Data Directory: " + ProjectController.get_eceld_project_root()))
+        item = self.project_info.item(4)
+        item.setText(_translate("Widget", "Salient Artifact Directory: /user/abs/x/proj1/salientartifacts.txt"))
+
 
     def closeRoutine(self):
         #(TODO): SAVE PROJECT BEFORE CLOSING (call backend)

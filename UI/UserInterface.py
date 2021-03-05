@@ -16,7 +16,7 @@ from BuilderWidget import BuilderWidget
 from RunnerWidget import RunnerWidget
 from PackagerWidget import PackagerWidget
 from CreateProject import CreateProjectWidget
-from ProjectController import ProjectController
+from src.ProjectController import ProjectController
 import os
 
 class Ui_MainWindow(object):
