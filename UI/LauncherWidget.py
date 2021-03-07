@@ -15,6 +15,8 @@ from PyQt5.QtCore import *
 
 from CreateProject import CreateProjectWidget
 from ProjectInfoWidget import ProjectInfoWidget
+from src.ProjectController import ProjectController
+from PopupWidget import PopupWidget
 
 class LauncherWidget(QWidget):
 
@@ -40,7 +42,7 @@ class LauncherWidget(QWidget):
         self.label = QtWidgets.QLabel(self)
         self.label.setAutoFillBackground(False)
         self.label.setText("")
-        self.label.setPixmap(QtGui.QPixmap("../../Resources/Logo.png"))
+        self.label.setPixmap(QtGui.QPixmap("./Resources/Logo.png"))
         self.label.setScaledContents(True)
         self.label.setObjectName("label")
 
@@ -90,20 +92,26 @@ class LauncherWidget(QWidget):
         self.open_button.setText(_translate("Widget", "Open Project..."))
 
     def openProject(self):
-        self.file_browser = QFileDialog()
-        self.file_browser.setFileMode(QFileDialog.ExistingFile)
-        # self.file_browser.setFilter("JSON Files (*.json)")
+        project_file = QFileDialog.getOpenFileName(self, 'Open file')
 
-        # filename = QStringList()
-
-        if self.file_browser.exec_():
-            filename = self.file_browser.selectedFiles()
-
-            with open(filename[0], 'r') as f:
-                #(TODO): read project from file
-                self.project_info = ProjectInfoWidget(previous_window = self)
+        try:
+            if project_file[0]:
+                ProjectController.load_project(project_file[0])
+                self.project_info = ProjectInfoWidget(previous_window = self, project = ProjectController.get_project_info())
                 self.project_info.show()
                 self.hide()
+            else:
+                raise FileNotFoundError("No file selected")
+        except FileNotFoundError as err:
+            self.popup = PopupWidget(previous_window = self)
+            self.popup.retranslateUi(popup_title = "ABS - File Error", popup_text = "File error: {0}".format(err))
+            self.popup.show()
+
+        except TypeError as err:
+            self.popup = PopupWidget(previous_window = self)
+            self.popup.retranslateUi(popup_title = "ABS - File Error", popup_text = "File error: {0}".format(err))
+            self.popup.show()
+            
             
     def newProject(self):
         self.creator = CreateProjectWidget(previous_window = self)

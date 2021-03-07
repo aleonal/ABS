@@ -12,6 +12,7 @@ class ProjectController:
     _project_name = ""
     _project_info = {"time_frame": "", "eceld_root": "", "project_directory": "", "project_name": "",
                           "salient_artifact": ""}
+    _salient_artifacts = []
 
     # Setters
     @classmethod
@@ -119,39 +120,42 @@ class ProjectController:
 
     @classmethod
     def load_salient_artifacts_objects(cls):
-        fileObject = open("/testRoot/salientArtifacts.JSON", "r")
-        jsonContent = fileObject.read()
-        tempList = json.loads(jsonContent)
-        for artifact in tempList:
-            newArtifact = SalientArtifact(artifact['type'], artifact['content'])
-            add_salient_artifact(newArtifact)
-
-    @classmethod
-    def get_salient_artifacts_json(cls):
         try:
-            full_directory = Path(cls._project_directory)
-            with open(full_directory / 'salientArtifacts.JSON', 'r') as fileObject:
-                jsonContent = fileObject.read()
-                artifactList = json.loads(jsonContent)
-            return artifactList
-        except FileNotFoundError:
-            print("Could not locate file salientArtifacts.JSON")
-            return []
+            with open(cls._project_directory + 'salientArtifacts.JSON', 'r') as f:
+                jsonContent = f.read()
+                artifacts = json.loads(jsonContent)
 
+                for item in artifacts:
+                    artifact = SalientArtifact(item['type'], item['content'])
+                    ProjectController.add_salient_artifact(artifact)
+        except FileNotFoundError as err:
+            raise FileNotFoundError("Salient Artifacts file not found")
+
+                
     @classmethod
     def load_project(cls, directory):
-        full_directory = Path(directory)
-        # TODO: Check that directory contains project_config, salientArtifacts and other files before loading
         try:
-            with open(full_directory / 'project_config.JSON', 'r') as f:
+            with open(directory, 'r') as f:
+
+                # check if file is project config
+                if directory.split("/")[-1] != "project_config.JSON":
+                    raise TypeError("Not a project configuration file")
+
                 json_data = json.load(f)
                 cls._time_frame = json_data['timeframe']
                 cls._eceld_project_root = json_data['eceld_root']
-                cls._project_directory = json_data['project_directory']
                 cls._project_name = json_data['name']
 
+                # project root is based on the directory of "project_config", so I made it so it works in any directory
+                cls._project_directory = directory[:-19]
+            
+            # load salient artifacts
+            ProjectController.load_salient_artifacts_objects()
+
         except FileNotFoundError:
-            print("File not found")
+            raise FileNotFoundError("Project Configuration file not found")
+        except TypeError:
+            raise TypeError("Not a project configuration file")
 
     @classmethod
     def create_project(cls, eceld_root, project_directory, project_name, timeframe):
