@@ -20,7 +20,7 @@ import RunnerWidget
 class ProjectInfoWidget(QWidget):
     def __init__(self, previous_window=None, project=None):
         super().__init__()
-        self.project_data = project
+        self.project_data = ProjectController.get_project_info()
         self.previous_window = previous_window
         self.UI()
         self.show()
@@ -47,23 +47,11 @@ class ProjectInfoWidget(QWidget):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.project_info.sizePolicy().hasHeightForWidth())
         self.project_info.setSizePolicy(sizePolicy)
-
-        # Project information items - currently hardcoded, must call backend
-        # to populate project info list
         self.project_info.setMinimumSize(QtCore.QSize(0, 0))
         self.project_info.setObjectName("project_info")
-        item = QtWidgets.QListWidgetItem()
-        self.project_info.addItem(item)
-        item = QtWidgets.QListWidgetItem()
-        self.project_info.addItem(item)
-        item = QtWidgets.QListWidgetItem()
-        self.project_info.addItem(item)
-        item = QtWidgets.QListWidgetItem()
-        self.project_info.addItem(item)
-        item = QtWidgets.QListWidgetItem()
-        self.project_info.addItem(item)
-        item = QtWidgets.QListWidgetItem()
-        self.project_info.addItem(item)
+
+        # populate project info list
+        self.populate_project_info()
 
         # Runner component button
         self.runner_button = QtWidgets.QPushButton(self)
@@ -76,8 +64,8 @@ class ProjectInfoWidget(QWidget):
         self.runner_button.clicked.connect(self.launchRunner)
 
         # # Assumes project object has property "isNew" labling new project
-        # if not self.project or self.project.isNew:
-        #     self.runner_button.setEnabled(False)
+        if len(self.project_data['salient_artifact']) == 0:
+            self.runner_button.setEnabled(False)
 
         # Builder component button
         self.builder_button = QtWidgets.QPushButton(self)
@@ -119,6 +107,36 @@ class ProjectInfoWidget(QWidget):
         self.retranslateUi()
         self.update_project_display()
         QtCore.QMetaObject.connectSlotsByName(self)
+
+    def populate_project_info(self):
+        # project name, idx 0
+        item = QtWidgets.QListWidgetItem()
+        self.project_info.addItem(item)
+
+        # project dir, idx 1
+        item = QtWidgets.QListWidgetItem()
+        self.project_info.addItem(item)
+
+        # eceld root, idx 2
+        item = QtWidgets.QListWidgetItem()
+        self.project_info.addItem(item)
+
+        # time frame, idx 3
+        item = QtWidgets.QListWidgetItem()
+        self.project_info.addItem(item)
+
+        # white space, idx 4
+        item = QtWidgets.QListWidgetItem()
+        self.project_info.addItem(item)
+
+        # salient artifact label, idx 5
+        item = QtWidgets.QListWidgetItem()
+        self.project_info.addItem(item)
+
+        # salient artifacts
+        for i in range(len(self.project_data['salient_artifact'])):
+            item = QtWidgets.QListWidgetItem()
+            self.project_info.addItem(item)
         
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
@@ -126,20 +144,7 @@ class ProjectInfoWidget(QWidget):
         self.setWindowTitle(_translate("Widget", "ABS - Project Information"))
         self.project_label.setText(_translate("Widget", "Project Details"))
 
-        # This translation needs to be done programatically, create separate function
-        __sortingEnabled = self.project_info.isSortingEnabled()
-        self.project_info.setSortingEnabled(False)
-        item = self.project_info.item(0)
-        item.setText(_translate("Widget", "Salient Artifacts: 6"))
-        item = self.project_info.item(1)
-        item.setText(_translate("Widget", "Dependencies: 10"))
-        item = self.project_info.item(2)
-        item.setText(_translate("Widget", "Root Directory: /user/abs/x/proj1"))
-        item = self.project_info.item(3)
-        item.setText(_translate("Widget", "Imported Data Directory: /user/eceld/x/recording1"))
-        item = self.project_info.item(4)
-        item.setText(_translate("Widget", "Salient Artifact Directory: /user/abs/x/proj1/salientartifacts.txt"))
-        self.project_info.setSortingEnabled(__sortingEnabled)
+        self.update_project_display()
 
         self.runner_button.setText(_translate("Widget", "Launch Runner"))
         self.builder_button.setText(_translate("Widget", "Launch Builder"))
@@ -147,20 +152,31 @@ class ProjectInfoWidget(QWidget):
 
     def update_project_display(self):
         _translate = QtCore.QCoreApplication.translate
-        item = self.project_info.item(0)
-        item.setText(_translate("Widget", "Salient Artifacts: 6"))
-        item = self.project_info.item(1)
-        item.setText(_translate("Widget", "Dependencies: 10"))
-        item = self.project_info.item(2)
-        item.setText(_translate("Widget", "Root Directory: " + ProjectController.get_project_directory()))
-        item = self.project_info.item(3)
-        item.setText(_translate("Widget", "Imported Data Directory: " + ProjectController.get_eceld_project_root()))
-        item = self.project_info.item(4)
-        item.setText(_translate("Widget", "Salient Artifact Directory: /user/abs/x/proj1/salientartifacts.txt"))
+        __sortingEnabled = self.project_info.isSortingEnabled()
 
+        self.project_info.setSortingEnabled(False)
+        item = self.project_info.item(0)
+        item.setText(_translate("Widget", "Project Name: {0}".format(self.project_data['project_name'])))
+        item = self.project_info.item(1)
+        item.setText(_translate("Widget", "Project Directory: {0}".format(self.project_data['project_directory'])))
+        item = self.project_info.item(2)
+        item.setText(_translate("Widget", "ECELd Data Directory: {0}".format(self.project_data['eceld_root'])))
+        item = self.project_info.item(3)
+        item.setText(_translate("Widget", "Project Timeframe: {0}".format(self.project_data['time_frame'])))
+        item = self.project_info.item(4)
+        item.setFlags(Qt.NoItemFlags)
+        item.setText(_translate("Widget", " "))
+        item = self.project_info.item(5)
+        item.setText(_translate("Widget", "Salient Artifacts"))
+
+        for i in range(6, len(self.project_data['salient_artifact'])):
+            item = self.project_info.item(i)
+            item.setText(_translate("Widget", self.project_data['salient_artifact'][i - 6]))
+
+        self.project_info.setSortingEnabled(__sortingEnabled)
 
     def closeRoutine(self):
-        #(TODO): SAVE PROJECT BEFORE CLOSING (call backend)
+        ProjectController.save_project()
         
         if self.previous_window:
             temp_window = self.previous_window

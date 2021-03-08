@@ -176,6 +176,10 @@ class ProjectController:
         except FileNotFoundError:
             print("Error")
 
+    @classmethod
+    def save_project(cls):
+        #TODO: Fill out
+        return 0
 
 
 
