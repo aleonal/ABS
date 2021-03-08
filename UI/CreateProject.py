@@ -13,6 +13,8 @@ from PyQt5 import QtWidgets, QtGui, QtCore
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
+import json
+import os
 
 class CreateProjectWidget(QWidget):
     def __init__(self, projectInfo=None, project_status=True, previous_window=None):
@@ -107,9 +109,9 @@ class CreateProjectWidget(QWidget):
 "\n"
 "*If directory does not exist,\n"
 "it will be created"))
-        self.timeframe_field.setText(_translate("Widget", "2"))
-        self.import_field.setText(_translate("Widget", "/user/eceld/x/recording1"))
-        self.root_field.setText(_translate("Widget", "/user/abs/x/proj1"))
+        self.timeframe_field.setText(_translate("Widget", "2000"))
+        self.import_field.setText(_translate("Widget", r"C:\Test\Ping\ecel-export_1613199564"))
+        self.root_field.setText(_translate("Widget", r"C:\Test\Ping\TestOutputCE"))
         self.timeframe_text.setText(_translate("Widget", "Time Frame (in sec):"))
         self.import_text.setText(_translate("Widget", "Imported Data Directory:"))
         self.cancel_button.setText(_translate("Widget", "Cancel"))
@@ -117,7 +119,17 @@ class CreateProjectWidget(QWidget):
         self.create_button.setText(_translate("Widget", "Create Project"))
     
     def CausationExtractor(self):
-        self.CEWidget = CausationExtractorWidget(previous_window=self)
+        data = {}
+        data['name'] = "TestyMcTestface"
+        data['project_root'] = self.root_field.text()
+        data['eceld_root'] = self.import_field.text()
+        data['timeframe'] = self.timeframe_field.text()
+        base_dir = self.root_field.text()
+        filename = r'project_config.json'
+        fullfilename = os.path.join(base_dir, filename)
+        with open(fullfilename, 'w') as outfile:
+            json.dump(data, outfile)
+        self.CEWidget = CausationExtractorWidget(previous_window=self, project_config=fullfilename)
         self.CEWidget.show()
         self.hide()
 

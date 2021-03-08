@@ -1,7 +1,7 @@
 import json
 import datetime
-from Event import Event, Auditd, Clicks, Keypresses, Traffic, TrafficThroughput, Timed, Suricata
-from SalientArtifact import SalientArtifact
+from CausationExtractor.Event import Event, Auditd, Clicks, Keypresses, Traffic, TrafficThroughput, Timed, Suricata
+from CausationExtractor.SalientArtifact import SalientArtifact
 
 class CausationExtractor:
 
@@ -58,7 +58,7 @@ class CausationExtractor:
 
 
     def load_salient_artifacts(self):
-        with open(self._eceld_project_root+"/salientArtifacts.JSON") as f:
+        with open(self._output_folder+"/salientArtifacts.JSON") as f:
             data = json.load(f)
             for d in data:
                 sa = d
