@@ -97,7 +97,7 @@ class LauncherWidget(QWidget):
         try:
             if project_file[0]:
                 ProjectController.load_project(project_file[0])
-                self.project_info = ProjectInfoWidget(previous_window = self, project = ProjectController.get_project_info())
+                self.project_info = ProjectInfoWidget(previous_window = self)
                 self.project_info.show()
                 self.hide()
             else:
@@ -106,7 +106,6 @@ class LauncherWidget(QWidget):
             self.popup = PopupWidget(previous_window = self)
             self.popup.retranslateUi(popup_title = "ABS - File Error", popup_text = "File error: {0}".format(err))
             self.popup.show()
-
         except TypeError as err:
             self.popup = PopupWidget(previous_window = self)
             self.popup.retranslateUi(popup_title = "ABS - File Error", popup_text = "File error: {0}".format(err))

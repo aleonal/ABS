@@ -18,7 +18,7 @@ import BuilderWidget
 import RunnerWidget
 
 class ProjectInfoWidget(QWidget):
-    def __init__(self, previous_window=None, project=None):
+    def __init__(self, previous_window=None):
         super().__init__()
         self.project_data = ProjectController.get_project_info()
         self.previous_window = previous_window
