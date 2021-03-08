@@ -1,6 +1,6 @@
 import json, datetime
 from pathlib import Path
-from CausationExtractor.SalientArtifact import SalientArtifact
+from SalientArtifact import SalientArtifact
 
 """ This class is based off of the current Causation Extractor class, but only handles project information. Causation Extractor will handle salient artifacts and event grouping.
     This file stores info in project_config so it can be loaded later on.
