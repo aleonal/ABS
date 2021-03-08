@@ -13,16 +13,45 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtGui import QStandardItem
 from PyQt5.QtCore import *
-
+from CausationExtractor import CausationExtractor
 from ProjectInfoWidget import ProjectInfoWidget
+from datetime import datetime
+import json
 
 class CausationExtractorWidget(QWidget):
 
-    def __init__(self, previous_window=None):
+    def __init__(self, previous_window=None, project_config=None):
         super().__init__()
         self.previous_window = previous_window
+        self.project_config = project_config
         self.UI()
         self.show()
+        self.startCE()
+
+    def startCE(self):
+        with open(self.project_config) as json_file:
+            data = json.load(json_file)
+            self.progress.setProperty("value", 5)
+            self.CE = CausationExtractor.CausationExtractor()
+            self.progress.setProperty("value", 10)
+            self.CE.set_eceld_project_root(project_root=data['eceld_root'])
+            self.progress.setProperty("value", 15)
+            self.CE.set_output_folder(output_folder=data['project_root'])
+            self.progress.setProperty("value", 20)
+            milliseconds = float(data['timeframe'])
+            timeframe = datetime.fromtimestamp(milliseconds/1000.0)
+            formattedTimeframe = timeframe.strftime("%H:%M:%S")
+            self.CE.set_time_frame(t=formattedTimeframe)
+            self.progress.setProperty("value", 25)
+            self.CE.load_salient_artifacts()
+            self.progress.setProperty("value", 35)
+            self.CE.import_events()
+            self.progress.setProperty("value", 50)
+            self.CE.group_by_time()
+            self.progress.setProperty("value", 75)
+            self.CE.group_by_salient_artifacts()
+            self.progress.setProperty("value", 100)
+        
 
     def UI(self):
         self.setObjectName("Widget")
@@ -44,7 +73,7 @@ class CausationExtractorWidget(QWidget):
         self.widget_layout.setSpacing(0)
         self.widget_layout.setObjectName("widget_layout")
         self.progress = QtWidgets.QProgressBar(self.layoutWidget)
-        self.progress.setProperty("value", 24)
+        self.progress.setProperty("value", 0)
         self.progress.setObjectName("progress")
         self.widget_layout.addWidget(self.progress, 1, 0, 1, 1)
         self.pushButton = QtWidgets.QPushButton(self.layoutWidget)#Continue
