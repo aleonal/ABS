@@ -1,6 +1,7 @@
 import json, datetime
 from pathlib import Path
 from .SalientArtifact import SalientArtifact
+import os
 
 """ This class is based off of the current Causation Extractor class, but only handles project information. Causation Extractor will handle salient artifacts and event grouping.
     This file stores info in project_config so it can be loaded later on.
@@ -168,17 +169,26 @@ class ProjectController:
         #create directory in file system
 
         #create a new project file in the directory and appennd json object
-        try:
-            with open('project_config.JSON', 'w') as f:
-                f.write(json.dumps(json_data))
+        #try:
+        #    with open('project_config.JSON', 'w') as f:
+        #        f.write(json.dumps(json_data))
                 #need to update all components with current project info
 
-        except FileNotFoundError:
-            print("Error")
+        #except FileNotFoundError:
+        #    print("Error")
 
     @classmethod
     def save_project(cls):
-        #TODO: Fill out
+        data = {}
+        data['project_name'] = cls._project_name
+        data['project_root'] = cls._project_directory
+        data['eceld_root'] = cls._eceld_project_root
+        data['time_frame'] = cls._time_frame
+        base_dir = cls._project_directory
+        filename = r'project_config.json'
+        fullfilename = os.path.join(base_dir, filename)
+        with open(fullfilename, 'w') as outfile:
+            json.dump(data, outfile)
         return 0
 
 

@@ -13,44 +13,42 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtGui import QStandardItem
 from PyQt5.QtCore import *
-from src.CausationExtractor import CausationExtractor
+from src import CausationExtractor
 from ProjectInfoWidget import ProjectInfoWidget
 from datetime import datetime
+from src import ProjectController
 import json
 
 class CausationExtractorWidget(QWidget):
 
-    def __init__(self, previous_window=None, project_config=None):
+    def __init__(self, previous_window=None):
         super().__init__()
         self.previous_window = previous_window
-        self.project_config = project_config
         self.UI()
         self.show()
         self.startCE()
 
     def startCE(self):
-        with open(self.project_config) as json_file:
-            data = json.load(json_file)
-            self.progress.setProperty("value", 5)
-            self.CE = CausationExtractor.CausationExtractor()
-            self.progress.setProperty("value", 10)
-            self.CE.set_eceld_project_root(project_root=data['eceld_root'])
-            self.progress.setProperty("value", 15)
-            self.CE.set_output_folder(output_folder=data['project_root'])
-            self.progress.setProperty("value", 20)
-            milliseconds = float(data['timeframe'])
-            timeframe = datetime.fromtimestamp(milliseconds/1000.0)
-            formattedTimeframe = timeframe.strftime("%H:%M:%S")
-            self.CE.set_time_frame(t=formattedTimeframe)
-            self.progress.setProperty("value", 25)
-            self.CE.load_salient_artifacts()
-            self.progress.setProperty("value", 35)
-            self.CE.import_events()
-            self.progress.setProperty("value", 50)
-            self.CE.group_by_time()
-            self.progress.setProperty("value", 75)
-            self.CE.group_by_salient_artifacts()
-            self.progress.setProperty("value", 100)
+        self.progress.setProperty("value", 5)
+        self.CE = CausationExtractor.CausationExtractor()
+        self.progress.setProperty("value", 10)
+        self.CE.set_eceld_project_root(project_root=ProjectController.ProjectController.get_eceld_project_root())
+        self.progress.setProperty("value", 15)
+        self.CE.set_output_folder(output_folder=ProjectController.ProjectController.get_project_directory())
+        self.progress.setProperty("value", 20)
+        milliseconds = float(ProjectController.ProjectController.get_time_frame())
+        timeframe = datetime.fromtimestamp(milliseconds/1000.0)
+        formattedTimeframe = timeframe.strftime("%H:%M:%S")
+        self.CE.set_time_frame(t=formattedTimeframe)
+        self.progress.setProperty("value", 25)
+        self.CE.load_salient_artifacts()
+        self.progress.setProperty("value", 35)
+        self.CE.import_events()
+        self.progress.setProperty("value", 50)
+        self.CE.group_by_time()
+        self.progress.setProperty("value", 75)
+        self.CE.group_by_salient_artifacts()
+        self.progress.setProperty("value", 100)
         
 
     def UI(self):
