@@ -13,7 +13,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtGui import QStandardItem
 from PyQt5.QtCore import *
-from CausationExtractor import CausationExtractor
+from src.CausationExtractor import CausationExtractor
 from ProjectInfoWidget import ProjectInfoWidget
 from datetime import datetime
 import json
