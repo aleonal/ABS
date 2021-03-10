@@ -17,6 +17,7 @@ class BuilderWidget(QWidget):
         self.UI()
         self.artifacts_window = SalientArtifactWindow()
         self.show()
+        self.script_file_path = None
 
     def UI(self):
         self.gridLayout = QGridLayout(self)
@@ -43,8 +44,10 @@ class BuilderWidget(QWidget):
 
         self.save_button = QPushButton('Save Project', self)
         self.gridLayout.addWidget(self.save_button, 3, 2)
+        self.save_button.clicked.connect(self.save_script)
 
         self.setLayout(self.gridLayout)
+        
     def openArtifacts(self):
         if ProjectController.is_project_loaded():
             self.artifacts_window.populate_table()
@@ -52,6 +55,21 @@ class BuilderWidget(QWidget):
         else:
             QMessageBox.critical(self, "Project Error", "No project is currently loaded.")
 
+    def save_script(self):
+        if not self.script_file_path:
+            new_file_path, filter_type = QFileDialog.getSaveFileName(self, "Save this script as...", "", "All files(*)")
+            if new_file_path:
+                self.script_file_path = new_file_path
+            else:
+                self.invalid_path_alert_message()
+                return False 
+        #TODO: Write file into path (need to figure out format)
+    
+    def invalid_path_alert_message(self):
+        messageBox = QMessageBox()
+        messageBox.setWindowTitle("Invalid file")
+        messageBox.setText("Selected filename or path is not valid. Please select a valid file.")
+        messageBox.exec()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
