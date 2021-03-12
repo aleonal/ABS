@@ -191,7 +191,7 @@ class ProjectController:
             json.dump(data, outfile)
         return 0
 
-
-
-
-
+    @classmethod
+    def load_event_list(cls):
+        #TODO: load event list from JSON
+        raise NotImplementedError
