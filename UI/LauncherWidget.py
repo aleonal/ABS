@@ -93,6 +93,7 @@ class LauncherWidget(QWidget):
 
     def openProject(self):
         project_file = QFileDialog.getOpenFileName(self, 'Open file')
+        print(ProjectController.load_event_list())
 
         try:
             if project_file[0]:
@@ -110,7 +111,6 @@ class LauncherWidget(QWidget):
             self.popup = PopupWidget(previous_window = self)
             self.popup.retranslateUi(popup_title = "ABS - File Error", popup_text = "File error: {0}".format(err))
             self.popup.show()
-            
             
     def newProject(self):
         self.creator = CreateProjectWidget(previous_window = self)
