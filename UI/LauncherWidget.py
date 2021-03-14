@@ -93,11 +93,11 @@ class LauncherWidget(QWidget):
 
     def openProject(self):
         project_file = QFileDialog.getOpenFileName(self, 'Open file')
-        print(ProjectController.load_event_list())
 
         try:
             if project_file[0]:
                 ProjectController.load_project(project_file[0])
+                print(ProjectController.load_event_list())
                 self.project_info = ProjectInfoWidget(previous_window = self)
                 self.project_info.show()
                 self.hide()

@@ -1,6 +1,7 @@
 import json, datetime
 from pathlib import Path
 from .SalientArtifact import SalientArtifact
+from .Event import *
 import os
 
 """ This class is based off of the current Causation Extractor class, but only handles project information. Causation Extractor will handle salient artifacts and event grouping.
@@ -191,7 +192,43 @@ class ProjectController:
             json.dump(data, outfile)
         return 0
 
+    # Loads evenst from timed groups, assuming that's the only files in the folder
     @classmethod
     def load_event_list(cls):
-        #TODO: load event list from JSON
-        raise NotImplementedError
+        try:
+            timed_groups = []
+
+            for file in os.listdir(cls._project_directory + '/' + 'events/'):
+                event_list = {}
+
+                with open(os.path.join(cls._project_directory + '/' + 'events/', file), 'r') as f:
+                    events = json.load(f)
+
+                    for e in events:
+                        k = list(e.keys())
+
+                        if 'audit_id' in k:
+                            obj = Auditd(e['auditd_id'], e['content'], "auditd", e['start'])
+                        elif 'clicks_id' in k:
+                            obj = Clicks(e['clicks_id'], e['content'], e['type'], e['classname'], e['start'])
+                        elif 'keypresses_id' in k:
+                            obj = Keypresses(e['keypresses_id'], e['content'], e['className'], e['start'])
+                        elif 'timed_id' in k:
+                            obj = Timed(e["timed_id"], e['type'], e['classname'], e['content'], e['start'])
+                        elif 'traffic_all_id' in k:
+                            obj = Traffic(e['traffic_all_id'], e['content'], e['className'], e['title'], e['start'])
+                        elif 'traffic_xy_id' in k:
+                            obj = TrafficThroughput(e['traffic_xy_id'], e['className'], e['start'], e['y'])
+                        elif 'suricata_id' in k:
+                            obj = Suricata(e['suricata_id'], e['suricata_rule_id'], e['content'], e['className'], e['start'])
+                        
+                        if k[0] not in event_list:
+                            event_list[k[0]] = [obj]
+                        else:
+                            event_list[k[0]].append(obj)
+                            
+                timed_groups.append(event_list)
+            
+            return timed_groups     
+        except FileNotFoundError as err:
+            raise FileNotFoundError("Error loading event lists!")
