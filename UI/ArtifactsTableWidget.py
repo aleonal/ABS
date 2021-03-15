@@ -46,7 +46,12 @@ class SalientArtifactWindow(QWidget):
         self.cancelButton = QPushButton('Cancel', self)
         self.cancelButton.setObjectName(u"cancelButton")
         self.cancelButton.clicked.connect(self.close)
-        self.gridLayout.addWidget(self.cancelButton, 2, 1)
+        self.gridLayout.addWidget(self.cancelButton, 3, 1)
+
+        self.colorPickerButton = QPushButton('Select Color', self)
+        self.colorPickerButton.setObjectName(u"colorPickerButton")
+        self.colorPickerButton.clicked.connect(self.changeArtifactColor)
+        self.gridLayout.addWidget(self.colorPickerButton, 2, 1)
 
         self.saveChangesButton = QPushButton('Save Changes', self)
         self.saveChangesButton.setObjectName(u"saveChangesButton")
@@ -59,6 +64,10 @@ class SalientArtifactWindow(QWidget):
         self.gridLayout.addWidget(self.addArtifactButton, 0, 1)
 
         self.setLayout(self.gridLayout)
+
+    def changeArtifactColor(self):
+        artifactColor = QColorDialog.getColor()
+        ProjectController.set_artifact_color(artifactColor)
 
     def populate_table(self):
         artifacts_list = ProjectController.get_salient_artifacts_json()

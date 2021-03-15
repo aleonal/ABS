@@ -16,6 +16,8 @@ class ProjectController:
                           "salient_artifacts": []}
     _salient_artifacts = []
 
+    _artifact_color = "#FF0000"
+
     # Setters
     @classmethod
     def set_project_name(cls, projectname):
@@ -67,6 +69,12 @@ class ProjectController:
         except FileNotFoundError:
             print("Could not locate file project_config.JSON")
 
+    
+    @classmethod
+    def set_artifact_color(cls, artifact_color):
+        cls._artifact_color = artifact_color
+
+
 
     # Getters
     @classmethod
@@ -88,6 +96,10 @@ class ProjectController:
     @classmethod
     def get_project_name(cls):
         return cls._project_name
+
+    @classmethod
+    def get_artifact_color(cls):
+        return cls._artifact_color
 
     @classmethod
     def get_project_info(cls):
