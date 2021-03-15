@@ -204,8 +204,8 @@ class ABSEventTreeWidget(QTreeWidget):
 
     def addNode(self, _type=None, time=None, content=None, parent=None, canEdit=False):
         tempQtreewidgetitem = QTreeWidgetItem(parent)
-        if canEdit:
-            tempQtreewidgetitem.setFlags(Qt.ItemIsEditable)
+        #if canEdit:
+        tempQtreewidgetitem.setFlags(Qt.ItemIsEditable)
         tempQtreewidgetitem.setFlags(Qt.ItemIsSelectable|Qt.ItemIsDragEnabled|Qt.ItemIsDropEnabled|Qt.ItemIsUserCheckable|Qt.ItemIsEnabled)
         tempQtreewidgetitem.setText(2,content)
         tempQtreewidgetitem.setText(1,time)
