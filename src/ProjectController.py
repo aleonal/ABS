@@ -1,6 +1,7 @@
 import json, datetime
 from pathlib import Path
 from .SalientArtifact import SalientArtifact
+from .Event import *
 import os
 
 """ This class is based off of the current Causation Extractor class, but only handles project information. Causation Extractor will handle salient artifacts and event grouping.
@@ -12,8 +13,10 @@ class ProjectController:
     _project_directory = ""
     _project_name = ""
     _project_info = {"time_frame": "", "eceld_root": "", "project_directory": "", "project_name": "",
-                          "salient_artifact": ""}
+                          "salient_artifacts": []}
     _salient_artifacts = []
+
+    _artifact_color = "#FF0000"
 
     # Setters
     @classmethod
@@ -66,6 +69,12 @@ class ProjectController:
         except FileNotFoundError:
             print("Could not locate file project_config.JSON")
 
+    
+    @classmethod
+    def set_artifact_color(cls, artifact_color):
+        cls._artifact_color = artifact_color
+
+
 
     # Getters
     @classmethod
@@ -89,14 +98,19 @@ class ProjectController:
         return cls._project_name
 
     @classmethod
+    def get_artifact_color(cls):
+        return cls._artifact_color
+
+    @classmethod
     def get_project_info(cls):
         cls._project_info["time_frame"] = str(cls._time_frame)
         cls._project_info["eceld_root"] = cls._eceld_project_root
         cls._project_info["project_directory"] = cls._project_directory
         cls._project_info["project_name"] = cls._project_name
+        
         count = 1
         for sa in cls._salient_artifacts:
-            cls._project_info["salient_artifact"] += (str(count) + ") " + sa.to_str() + "\n")
+            cls._project_info["salient_artifacts"].append((str(count) + ") " + sa.to_str()))
             count += 1
         return cls._project_info
 
@@ -123,8 +137,7 @@ class ProjectController:
     def load_salient_artifacts_objects(cls):
         try:
             with open(cls._project_directory + 'salientArtifacts.JSON', 'r') as f:
-                jsonContent = f.read()
-                artifacts = json.loads(jsonContent)
+                artifacts = json.load(f)
 
                 for item in artifacts:
                     artifact = SalientArtifact(item['type'], item['content'])
@@ -191,7 +204,43 @@ class ProjectController:
             json.dump(data, outfile)
         return 0
 
+    # Loads evenst from timed groups, assuming that's the only files in the folder
+    @classmethod
+    def load_event_list(cls):
+        try:
+            timed_groups = []
 
+            for file in os.listdir(cls._project_directory + '/' + 'events/'):
+                event_list = {}
 
+                with open(os.path.join(cls._project_directory + '/' + 'events/', file), 'r') as f:
+                    events = json.load(f)
 
+                    for e in events:
+                        k = list(e.keys())
 
+                        if 'audit_id' in k:
+                            obj = Auditd(e['auditd_id'], e['content'], "auditd", e['start'])
+                        elif 'clicks_id' in k:
+                            obj = Clicks(e['clicks_id'], e['content'], e['type'], e['classname'], e['start'])
+                        elif 'keypresses_id' in k:
+                            obj = Keypresses(e['keypresses_id'], e['content'], e['className'], e['start'])
+                        elif 'timed_id' in k:
+                            obj = Timed(e["timed_id"], e['type'], e['classname'], e['content'], e['start'])
+                        elif 'traffic_all_id' in k:
+                            obj = Traffic(e['traffic_all_id'], e['content'], e['className'], e['title'], e['start'])
+                        elif 'traffic_xy_id' in k:
+                            obj = TrafficThroughput(e['traffic_xy_id'], e['className'], e['start'], e['y'])
+                        elif 'suricata_id' in k:
+                            obj = Suricata(e['suricata_id'], e['suricata_rule_id'], e['content'], e['className'], e['start'])
+                        
+                        if k[0] not in event_list:
+                            event_list[k[0]] = [obj]
+                        else:
+                            event_list[[0]].append(obj)
+                            
+                timed_groups.append(event_list)
+            
+            return timed_groups     
+        except FileNotFoundError as err:
+            raise FileNotFoundError("Error loading event lists!")

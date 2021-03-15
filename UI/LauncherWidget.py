@@ -19,7 +19,6 @@ from src.ProjectController import ProjectController
 from PopupWidget import PopupWidget
 
 class LauncherWidget(QWidget):
-
     def __init__(self, previous_window=None):
         super().__init__()
         self.previous_window = previous_window
@@ -110,7 +109,6 @@ class LauncherWidget(QWidget):
             self.popup = PopupWidget(previous_window = self)
             self.popup.retranslateUi(popup_title = "ABS - File Error", popup_text = "File error: {0}".format(err))
             self.popup.show()
-            
             
     def newProject(self):
         self.creator = CreateProjectWidget(previous_window = self)

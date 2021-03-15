@@ -64,7 +64,7 @@ class ProjectInfoWidget(QWidget):
         self.runner_button.clicked.connect(self.launchRunner)
 
         # # Assumes project object has property "isNew" labling new project
-        if len(self.project_data['salient_artifact']) == 0:
+        if len(self.project_data['salient_artifacts']) == 0:
             self.runner_button.setEnabled(False)
 
         # Builder component button
@@ -105,7 +105,6 @@ class ProjectInfoWidget(QWidget):
         self.verticalLayout.setStretch(1, 1)
 
         self.retranslateUi()
-        self.update_project_display()
         QtCore.QMetaObject.connectSlotsByName(self)
 
     def populate_project_info(self):
@@ -134,7 +133,7 @@ class ProjectInfoWidget(QWidget):
         self.project_info.addItem(item)
 
         # salient artifacts
-        for i in range(len(self.project_data['salient_artifact'])):
+        for i in range(len(self.project_data['salient_artifacts'])):
             item = QtWidgets.QListWidgetItem()
             self.project_info.addItem(item)
         
@@ -169,9 +168,12 @@ class ProjectInfoWidget(QWidget):
         item = self.project_info.item(5)
         item.setText(_translate("Widget", "Salient Artifacts"))
 
-        for i in range(6, len(self.project_data['salient_artifact'])):
+        print(self.project_data['salient_artifacts'])
+        for i in range(6, len(self.project_data['salient_artifacts']) + 6):
             item = self.project_info.item(i)
-            item.setText(_translate("Widget", self.project_data['salient_artifact'][i - 6]))
+            print(i)
+            print(self.project_data['salient_artifacts'][i-6])
+            item.setText(_translate("Widget", self.project_data['salient_artifacts'][i-6]))
 
         self.project_info.setSortingEnabled(__sortingEnabled)
 
