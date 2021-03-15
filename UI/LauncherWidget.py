@@ -41,7 +41,7 @@ class LauncherWidget(QWidget):
         self.label = QtWidgets.QLabel(self)
         self.label.setAutoFillBackground(False)
         self.label.setText("")
-        self.label.setPixmap(QtGui.QPixmap("./Resources/Logo.png"))
+        self.label.setPixmap(QtGui.QPixmap("ABS.png"))#ABS logo
         self.label.setScaledContents(True)
         self.label.setObjectName("label")
 
@@ -86,9 +86,10 @@ class LauncherWidget(QWidget):
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
-        self.setWindowTitle(_translate("Widget", "ABS - Launcher"))
-        self.new_button.setText(_translate("Widget", "New Project..."))
-        self.open_button.setText(_translate("Widget", "Open Project..."))
+        self.setWindowTitle(_translate("Widget", "Launcher"))
+        self.new_button.setText(_translate("Widget", "New Project"))
+        self.open_button.setText(_translate("Widget", "Open Project"))
+        self.setWindowIcon(QtGui.QIcon("A.png"))# A icon
 
     def openProject(self):
         project_file = QFileDialog.getOpenFileName(self, 'Open file')
@@ -103,11 +104,11 @@ class LauncherWidget(QWidget):
                 raise FileNotFoundError("No file selected")
         except FileNotFoundError as err:
             self.popup = PopupWidget(previous_window = self)
-            self.popup.retranslateUi(popup_title = "ABS - File Error", popup_text = "File error: {0}".format(err))
+            self.popup.retranslateUi(popup_title = "File Error", popup_text = "File error: {0}".format(err))
             self.popup.show()
         except TypeError as err:
             self.popup = PopupWidget(previous_window = self)
-            self.popup.retranslateUi(popup_title = "ABS - File Error", popup_text = "File error: {0}".format(err))
+            self.popup.retranslateUi(popup_title = "File Error", popup_text = "File error: {0}".format(err))
             self.popup.show()
             
     def newProject(self):
@@ -118,6 +119,26 @@ class LauncherWidget(QWidget):
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
+
+        #setup style sheet
+    style = """
+        QPushButton{
+            color: #ffffff;
+            background: #8f8f8f;
+            border: 3px #000000 solid;
+            padding: 5px 10px;
+            border-radius: 2px;
+            font-weight: plain;
+            font-size: 9pt;
+            outline: none;ss
+        }
+        QPushButton:hover{
+            border: 3px #000000 solid;
+            background: #80aaff;
+        }
+    """
+    app.setStyleSheet(style)
+    # # # # #end style
     ui = LauncherWidget()
     ui.show()
     sys.exit(app.exec_())
