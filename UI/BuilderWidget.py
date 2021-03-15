@@ -6,7 +6,7 @@ from PyQt5.QtGui import QStandardItem
 from PyQt5.QtCore import *
 import os
 import json
-from src import ProjectController
+from src.ProjectController import ProjectController
 from src import Event
 from ArtifactsTableWidget import SalientArtifactWindow
 
@@ -107,7 +107,7 @@ class BuilderWidget(QWidget):
         self.menubar.addAction(self.menuEdit.menuAction())
 
     def populateTrees(self):
-        eventGroups = ProjectController.ProjectController.load_event_list()
+        eventGroups = ProjectController.load_event_list()
         for group in eventGroups:
             parent = group[0]
             eventType = ""

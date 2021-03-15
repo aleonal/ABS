@@ -132,6 +132,18 @@ class ProjectController:
             if cls._salient_artifacts[i].get_artifact() == artifact:
                 del cls._salient_artifacts[i]
                 break
+    
+    @classmethod
+    def get_salient_artifacts_json(cls):
+        try:
+            full_directory = Path(cls._project_directory)
+            with open(full_directory / 'salientArtifacts.JSON', 'r') as fileObject:
+                jsonContent = fileObject.read()
+                artifactList = json.loads(jsonContent)
+            return artifactList
+        except FileNotFoundError:
+            print("Could not locate file salientArtifacts.JSON")
+            return []
 
     @classmethod
     def load_salient_artifacts_objects(cls):
@@ -210,10 +222,10 @@ class ProjectController:
         try:
             timed_groups = []
 
-            for file in os.listdir(cls._project_directory + '/' + 'event/'):
+            for file in os.listdir(cls._project_directory + '/' + 'events/'):
                 event_list = {}
 
-                with open(os.path.join(cls._project_directory + '/' + 'event/', file), 'r') as f:
+                with open(os.path.join(cls._project_directory + '/' + 'events/', file), 'r') as f:
                     events = json.load(f)
 
                     # for e in events:
