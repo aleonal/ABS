@@ -11,6 +11,7 @@ class SalientArtifactWindow(QWidget):
         super().__init__()
         self.setGeometry(50, 50, 482, 432)
         self.setWindowTitle("Salient Artifacts")
+        self.setWindowIcon(QIcon("A.png"))#A icon
         self.UI()
 
     def UI(self):
@@ -18,7 +19,7 @@ class SalientArtifactWindow(QWidget):
         self.gridLayout.setObjectName(u"gridLayout")
 
         font = QFont()
-        font.setPointSize(16)
+        font.setPointSize(12)
 
 
         # Creating table with no rows
@@ -38,7 +39,7 @@ class SalientArtifactWindow(QWidget):
 
         self.gridLayout.addWidget(self.artifactsTable, 1, 0)
 
-        self.artifactsLabel = QLabel('Salient Artifacts', self)
+        self.artifactsLabel = QLabel('Salient Artifacts List', self)
         self.artifactsLabel.setObjectName(u"artifactLabel")
         self.artifactsLabel.setFont(font)
         self.gridLayout.addWidget(self.artifactsLabel, 0, 0)
@@ -109,6 +110,25 @@ class SalientArtifactWindow(QWidget):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    #set style
+    style = """
+        QPushButton{
+            color: #ffffff;
+            background: #8f8f8f;
+            border: 3px #000000 solid;
+            padding: 5px 10px;
+            border-radius: 2px;
+            font-weight: plain;
+            font-size: 9pt;
+            outline: none;
+        }
+        QPushButton:hover{
+            border: 3px #000000 solid;
+            background: #80aaff;
+        }
+    """
+    app.setStyleSheet(style)
+    #end style
     window = SalientArtifactWindow()
     window.show()
     sys.exit(app.exec())
