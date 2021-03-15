@@ -132,7 +132,7 @@ class CausationExtractor:
     def _output_to_json(self, l, type):
         n = 1
         for group in l:
-            with open(self._output_folder+"/"+type+"_group" + str(n) + '.JSON', 'w') as json_file:
+            with open(self._output_folder+"/event/"+type+"_group" + str(n) + '.JSON', 'w') as json_file:
                 for obj in group:
                     json.dump(obj.tojson(), json_file, indent=2)
             n+=1
