@@ -110,7 +110,8 @@ class CausationExtractorWidget(QWidget):
         self.setWindowTitle(_translate("Widget", "Causation Extractor"))
         self.pushButton.setText(_translate("Widget", "Continue"))
         self.pushButton2.setText(_translate("Widget", "Cancel"))
-        self.progress_text.setText(_translate("Widget", "Progress info"))
+        self.progress_text.setText(_translate("Widget", "Causation Extractor Progress"))
+        self.setWindowIcon(QtGui.QIcon("A.png")) #A icon
 
     def launchProjectInfoWidget(self):
         self.project_info_widget = ProjectInfoWidget(previous_window=self)
