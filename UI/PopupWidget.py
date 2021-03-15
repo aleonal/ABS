@@ -65,6 +65,7 @@ class PopupWidget(QWidget):
         self.setWindowTitle(_translate("Widget", popup_title))
         self.popup_text.setText(_translate("Widget", popup_text))
         self.continue_button.setText(_translate("Widget", "Continue"))
+        self.setWindowIcon(QtGui.QIcon("A.png"))# A icon
 
     def closeRoutine(self):
         self.close()
@@ -73,6 +74,23 @@ class PopupWidget(QWidget):
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
+    #set style
+    style = """
+        QPushButton{
+            color: #ffffff;
+            background: #8f8f8f;
+            border: 3px #000000 solid;
+            padding: 5px 10px;
+            border-radius: 2px;
+            font-weight: plain;
+            font-size: 9pt;
+            outline: none;
+        }
+        QPushButton:hover{
+            border: 3px #000000 solid;
+            background: #80aaff;
+        }
+    """
     ui = PopupWidget()
     ui.show()
     sys.exit(app.exec_())
