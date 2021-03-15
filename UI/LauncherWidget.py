@@ -97,6 +97,7 @@ class LauncherWidget(QWidget):
         try:
             if project_file[0]:
                 ProjectController.load_project(project_file[0])
+                print(ProjectController.load_event_list())
                 self.project_info = ProjectInfoWidget(previous_window = self)
                 self.project_info.show()
                 self.hide()
@@ -110,7 +111,6 @@ class LauncherWidget(QWidget):
             self.popup = PopupWidget(previous_window = self)
             self.popup.retranslateUi(popup_title = "ABS - File Error", popup_text = "File error: {0}".format(err))
             self.popup.show()
-            
             
     def newProject(self):
         self.creator = CreateProjectWidget(previous_window = self)
