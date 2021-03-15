@@ -31,24 +31,26 @@ class BuilderWidget(QWidget):
         self.label = QLabel('Builder', self)
         self.label.setObjectName(u"label")
         self.label.setFont(QFont('MS Shell Dlg 2', 12))
-        self.gridLayout.addWidget(self.label, 0, 1)
+        self.gridLayout.addWidget(self.label, 1, 1)
 
         self.search_button = QPushButton('Search', self)
-        self.gridLayout.addWidget(self.search_button, 1,2,1,1)
+        self.gridLayout.addWidget(self.search_button, 1,3)
 
         self.lineEdit = QLineEdit(self)
-        self.gridLayout.addWidget(self.lineEdit, 1,1,1,1)
+        self.gridLayout.addWidget(self.lineEdit, 1,2)
 
         self.listrelationships = ABSEventTreeWidget()
-        self.gridLayout.addWidget(self.listrelationships, 2, 1)
+        self.gridLayout.addWidget(self.listrelationships, 2, 0)
 
         self.listdependencies = ABSEventTreeWidget()
-        self.gridLayout.addWidget(self.listdependencies, 2, 2)
+        self.gridLayout.addWidget(self.listdependencies, 2, 2, 1, 2)
 
         self.populateTrees()
 
         self.edit_artifacts_button = QPushButton('Edit Salient Artifacts', self)
         self.gridLayout.addWidget(self.edit_artifacts_button, 1, 0)
+        #self.edit_artifacts_button.setFixedSize(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
+        self.edit_artifacts_button.setSizePolicy(QtWidgets.QSizePolicy.Fixed,QtWidgets.QSizePolicy.Fixed)
         self.edit_artifacts_button.clicked.connect(self.openArtifacts)
 
         '''
