@@ -34,7 +34,7 @@ class ProjectInfoWidget(QWidget):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.sizePolicy().hasHeightForWidth())
         self.setSizePolicy(sizePolicy)
-        self.setMinimumSize(QtCore.QSize(640, 480))
+        self.setMinimumSize(QtCore.QSize(440, 280))
 
         # Project details label
         self.project_label = QtWidgets.QLabel(self)
@@ -140,10 +140,11 @@ class ProjectInfoWidget(QWidget):
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         
-        self.setWindowTitle(_translate("Widget", "ABS - Project Information"))
-        self.project_label.setText(_translate("Widget", "Project Details"))
+        self.setWindowTitle(_translate("Widget", "Project Information"))
+        self.project_label.setText(_translate("Widget", "PROJECT DETAILS"))
 
         self.update_project_display()
+        self.setWindowIcon(QtGui.QIcon("A.png"))# A icon
 
         self.runner_button.setText(_translate("Widget", "Launch Runner"))
         self.builder_button.setText(_translate("Widget", "Launch Builder"))
