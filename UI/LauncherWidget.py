@@ -19,7 +19,6 @@ from src.ProjectController import ProjectController
 from PopupWidget import PopupWidget
 
 class LauncherWidget(QWidget):
-
     def __init__(self, previous_window=None):
         super().__init__()
         self.previous_window = previous_window
@@ -97,7 +96,6 @@ class LauncherWidget(QWidget):
         try:
             if project_file[0]:
                 ProjectController.load_project(project_file[0])
-                print(ProjectController.load_event_list())
                 self.project_info = ProjectInfoWidget(previous_window = self)
                 self.project_info.show()
                 self.hide()

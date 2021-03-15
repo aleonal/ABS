@@ -13,7 +13,7 @@ class ProjectController:
     _project_directory = ""
     _project_name = ""
     _project_info = {"time_frame": "", "eceld_root": "", "project_directory": "", "project_name": "",
-                          "salient_artifact": ""}
+                          "salient_artifacts": []}
     _salient_artifacts = []
 
     # Setters
@@ -95,9 +95,10 @@ class ProjectController:
         cls._project_info["eceld_root"] = cls._eceld_project_root
         cls._project_info["project_directory"] = cls._project_directory
         cls._project_info["project_name"] = cls._project_name
+        
         count = 1
         for sa in cls._salient_artifacts:
-            cls._project_info["salient_artifact"] += (str(count) + ") " + sa.to_str() + "\n")
+            cls._project_info["salient_artifacts"].append((str(count) + ") " + sa.to_str()))
             count += 1
         return cls._project_info
 
@@ -124,8 +125,7 @@ class ProjectController:
     def load_salient_artifacts_objects(cls):
         try:
             with open(cls._project_directory + 'salientArtifacts.JSON', 'r') as f:
-                jsonContent = f.read()
-                artifacts = json.loads(jsonContent)
+                artifacts = json.load(f)
 
                 for item in artifacts:
                     artifact = SalientArtifact(item['type'], item['content'])
@@ -225,7 +225,7 @@ class ProjectController:
                         if k[0] not in event_list:
                             event_list[k[0]] = [obj]
                         else:
-                            event_list[k[0]].append(obj)
+                            event_list[[0]].append(obj)
                             
                 timed_groups.append(event_list)
             
