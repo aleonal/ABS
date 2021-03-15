@@ -24,6 +24,7 @@ class BuilderWidget(QWidget):
         self.gridLayout = QGridLayout(self)
         self.gridLayout.setObjectName(u"gridLayout")
         self.setLayout(self.gridLayout)
+        self.setWindowIcon(QtGui.QIcon("A.png"))# A icons
 
         #Create search bar
         self.label = QLabel('Builder', self)
