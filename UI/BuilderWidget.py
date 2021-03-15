@@ -6,7 +6,8 @@ from PyQt5.QtGui import QStandardItem
 from PyQt5.QtCore import *
 import os
 import json
-from src.ProjectController import ProjectController
+from src import ProjectController
+from src import Event
 from ArtifactsTableWidget import SalientArtifactWindow
 
 class BuilderWidget(QWidget):
@@ -38,81 +39,13 @@ class BuilderWidget(QWidget):
         self.lineEdit = QLineEdit(self)
         self.gridLayout.addWidget(self.lineEdit, 1,1,1,1)
 
-        self.listrelationships = QTreeWidget()
-        __qtreewidgetitem = QTreeWidgetItem(self.listrelationships)
-        __qtreewidgetitem.setFlags(Qt.ItemIsSelectable|Qt.ItemIsEditable|Qt.ItemIsDragEnabled|Qt.ItemIsDropEnabled|Qt.ItemIsUserCheckable|Qt.ItemIsEnabled)
-        __qtreewidgetitem1 = QTreeWidgetItem(self.listrelationships)
-        QTreeWidgetItem(__qtreewidgetitem1)
-        __qtreewidgetitem1.setFlags(Qt.ItemIsSelectable|Qt.ItemIsEditable|Qt.ItemIsDragEnabled|Qt.ItemIsDropEnabled|Qt.ItemIsUserCheckable|Qt.ItemIsEnabled)
-        __qtreewidgetitem2 = QTreeWidgetItem(self.listrelationships)
-        QTreeWidgetItem(__qtreewidgetitem2)
-        __qtreewidgetitem2.setFlags(Qt.ItemIsSelectable|Qt.ItemIsEditable|Qt.ItemIsDragEnabled|Qt.ItemIsDropEnabled|Qt.ItemIsUserCheckable|Qt.ItemIsEnabled)
-        self.listrelationships.setObjectName(u"treeWidget")
-        ___qtreewidgetitem = self.listrelationships.headerItem()
-        ___qtreewidgetitem.setText(2,"Content")
-        ___qtreewidgetitem.setText(1,"Time")
-        ___qtreewidgetitem.setText(0,"Type")
-
-        __sortingEnabled = self.listrelationships.isSortingEnabled()
-        self.listrelationships.setSortingEnabled(False)
-        ___qtreewidgetitem1 = self.listrelationships.topLevelItem(0)
-        QTreeWidgetItem(___qtreewidgetitem1)
-        ___qtreewidgetitem1.setFlags(Qt.ItemIsSelectable|Qt.ItemIsEditable|Qt.ItemIsDragEnabled|Qt.ItemIsDropEnabled|Qt.ItemIsUserCheckable|Qt.ItemIsEnabled)
-        ___qtreewidgetitem1.setText(2,"Some text")
-        ___qtreewidgetitem1.setText(1,"48498984")
-        ___qtreewidgetitem1.setText(0,"keypresses")
-        ___qtreewidgetitem2 = ___qtreewidgetitem1.child(0)
-        QTreeWidgetItem(___qtreewidgetitem2)
-        ___qtreewidgetitem2.setFlags(Qt.ItemIsSelectable|Qt.ItemIsEditable|Qt.ItemIsDragEnabled|Qt.ItemIsDropEnabled|Qt.ItemIsUserCheckable|Qt.ItemIsEnabled)
-        ___qtreewidgetitem2.setText(2,"ping")
-        ___qtreewidgetitem2.setText(1,"9494984856")
-        ___qtreewidgetitem2.setText(0,"traffic")
-        ___qtreewidgetitem3 = ___qtreewidgetitem2.child(0)
-        QTreeWidgetItem(___qtreewidgetitem3)
-        ___qtreewidgetitem3.setFlags(Qt.ItemIsSelectable|Qt.ItemIsEditable|Qt.ItemIsDragEnabled|Qt.ItemIsDropEnabled|Qt.ItemIsUserCheckable|Qt.ItemIsEnabled)
-        ___qtreewidgetitem3.setText(2,"reply")
-        ___qtreewidgetitem3.setText(1,"8978949495954")
-        ___qtreewidgetitem3.setText(0,"traffic")
-        ___qtreewidgetitem4 = self.listrelationships.topLevelItem(1)
-        QTreeWidgetItem(___qtreewidgetitem4)
-        ___qtreewidgetitem4.setFlags(Qt.ItemIsSelectable|Qt.ItemIsEditable|Qt.ItemIsDragEnabled|Qt.ItemIsDropEnabled|Qt.ItemIsUserCheckable|Qt.ItemIsEnabled)
-        ___qtreewidgetitem4.setText(2,"Some info")
-        ___qtreewidgetitem4.setText(1,"15151521")
-        ___qtreewidgetitem4.setText(0,"Click")
-        ___qtreewidgetitem5 = ___qtreewidgetitem4.child(0)
-        QTreeWidgetItem(___qtreewidgetitem5)
-        ___qtreewidgetitem5.setFlags(Qt.ItemIsSelectable|Qt.ItemIsEditable|Qt.ItemIsDragEnabled|Qt.ItemIsDropEnabled|Qt.ItemIsUserCheckable|Qt.ItemIsEnabled)
-        ___qtreewidgetitem5.setText(2,"sopodvsopnv p idp j sdpjdspovj sdpovjpsdm")
-        ___qtreewidgetitem5.setText(1,"515161")
-        ___qtreewidgetitem5.setText(0,"traffic")
-        self.listrelationships.setSortingEnabled(__sortingEnabled)
-        self.listrelationships.setAcceptDrops(True)
-        self.listrelationships.setTabKeyNavigation(True)
-        self.listrelationships.setDragEnabled(True)
-        self.listrelationships.setDragDropOverwriteMode(False)
-        self.listrelationships.setDragDropMode(QAbstractItemView.DragDrop)
-        self.listrelationships.setSelectionMode(QAbstractItemView.ExtendedSelection)
-        self.listrelationships.setSortingEnabled(True)
-        self.listrelationships.setWordWrap(True)
+        self.listrelationships = ABSEventTreeWidget()
         self.gridLayout.addWidget(self.listrelationships, 2, 1)
 
-        self.listdependencies = QTreeWidget()
-        __qtreewidgetitemt = QTreeWidgetItem(self.listdependencies)
-        self.listdependencies.setObjectName(u"treeWidget")
-        ___qtreewidgetitemt = self.listdependencies.headerItem()
-        ___qtreewidgetitemt.setText(2,"Content")
-        ___qtreewidgetitemt.setText(1,"Time")
-        ___qtreewidgetitemt.setText(0,"Type")
-        self.listdependencies.setSortingEnabled(True)
-        self.listdependencies.setAcceptDrops(True)
-        self.listdependencies.setTabKeyNavigation(True)
-        self.listdependencies.setDragEnabled(True)
-        self.listdependencies.setDragDropOverwriteMode(False)
-        self.listdependencies.setDragDropMode(QAbstractItemView.DragDrop)
-        self.listdependencies.setSelectionMode(QAbstractItemView.ExtendedSelection)
-        self.listdependencies.setSortingEnabled(True)
-        self.listdependencies.setWordWrap(True)
+        self.listdependencies = ABSEventTreeWidget()
         self.gridLayout.addWidget(self.listdependencies, 2, 2)
+
+        self.populateTrees()
 
         self.edit_artifacts_button = QPushButton('Edit Salient Artifacts', self)
         self.gridLayout.addWidget(self.edit_artifacts_button, 1, 0)
@@ -173,6 +106,50 @@ class BuilderWidget(QWidget):
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuEdit.menuAction())
 
+    def populateTrees(self):
+        eventGroups = ProjectController.ProjectController.load_event_list()
+        for group in eventGroups:
+            parent = group[0]
+            eventType = ""
+            if "keypresses_id" in parent.keys():
+                eventType = "keypresses_id"
+            if "clicks_id" in parent.keys():
+                eventType = "clicks_id"
+            newNode = self.listrelationships.addNode(
+                eventType, 
+                parent['start'], 
+                parent['content'],
+                self.listrelationships)
+            self.populateBranch(group[1:], newNode)
+    
+    def populateBranch(self, children=None, parent=None):
+        if children == None or len(children) == 0:
+            return
+        else:
+            eventType = ""
+            if "keypresses_id" in children[0].keys():
+                eventType = "keypresses_id"
+            if "clicks_id" in children[0].keys():
+                eventType = "clicks_id"
+            if "audit_id" in children[0].keys():
+                eventType = "audit_id"
+            if "timed_id" in children[0].keys():
+                eventType = "timed_id"
+            if "traffic_all_id" in children[0].keys():
+                eventType = "traffic_all_id"
+            if "traffic_xy_id" in children[0].keys():
+                eventType = "traffic_xy_id"
+            if "suricata_id" in children[0].keys():
+                eventType = "suricata_id"
+            newNode = self.listrelationships.addNode(
+                eventType, 
+                children[0]['start'], 
+                children[0]['content'],
+                parent)
+            self.populateBranch(children[1:], newNode)
+            
+
+
 
     def openArtifacts(self):
         if ProjectController.is_project_loaded():
@@ -206,6 +183,34 @@ class BuilderWidget(QWidget):
         messageBox.setWindowTitle("Invalid file")
         messageBox.setText("Selected filename or path is not valid. Please select a valid file.")
         messageBox.exec()
+
+class ABSEventTreeWidget(QTreeWidget):
+    def __init__(self):
+        super().__init__()
+        ___qtreewidgetitem = self.headerItem()
+        ___qtreewidgetitem.setText(2,"Content")
+        ___qtreewidgetitem.setText(1,"Time")
+        ___qtreewidgetitem.setText(0,"Type")
+        self.setAcceptDrops(True)
+        self.setTabKeyNavigation(True)
+        self.setDragEnabled(True)
+        self.setDragDropOverwriteMode(True)
+        self.setDragDropMode(QAbstractItemView.DragDrop)
+        self.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        self.setDefaultDropAction(Qt.CopyAction)
+        self.setSortingEnabled(True)
+        self.setWordWrap(True)
+        self.setSortingEnabled(False)
+
+    def addNode(self, _type=None, time=None, content=None, parent=None, canEdit=False):
+        tempQtreewidgetitem = QTreeWidgetItem(parent)
+        if canEdit:
+            tempQtreewidgetitem.setFlags(Qt.ItemIsEditable)
+        tempQtreewidgetitem.setFlags(Qt.ItemIsSelectable|Qt.ItemIsDragEnabled|Qt.ItemIsDropEnabled|Qt.ItemIsUserCheckable|Qt.ItemIsEnabled)
+        tempQtreewidgetitem.setText(2,content)
+        tempQtreewidgetitem.setText(1,time)
+        tempQtreewidgetitem.setText(0,_type)
+        return tempQtreewidgetitem
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)

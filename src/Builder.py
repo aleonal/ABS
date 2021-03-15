@@ -1,4 +1,4 @@
-import json
+    import json
 import datetime
 from .Event import Event, Auditd, Clicks, Keypresses, Traffic, TrafficThroughput, Timed, Suricata
 from .SalientArtifact import SalientArtifact
