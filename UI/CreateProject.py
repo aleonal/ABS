@@ -135,10 +135,10 @@ class CreateProjectWidget(QWidget):
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("Create Project", "Create Project"))
-        self.root_text.setText(_translate("Widget", "Root Directory:\n"
-"\n"
-"*If directory does not exist,\n"
-"it will be created"))
+        self.root_text.setText(_translate("Widget", "Root Directory:\n"))
+# "\n"
+# "*If directory does not exist,\n"
+# "it will be created"))
         self.timeframe_field.setText(_translate("Widget", "2000"))
         self.import_field.setText(_translate("Widget", self.ECELD_root))
         self.root_field.setText(_translate("Widget", self.project_root))
@@ -149,6 +149,7 @@ class CreateProjectWidget(QWidget):
         self.cancel_button.setText(_translate("Widget", "Cancel"))
         self.salientart_button.setText(_translate("Widget", "Edit Salient Artifacts"))
         self.create_button.setText(_translate("Widget", "Create Project"))
+        self.setWindowIcon(QtGui.QIcon("A.png"))# A icon
     
     def CausationExtractor(self):
         ProjectController.ProjectController.create_project(self.import_field.text(), self.root_field.text(), "Test",self.timeframe_field.text())
