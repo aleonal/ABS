@@ -8,7 +8,7 @@ import os
 import json
 from src.ProjectController import ProjectController
 from src import Event
-from ArtifactsTableWidget import SalientArtifactWindow
+from UI.ArtifactsTableWidget import SalientArtifactWindow
 
 class BuilderWidget(QWidget):
 

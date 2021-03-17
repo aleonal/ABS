@@ -14,7 +14,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtGui import QStandardItem
 from PyQt5.QtCore import *
 from src import CausationExtractor
-from ProjectInfoWidget import ProjectInfoWidget
+from UI.ProjectInfoWidget import ProjectInfoWidget
 from datetime import datetime
 from src import ProjectController
 import json

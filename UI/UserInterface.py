@@ -12,14 +12,25 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
-from BuilderWidget import BuilderWidget
-from RunnerWidget import RunnerWidget
-from PackagerWidget import PackagerWidget
-from CreateProject import CreateProjectWidget
+from UI.BuilderWidget import BuilderWidget
+from UI.RunnerWidget import RunnerWidget
+from UI.PackagerWidget import PackagerWidget
+from UI.CreateProject import CreateProjectWidget
+from UI.ProjectInfoWidget import ProjectInfoWidget
 from src.ProjectController import ProjectController
 import os
+import sys
 
-class Ui_MainWindow(object):
+class Ui_MainWindow(QMainWindow):
+
+    def __init__(self):
+        super().__init__()
+        #app = QtWidgets.QApplication(sys.argv)
+        MainWindow = QtWidgets.QMainWindow()
+        #ui = Ui_MainWindow()
+        self.setupUi(MainWindow)
+        MainWindow.show()
+        #sys.exit(app.exec_())
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -40,6 +51,12 @@ class Ui_MainWindow(object):
         # self.causation_tab.setObjectName("Causation Extractor")
         # self.tabWidget.addTab(self.causation_tab, "")
 
+        #Creating Project Info tab
+        self.project_info_tab = ProjectInfoWidget()
+        self.project_info_tab.setAccessibleName("ProjectInfoWidget")
+        self.project_info_tab.setObjectName("project_info_tab")
+        self.tabWidget.addTab(self.project_info_tab, "")
+
         #Creating Packager tab
         self.packager_tab = PackagerWidget()
         self.packager_tab.setAccessibleName("PackagerWidget")
@@ -47,13 +64,13 @@ class Ui_MainWindow(object):
         self.tabWidget.addTab(self.packager_tab, "")
 
         #Creating Builder tab
-        self.builder_tab = BuilderWidget()
+        self.builder_tab = QWidget()
         self.builder_tab.setAccessibleName("BuilderWidget")
         self.builder_tab.setObjectName("builder_tab")
         self.tabWidget.addTab(self.builder_tab, "")
 
         #Creating Runner tab
-        self.runner_tab = RunnerWidget()
+        self.runner_tab = QWidget()
         self.runner_tab.setAccessibleName("RunnerWidget")
         self.runner_tab.setObjectName("runner_tab")
         self.tabWidget.addTab(self.runner_tab, "")
@@ -159,6 +176,7 @@ class Ui_MainWindow(object):
 
         if(ProjectController.is_project_loaded):
             QMessageBox.information(self.centralwidget, "Success", "Project has been loaded successfully.")
+            self.project_info_tab.update_project_display()
         else:
             QMessageBox.critical(self.centralwidget, "Project Failure", "Project could not be loaded. Check that directory contains appropriate files")
 
@@ -171,6 +189,7 @@ class Ui_MainWindow(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Agent Build System"))
         # self.tabWidget.setTabText(self.tabWidget.indexOf(self.causation_tab), _translate("MainWindow", "Causation Extractor"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.project_info_tab), _translate("MainWindow", "Project Info"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.builder_tab), _translate("MainWindow", "Builder"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.runner_tab), _translate("MainWindow", "Runner"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.packager_tab), _translate("MainWindow", "Packager"))
