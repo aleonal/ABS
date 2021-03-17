@@ -76,7 +76,7 @@ class SalientArtifactWindow(QWidget):
         i=0
         for artifact in artifacts_list:
             artifactType = QTableWidgetItem(str(artifact['type']))
-            artifactDescription = QTableWidgetItem(str(artifact['content']))
+            artifactDescription = QTableWidgetItem(str(artifact['artifact']))
 
             # (TODO): Create a dropdown item and use setcellwidget to have the type. Use artifact type to set the selected type in the widget
             self.artifactsTable.setItem(i, 0, artifactType)

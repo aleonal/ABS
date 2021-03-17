@@ -226,10 +226,10 @@ class ProjectController:
         try:
             timed_groups = []
 
-            for file in os.listdir(cls._project_directory + '/' + 'events/'):
+            for file in os.listdir(cls._project_directory  / 'events'):
                 event_list = {}
 
-                with open(os.path.join(cls._project_directory + '/' + 'events/', file), 'r') as f:
+                with open(os.path.join(cls._project_directory  / 'events', file), 'r') as f:
                     events = json.load(f)
 
                     # for e in events:

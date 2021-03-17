@@ -75,6 +75,9 @@ class Ui_MainWindow(QMainWindow):
         self.runner_tab.setObjectName("runner_tab")
         self.tabWidget.addTab(self.runner_tab, "")
 
+        self.tabWidget.setTabEnabled(2,False)
+        self.tabWidget.setTabEnabled(3,False)
+
         #Add all our tabs into our main windows layout
         self.layout.addWidget(self.tabWidget)
         MainWindow.setCentralWidget(self.centralwidget)
@@ -177,6 +180,7 @@ class Ui_MainWindow(QMainWindow):
         if(ProjectController.is_project_loaded):
             QMessageBox.information(self.centralwidget, "Success", "Project has been loaded successfully.")
             self.project_info_tab.update_project_display()
+            self.update_tabs()
         else:
             QMessageBox.critical(self.centralwidget, "Project Failure", "Project could not be loaded. Check that directory contains appropriate files")
 
@@ -184,6 +188,18 @@ class Ui_MainWindow(QMainWindow):
         file = str(QtWidgets.QFileDialog.getSaveFileName(QtWidgets.QFileDialog(), "Save File", directory=os.path.realpath(os.getcwd())))
         #save file
         #We will get the file name, now we have to write to it
+
+    def update_tabs(self):
+        if(ProjectController.is_project_loaded):
+            print("HERE")
+            self.tabWidget.removeTab(2)
+            self.tabWidget.removeTab(2)
+
+            self.tabWidget.insertTab(2, BuilderWidget(), "Builder")
+            self.tabWidget.insertTab(3,RunnerWidget(), "Runner")
+            #self.runner_tab = RunnerWidget()
+            #self.tabWidget.setTabEnabled(2,True)
+            #self.tabWidget.setTabEnabled(3,True)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
