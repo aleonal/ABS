@@ -129,12 +129,14 @@ class CausationExtractor:
                 index += 1
         self._output_to_json(self._grouped_by_time, "timed_" + str(self._time_frame).replace(":", "_"))
     
-    def _output_to_json(self, l, type):
+    def _output_to_json(self, l, type):               
         n = 1
         for group in l:
-            with open(self._output_folder+"/event/"+type+"_group" + str(n) + '.JSON', 'w') as json_file:
+            with open(self._output_folder+"/events/"+type+"_group" + str(n) + '.JSON', 'w') as json_file:
+                l = []
                 for obj in group:
-                    json.dump(obj.tojson(), json_file, indent=2)
+                    l.append(obj.tojson())
+                json.dump(l, json_file, indent=2)
             n+=1
 
     #group all events by salient artifacts
