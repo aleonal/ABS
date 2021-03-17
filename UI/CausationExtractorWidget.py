@@ -41,13 +41,13 @@ class CausationExtractorWidget(QWidget):
         formattedTimeframe = timeframe.strftime("%H:%M:%S")
         self.CE.set_time_frame(t=formattedTimeframe)
         self.progress.setProperty("value", 25)
-        #self.CE.load_salient_artifacts()
+        self.CE.load_salient_artifacts()
         self.progress.setProperty("value", 35)
         self.CE.import_events()
         self.progress.setProperty("value", 50)
         self.CE.group_by_time()
         self.progress.setProperty("value", 75)
-        #self.CE.group_by_salient_artifacts()
+        self.CE.group_by_salient_artifacts()
         self.progress.setProperty("value", 100)
         
 

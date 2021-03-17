@@ -148,11 +148,11 @@ class ProjectController:
     @classmethod
     def load_salient_artifacts_objects(cls):
         try:
-            with open(cls._project_directory + 'salientArtifacts.JSON', 'r') as f:
+            with open(cls._project_directory + '/salientArtifacts.JSON', 'r') as f:
                 artifacts = json.load(f)
 
                 for item in artifacts:
-                    artifact = SalientArtifact(item['type'], item['content'])
+                    artifact = SalientArtifact(item['type'], item['artifact'])
                     ProjectController.add_salient_artifact(artifact)
         except FileNotFoundError as err:
             raise FileNotFoundError("Salient Artifacts file not found")
@@ -191,6 +191,7 @@ class ProjectController:
         cls._project_directory = project_directory
         cls._project_name = project_name
 
+        ProjectController.load_salient_artifacts_objects()
         #create directory in file system
 
         #create a new project file in the directory and appennd json object
