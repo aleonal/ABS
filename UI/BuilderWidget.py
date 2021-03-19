@@ -53,12 +53,13 @@ class BuilderWidget(QWidget):
         self.edit_artifacts_button.setSizePolicy(QtWidgets.QSizePolicy.Fixed,QtWidgets.QSizePolicy.Fixed)
         self.edit_artifacts_button.clicked.connect(self.openArtifacts)
 
-        '''
+
         # Save Button
         self.save_button = QPushButton('Save Project', self)
-        self.gridLayout.addWidget(self.save_button, 3, 2)
+        self.gridLayout.addWidget(self.save_button, 3, 3)
+        self.save_button.setStyleSheet("background-color: lightblue")
         self.save_button.clicked.connect(self.save_script)
-        '''
+
 
         # Setup Menu Bar
         self.menubar = QtWidgets.QMenuBar(self)
