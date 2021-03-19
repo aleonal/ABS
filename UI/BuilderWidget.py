@@ -197,23 +197,76 @@ class ABSEventTreeWidget(QTreeWidget):
         self.setAcceptDrops(True)
         self.setTabKeyNavigation(True)
         self.setDragEnabled(True)
-        self.setDragDropOverwriteMode(True)
+        self.setDragDropOverwriteMode(False)
         self.setDragDropMode(QAbstractItemView.DragDrop)
         self.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.setDefaultDropAction(Qt.CopyAction)
         self.setSortingEnabled(True)
         self.setWordWrap(True)
-        self.setSortingEnabled(False)
+        self.setSortingEnabled(True)
 
     def addNode(self, _type=None, time=None, content=None, parent=None, canEdit=False):
-        tempQtreewidgetitem = QTreeWidgetItem(parent)
-        #if canEdit:
-        tempQtreewidgetitem.setFlags(Qt.ItemIsEditable)
-        tempQtreewidgetitem.setFlags(Qt.ItemIsSelectable|Qt.ItemIsDragEnabled|Qt.ItemIsDropEnabled|Qt.ItemIsUserCheckable|Qt.ItemIsEnabled)
-        tempQtreewidgetitem.setText(2,content)
-        tempQtreewidgetitem.setText(1,time)
-        tempQtreewidgetitem.setText(0,_type)
-        return tempQtreewidgetitem
+        if(parent is not None):
+            tempQtreewidgetitem = QTreeWidgetItem(parent)
+            if canEdit:
+                tempQtreewidgetitem.setFlags(Qt.ItemIsEditable|Qt.ItemIsSelectable|Qt.ItemIsDragEnabled|Qt.ItemIsDropEnabled|Qt.ItemIsUserCheckable|Qt.ItemIsEnabled)
+            else:
+                tempQtreewidgetitem.setFlags(Qt.ItemIsSelectable|Qt.ItemIsDragEnabled|Qt.ItemIsDropEnabled|Qt.ItemIsUserCheckable|Qt.ItemIsEnabled)
+            tempQtreewidgetitem.setText(2,content)
+            tempQtreewidgetitem.setText(1,time)
+            tempQtreewidgetitem.setText(0,_type)
+            return tempQtreewidgetitem
+    
+    def dropEvent(self, event):
+        md = event.mimeData()
+        fmt = "application/x-qabstractitemmodeldatalist"
+        dropIndex = self.indexAt(event.pos())
+        dropIndicator = QAbstractItemView.dropIndicatorPosition(self)
+
+        if md.hasFormat(fmt):
+            encoded = md.data(fmt)
+            stream = QtCore.QDataStream(encoded, QtCore.QIODevice.ReadOnly)
+            tree_items = []
+            parent = self
+
+            while not stream.atEnd():
+                it = QtWidgets.QTreeWidgetItem()
+                # row and column where it comes from
+                for j in range(3): # 3 columns in the tree
+                    row = stream.readInt32()
+                    column = stream.readInt32()
+                    map_items = stream.readInt32()
+
+                    for i in range(map_items):
+                        role = stream.readInt32()
+                        value = QtCore.QVariant()
+                        stream >> value
+                        it.setData(column, role, value)
+                tree_items.append(it)
+
+            if (not dropIndex.parent().isValid() and dropIndex.row() != -1):
+                if dropIndicator == QAbstractItemView.AboveItem:
+                    # manage a boolean for the case when you are above an item
+                    for it in tree_items:
+                        parent = self.addNode(it.text(0), it.text(1), it.text(2), parent, True)
+                    return
+                elif dropIndicator == QAbstractItemView.BelowItem:
+                    #something when being below an item
+                    for it in tree_items:
+                        parent = self.addNode(it.text(0), it.text(1), it.text(2), parent, True)
+                    return
+                elif dropIndicator == QAbstractItemView.OnItem:
+                    #you're on an item, maybe add the current one as a child
+                    parent = self.itemAt(dropIndex.row(), dropIndex.column())
+                    for it in tree_items:
+                        parent = self.addNode(it.text(0), it.text(1), it.text(2), parent, True)
+                    return
+                elif dropIndicator == QAbstractItemView.OnViewport:
+                    #you are not on your tree
+                    return
+            
+            for it in tree_items:
+                        parent = self.addNode(it.text(0), it.text(1), it.text(2), parent, True)
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
