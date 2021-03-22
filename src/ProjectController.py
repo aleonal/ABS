@@ -148,7 +148,7 @@ class ProjectController:
     @classmethod
     def load_salient_artifacts_objects(cls):
         try:
-            with open(cls._project_directory / 'salientArtifacts.JSON', 'r') as f:
+            with open(cls._project_directory + '/salientArtifacts.JSON', 'r') as f:
                 artifacts = json.load(f)
 
                 for item in artifacts:
@@ -164,16 +164,16 @@ class ProjectController:
         full_directory = Path(directory)
         print(full_directory)
         try:
-            with open(full_directory / 'project_config.JSON', 'r') as f:
+            with open(full_directory, 'r') as f:
 
                 # check if file is project config
                 #if directory.split("/")[-1] != "project_config.JSON":
                 #    raise TypeError("Not a project configuration file")
 
                 json_data = json.load(f)
-                cls._time_frame = json_data['timeframe']
+                cls._time_frame = json_data['time_frame']
                 cls._eceld_project_root = json_data['eceld_root']
-                cls._project_name = json_data['name']
+                cls._project_name = json_data['project_name']
 
                 # project root is based on the directory of "project_config", so I made it so it works in any directory
                 cls._project_directory = full_directory
