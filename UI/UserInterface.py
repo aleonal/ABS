@@ -194,7 +194,7 @@ class Ui_MainWindow(QMainWindow):
     def update_tabs(self):
         if(ProjectController.is_project_loaded):
             self.tabWidget.removeTab(1)
-            self.tabWidget.removeTab(1)
+            #self.tabWidget.removeTab(1)
 
             self.tabWidget.insertTab(1, BuilderWidget(), "Builder")
             #self.runner_tab = RunnerWidget()
