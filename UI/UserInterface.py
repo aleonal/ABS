@@ -70,13 +70,12 @@ class Ui_MainWindow(QMainWindow):
         self.tabWidget.addTab(self.builder_tab, "")
 
         #Creating Runner tab
-        self.runner_tab = QWidget()
+        self.runner_tab = RunnerWidget()
         self.runner_tab.setAccessibleName("RunnerWidget")
         self.runner_tab.setObjectName("runner_tab")
         self.tabWidget.addTab(self.runner_tab, "")
 
         self.tabWidget.setTabEnabled(1,False)
-        self.tabWidget.setTabEnabled(2,False)
 
         #Add all our tabs into our main windows layout
         self.layout.addWidget(self.tabWidget)
@@ -138,6 +137,8 @@ class Ui_MainWindow(QMainWindow):
         self.actionCausation_Extractor.setObjectName("actionCausation_Extractor")
         self.actionOpen_Builder = QtWidgets.QAction(MainWindow)
         self.actionOpen_Builder.setObjectName("actionOpen_Builder")
+        self.actionOpen_Runner = QtWidgets.QAction(MainWindow)
+        self.actionOpen_Runner.setObjectName("actionOpen_Runner")
         self.actionOpen_Packager = QtWidgets.QAction(MainWindow)
         self.actionOpen_Packager.setObjectName("actionOpen_Packager")
 
@@ -158,6 +159,7 @@ class Ui_MainWindow(QMainWindow):
         self.menuEdit.addAction(self.actionFind_Replace)
         self.menuView.addAction(self.actionCausation_Extractor)
         self.menuView.addAction(self.actionOpen_Builder)
+        self.menuView.addAction(self.actionOpen_Runner)
         self.menuView.addAction(self.actionOpen_Packager)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuEdit.menuAction())
@@ -195,7 +197,6 @@ class Ui_MainWindow(QMainWindow):
             self.tabWidget.removeTab(1)
 
             self.tabWidget.insertTab(1, BuilderWidget(), "Builder")
-            self.tabWidget.insertTab(2,RunnerWidget(), "Runner")
             #self.runner_tab = RunnerWidget()
             #self.tabWidget.setTabEnabled(2,True)
             #self.tabWidget.setTabEnabled(3,True)
@@ -230,6 +231,7 @@ class Ui_MainWindow(QMainWindow):
         self.actionFind_Replace.setText(_translate("MainWindow", "Find/Replace"))
         self.actionCausation_Extractor.setText(_translate("MainWindow", "Causation Extractor"))
         self.actionOpen_Builder.setText(_translate("MainWindow", "Open Builder"))
+        self.actionOpen_Runner.setText(_translate("MainWindow", "Open Runner"))
         self.actionOpen_Packager.setText(_translate("MainWindow", "Open Packager"))
 
 
