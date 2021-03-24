@@ -22,38 +22,38 @@ class ProjectController:
     @classmethod
     def set_project_name(cls, projectname):
         try:
-            with open('project_config.JSON', 'r') as f:
+            with open('project_config.json', 'r') as f:
                 json_data = json.load(f)
-                json_data['name'] = projectname
+                json_data['project_name'] = projectname
                 cls._project_name = projectname
-            with open('project_config.JSON', 'w') as f:
+            with open('project_config.json', 'w') as f:
                 f.write(json.dumps(json_data))
         except FileNotFoundError:
-            print("Could not locate file project_config.JSON")
+            print("Could not locate file project_config.json")
 
     @classmethod
     def set_root_directory(cls, root_directory):
         try:
-            with open('project_config.JSON', 'r') as f:
+            with open('project_config.json', 'r') as f:
                 json_data = json.load(f)
                 json_data['eceld_root'] = root_directory
                 cls._eceld_project_root = root_directory
-            with open('project_config.JSON', 'w') as f:
+            with open('project_config.json', 'w') as f:
                 f.write(json.dumps(json_data))
         except FileNotFoundError:
-            print("Could not locate file project_config.JSON")
+            print("Could not locate file project_config.json")
 
     @classmethod
     def set_project_directory(cls, project_directory):
         try:
-            with open('project_config.JSON', 'r') as f:
+            with open('project_config.json', 'r') as f:
                 json_data = json.load(f)
                 json_data['project_directory'] = project_directory
                 cls._project_directory = project_directory
-            with open('project_config.JSON', 'w') as f:
+            with open('project_config.json', 'w') as f:
                 f.write(json.dumps(json_data))
         except FileNotFoundError:
-            print("Could not locate file project_config.JSON")
+            print("Could not locate file project_config.json")
 
 
     @classmethod
@@ -61,13 +61,13 @@ class ProjectController:
         tf = datetime.datetime.strptime(t, '%H:%M:%S')
         cls._time_frame = datetime.timedelta(hours=tf.hour, minutes=tf.minute, seconds=tf.second)
         try:
-            with open('project_config.JSON', 'r') as f:
+            with open('project_config.json', 'r') as f:
                 json_data = json.load(f)
-                json_data['timeframe'] = cls._time_frame
-            with open('project_config.JSON', 'w') as f:
+                json_data['time_frame'] = cls._time_frame
+            with open('project_config.json', 'w') as f:
                 f.write(json.dumps(json_data))
         except FileNotFoundError:
-            print("Could not locate file project_config.JSON")
+            print("Could not locate file project_config.json")
 
     
     @classmethod
@@ -137,18 +137,18 @@ class ProjectController:
     def get_salient_artifacts_json(cls):
         try:
             full_directory = Path(cls._project_directory)
-            with open(full_directory / 'salientArtifacts.JSON', 'r') as fileObject:
+            with open(full_directory / 'salientArtifacts.json', 'r') as fileObject:
                 jsonContent = fileObject.read()
                 artifactList = json.loads(jsonContent)
             return artifactList
         except FileNotFoundError:
-            print("Could not locate file salientArtifacts.JSON")
+            print("Could not locate file salientArtifacts.json")
             return []
 
     @classmethod
     def load_salient_artifacts_objects(cls):
         try:
-            with open(cls._project_directory + '/salientArtifacts.JSON', 'r') as f:
+            with open(cls._project_directory / 'salientArtifacts.json', 'r') as f:
                 artifacts = json.load(f)
 
                 for item in artifacts:
@@ -164,10 +164,10 @@ class ProjectController:
         full_directory = Path(directory)
         print(full_directory)
         try:
-            with open(full_directory, 'r') as f:
+            with open(full_directory / 'project_config.json', 'r') as f:
 
                 # check if file is project config
-                #if directory.split("/")[-1] != "project_config.JSON":
+                #if directory.split("/")[-1] != "project_config.json":
                 #    raise TypeError("Not a project configuration file")
 
                 json_data = json.load(f)
@@ -199,7 +199,7 @@ class ProjectController:
 
         #create a new project file in the directory and appennd json object
         #try:
-        #    with open('project_config.JSON', 'w') as f:
+        #    with open('project_config.json', 'w') as f:
         #        f.write(json.dumps(json_data))
                 #need to update all components with current project info
 
