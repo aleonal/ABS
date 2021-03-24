@@ -12,7 +12,8 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtGui import QStandardItem
 from PyQt5.QtCore import *
-
+import sys
+import os
 
 class RunnerWidget(QWidget):
     def __init__(self, project=None):
@@ -20,62 +21,83 @@ class RunnerWidget(QWidget):
         self.setWindowTitle("Runner")
         self.UI()
         self.show()
+        self.script_name = None
 
     def UI(self):
         self.gridLayout = QGridLayout(self)
         self.gridLayout.setObjectName(u"gridLayout")
         self.gridLayout.setColumnStretch(1, 1)
 
-        self.script_menu = QtWidgets.QComboBox(self)
-        self.script_menu.setGeometry(QtCore.QRect(0, 0, 361, 22))
-        self.script_menu.setFocusPolicy(QtCore.Qt.WheelFocus)
-        self.script_menu.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
-        self.script_menu.setAcceptDrops(True)
-        self.script_menu.setEditable(True)
-        self.script_menu.setObjectName("script_menu")
-        self.script_menu.addItem("")
-        self.script_menu.addItem("")
-        self.script_menu.addItem("")
+        # Script display window
+        self.script_read = QPlainTextEdit()
+        self.script_read.setReadOnly(True)
 
-        self.script_display = QtWidgets.QGraphicsView(self)
-        self.script_display.setGeometry(QtCore.QRect(0, 30, 361, 491))
-        self.script_display.setObjectName("script_display")
+        # Load Script onto display window button/action
+        self.load_script_button = QtWidgets.QPushButton(self)
+        self.load_script_button.setGeometry(QtCore.QRect(370, 480, 151, 41))
+        self.load_script_button.setObjectName("load_script_button")
+        self.load_script_button.clicked.connect(self.display_script)
 
+        # Script run button/script execution
         self.run_button = QtWidgets.QPushButton(self)
         self.run_button.setGeometry(QtCore.QRect(370, 480, 151, 41))
         self.run_button.setObjectName("run_button")
+        self.run_button.clicked.connect(self.execute_script)
+        self.run_button.setEnabled(False)
 
+        # Script execution progress terminal
+        # TODO: Make this work
         self.script_progress_terminal = QtWidgets.QGraphicsView(self)
         self.script_progress_terminal.setGeometry(QtCore.QRect(370, 30, 151, 411))
         self.script_progress_terminal.setObjectName("script_progress_terminal")
 
+        # Script execution progress bar
+        # TODO: Make this work
         self.script_progress_bar = QtWidgets.QProgressBar(self)
         self.script_progress_bar.setGeometry(QtCore.QRect(370, 0, 161, 20))
         self.script_progress_bar.setProperty("value", 24)
         self.script_progress_bar.setObjectName("script_progress_bar")
 
+        # Script execution timeout
+        # TODO: Make this work
         self.script_timeout = QtWidgets.QSpinBox(self)
         self.script_timeout.setGeometry(QtCore.QRect(370, 450, 151, 22))
         self.script_timeout.setMinimum(1)
         self.script_timeout.setObjectName("script_timeout")
 
+        # RunnerWidget layout
         self.gridLayout.addWidget(self.script_progress_bar,0,3)
         self.gridLayout.addWidget(self.script_progress_terminal,1,3,1,1)
         self.gridLayout.addWidget(self.script_timeout,2,3)
         self.gridLayout.addWidget(self.run_button, 3, 3)
-        self.gridLayout.addWidget(self.script_menu,0,0,1,2)
-        self.gridLayout.addWidget(self.script_display, 1,0,1,2)
-
+        self.gridLayout.addWidget(self.load_script_button,0,0,1,2)
+        self.gridLayout.addWidget(self.script_read, 1,0,1,2)
         self.setLayout(self.gridLayout)
         self.retranslateUi()
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("RunnerTab", "Runner"))
-        self.script_menu.setCurrentText(_translate("RunnerTab", "Script1"))
-        self.script_menu.setItemText(0, _translate("RunnerTab", "Script1"))
-        self.script_menu.setItemText(1, _translate("RunnerTab", "Script2"))
-        self.script_menu.setItemText(2, _translate("RunnerTab", "Script3"))
+        self.load_script_button.setText(_translate("RunnerTab", "Load Script"))
         self.run_button.setText(_translate("RunnerTab", "Run"))
 
+    def execute_script(self):
+        script_py = self.script_name.replace('.json', '.py')
+        print(script_py)
+        os.system('python ' + script_py)
 
+    def display_script(self):
+        options = QFileDialog.Options()
+        options |= QFileDialog.DontUseNativeDialog
+        self.script_name, _ = QFileDialog.getOpenFileName(self,"Open Script", "","All Files (*);;Python Files (*.json)", options=options)
+        with open(self.script_name, 'r') as f:
+            self.script_read.setPlainText(f.read())
+        self.run_button.setEnabled(True)
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    ui = RunnerWidget()
+    ui.show()
+    sys.exit(app.exec_())
+   
