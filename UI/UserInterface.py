@@ -46,22 +46,11 @@ class Ui_MainWindow(QMainWindow):
         self.tabWidget.setGeometry(QtCore.QRect(10, 0, 1101, 811))
         self.tabWidget.setObjectName("tabWidget")
 
-        #Creating Causation Extractor tab
-        # self.causation_tab = CausationWidget() #Change this to CausationExtractorWindow()
-        # self.causation_tab.setObjectName("Causation Extractor")
-        # self.tabWidget.addTab(self.causation_tab, "")
-
         #Creating Project Info tab
         self.project_info_tab = ProjectInfoWidget()
         self.project_info_tab.setAccessibleName("ProjectInfoWidget")
         self.project_info_tab.setObjectName("project_info_tab")
         self.tabWidget.addTab(self.project_info_tab, "")
-
-        #Creating Packager tab
-        #self.packager_tab = PackagerWidget()
-        #self.packager_tab.setAccessibleName("PackagerWidget")
-        #self.packager_tab.setObjectName("packager_tab")
-        #self.tabWidget.addTab(self.packager_tab, "")
 
         #Creating Builder tab
         self.builder_tab = QWidget()
@@ -74,8 +63,7 @@ class Ui_MainWindow(QMainWindow):
         self.runner_tab.setAccessibleName("RunnerWidget")
         self.runner_tab.setObjectName("runner_tab")
         self.tabWidget.addTab(self.runner_tab, "")
-
-        self.tabWidget.setTabEnabled(1,False)
+        self.tabWidget.setTabEnabled(1,False) #Disable Runner Tab
 
         #Add all our tabs into our main windows layout
         self.layout.addWidget(self.tabWidget)
@@ -193,22 +181,16 @@ class Ui_MainWindow(QMainWindow):
 
     def update_tabs(self):
         if(ProjectController.is_project_loaded):
+            #Remove current disabled builder tab and replace it with the builder widget
             self.tabWidget.removeTab(1)
-            #self.tabWidget.removeTab(1)
-
             self.tabWidget.insertTab(1, BuilderWidget(), "Builder")
-            #self.runner_tab = RunnerWidget()
-            #self.tabWidget.setTabEnabled(2,True)
-            #self.tabWidget.setTabEnabled(3,True)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Agent Build System"))
-        # self.tabWidget.setTabText(self.tabWidget.indexOf(self.causation_tab), _translate("MainWindow", "Causation Extractor"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.project_info_tab), _translate("MainWindow", "Project Info"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.builder_tab), _translate("MainWindow", "Builder"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.runner_tab), _translate("MainWindow", "Runner"))
-        #self.tabWidget.setTabText(self.tabWidget.indexOf(self.packager_tab), _translate("MainWindow", "Packager"))
 
         self.menuFile.setTitle(_translate("MainWindow", "File"))
         self.menuEdit.setTitle(_translate("MainWindow", "Edit"))
