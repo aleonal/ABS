@@ -49,7 +49,7 @@ class ProjectController:
             with open('project_config.json', 'r') as f:
                 json_data = json.load(f)
                 json_data['project_directory'] = project_directory
-                cls._project_directory = project_directory
+                cls._project_directory = Path(project_directory)
             with open('project_config.json', 'w') as f:
                 f.write(json.dumps(json_data))
         except FileNotFoundError:
@@ -191,7 +191,7 @@ class ProjectController:
     # set all variables
         cls._time_frame = timeframe
         cls._eceld_project_root = eceld_root
-        cls._project_directory = project_directory
+        cls._project_directory = Path(project_directory)
         cls._project_name = project_name
 
         ProjectController.load_salient_artifacts_objects()
