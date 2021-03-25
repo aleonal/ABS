@@ -35,6 +35,7 @@ class BuilderWidget(QWidget):
 
         self.search_button = QPushButton('Search', self)
         self.gridLayout.addWidget(self.search_button, 1,3)
+        self.search_button.setEnabled(False)
 
         self.lineEdit = QLineEdit(self)
         self.gridLayout.addWidget(self.lineEdit, 1,2)
@@ -45,12 +46,12 @@ class BuilderWidget(QWidget):
         self.listdependencies = ABSEventTreeWidget()
         self.gridLayout.addWidget(self.listdependencies, 2, 2, 1, 2)
 
-        self.populateTrees()
         self.edit_artifacts_button = QPushButton('Edit Salient Artifacts', self)
         self.gridLayout.addWidget(self.edit_artifacts_button, 1, 0)
         #self.edit_artifacts_button.setFixedSize(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
         self.edit_artifacts_button.setSizePolicy(QtWidgets.QSizePolicy.Fixed,QtWidgets.QSizePolicy.Fixed)
         self.edit_artifacts_button.clicked.connect(self.openArtifacts)
+        self.edit_artifacts_button.setEnabled(False)
 
 
         # Save Button
@@ -58,6 +59,14 @@ class BuilderWidget(QWidget):
         self.gridLayout.addWidget(self.save_button, 3, 3)
         self.save_button.setStyleSheet("background-color: lightblue")
         self.save_button.clicked.connect(self.save_script)
+        self.save_button.setEnabled(False)
+
+        # Loads events when project is loaded
+        if ProjectController.is_project_loaded():
+            self.populateTrees()
+            self.save_button.setEnabled(True)
+            self.edit_artifacts_button.setEnabled(True)
+            self.search_button.setEnabled(True)
 
     def populateTrees(self):
         eventGroups = ProjectController.load_event_list()
@@ -101,9 +110,6 @@ class BuilderWidget(QWidget):
                 parent)
             self.populateBranch(children[1:], newNode)
             
-
-
-
     def openArtifacts(self):
         if ProjectController.is_project_loaded():
             self.artifacts_window.populate_table()

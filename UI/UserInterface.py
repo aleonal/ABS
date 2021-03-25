@@ -53,17 +53,18 @@ class Ui_MainWindow(QMainWindow):
         self.tabWidget.addTab(self.project_info_tab, "")
 
         #Creating Builder tab
-        self.builder_tab = QWidget()
+        self.builder_tab = BuilderWidget()
         self.builder_tab.setAccessibleName("BuilderWidget")
         self.builder_tab.setObjectName("builder_tab")
         self.tabWidget.addTab(self.builder_tab, "")
+        #self.tabWidget.setTabEnabled(1,False) #Disable Builder Tab
 
         #Creating Runner tab
         self.runner_tab = RunnerWidget()
         self.runner_tab.setAccessibleName("RunnerWidget")
         self.runner_tab.setObjectName("runner_tab")
         self.tabWidget.addTab(self.runner_tab, "")
-        self.tabWidget.setTabEnabled(1,False) #Disable Runner Tab
+        #self.tabWidget.setTabEnabled(2,False) #Disable Runner Tab
 
         #Add all our tabs into our main windows layout
         self.layout.addWidget(self.tabWidget)
@@ -179,12 +180,13 @@ class Ui_MainWindow(QMainWindow):
         #save file
         #We will get the file name, now we have to write to it
 
+    # Updates Builder tab when project is loaded
     def update_tabs(self):
         if(ProjectController.is_project_loaded):
             #Remove current disabled builder tab and replace it with the builder widget
             self.tabWidget.removeTab(1)
             self.tabWidget.insertTab(1, BuilderWidget(), "Builder")
-
+    
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Agent Build System"))
