@@ -210,8 +210,8 @@ class ProjectController:
     def save_project(cls):
         data = {}
         data['project_name'] = cls._project_name
-        data['project_root'] = cls._project_directory
-        data['eceld_root'] = cls._eceld_project_root
+        data['project_root'] = str(cls._project_directory)
+        data['eceld_root'] = str(cls._eceld_project_root)
         data['time_frame'] = cls._time_frame
         base_dir = cls._project_directory
         filename = r'project_config.json'

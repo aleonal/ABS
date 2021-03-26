@@ -2,6 +2,8 @@ import json
 import datetime
 from .Event import Event, Auditd, Clicks, Keypresses, Traffic, TrafficThroughput, Timed, Suricata
 from .SalientArtifact import SalientArtifact
+from pathlib import Path 
+import os
 
 class CausationExtractor:
 
@@ -58,7 +60,7 @@ class CausationExtractor:
 
 
     def load_salient_artifacts(self):
-        with open(self._output_folder+"/salientArtifacts.JSON") as f:
+        with open(self._output_folder/"salientArtifacts.JSON") as f:
             data = json.load(f)
             for d in data:
                 sa = d
@@ -131,8 +133,9 @@ class CausationExtractor:
     
     def _output_to_json(self, l, type):               
         n = 1
+        filename = Path("events/"+type+"_group" + str(n) + '.JSON')
         for group in l:
-            with open(self._output_folder+"/events/"+type+"_group" + str(n) + '.JSON', 'w') as json_file:
+            with open(os.path.join(self._output_folder,filename), 'w') as json_file:
                 l = []
                 for obj in group:
                     l.append(obj.tojson())
