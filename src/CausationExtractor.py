@@ -60,7 +60,7 @@ class CausationExtractor:
 
 
     def load_salient_artifacts(self):
-        with open(self._output_folder/"salientArtifacts.JSON") as f:
+        with open(self._output_folder/"salientArtifacts.json") as f:
             data = json.load(f)
             for d in data:
                 sa = d

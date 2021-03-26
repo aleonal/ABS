@@ -161,8 +161,9 @@ class Ui_MainWindow(QMainWindow):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def new_project(self):
-        self.project_window = CreateProjectWidget()
+        self.project_window = CreateProjectWidget(previous_window=self)
         self.project_window.show()
+
 
     def open_directory(self):
         directory = str(QtWidgets.QFileDialog.getExistingDirectory(QtWidgets.QFileDialog(), "Select Directory", directory=os.path.realpath(os.getcwd())))
@@ -170,7 +171,6 @@ class Ui_MainWindow(QMainWindow):
 
         if(ProjectController.is_project_loaded):
             QMessageBox.information(self.centralwidget, "Success", "Project has been loaded successfully.")
-            self.project_info_tab.update_project_display()
             self.update_tabs()
         else:
             QMessageBox.critical(self.centralwidget, "Project Failure", "Project could not be loaded. Check that directory contains appropriate files")
@@ -183,7 +183,8 @@ class Ui_MainWindow(QMainWindow):
     # Updates Builder tab when project is loaded
     def update_tabs(self):
         if(ProjectController.is_project_loaded):
-            #Remove current disabled builder tab and replace it with the builder widget
+            self.project_info_tab.update_project_display()
+            #Remove builder tab and insert it again - updates information
             self.tabWidget.removeTab(1)
             self.tabWidget.insertTab(1, BuilderWidget(), "Builder")
     

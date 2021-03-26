@@ -194,18 +194,37 @@ class ProjectController:
         cls._project_directory = Path(project_directory)
         cls._project_name = project_name
 
+        #Create project_config file
+        data = {}
+        data['project_name'] = cls._project_name
+        data['project_root'] = str(cls._project_directory)
+        data['eceld_root'] = str(cls._eceld_project_root)
+        data['time_frame'] = cls._time_frame
+        base_dir = cls._project_directory
+        filename = r'project_config.json'
+        fullfilename = os.path.join(base_dir, filename)
+        with open(fullfilename, 'w') as outfile:
+            json.dump(data, outfile)
+        
+        #Create empty salientArtifacts file
+        data = []
+        filename = r'salientArtifacts.json'
+        fullfilename = os.path.join(base_dir, filename)
+        with open(fullfilename, 'w') as outfile:
+            json.dump(data, outfile)
+
+        #Create events folder
+        events_directory = r'events'
+        full_path = os.path.join(base_dir, events_directory)
+        try:
+            os.mkdir(full_path)
+        except OSError as error:
+            print(error)
+
+
         ProjectController.load_salient_artifacts_objects()
-        #create directory in file system
 
-        #create a new project file in the directory and appennd json object
-        #try:
-        #    with open('project_config.json', 'w') as f:
-        #        f.write(json.dumps(json_data))
-                #need to update all components with current project info
-
-        #except FileNotFoundError:
-        #    print("Error")
-
+    #TODO: We should maybe remove this method. create project will handle all this.
     @classmethod
     def save_project(cls):
         data = {}
@@ -220,7 +239,7 @@ class ProjectController:
             json.dump(data, outfile)
         return 0
 
-    # Loads evenst from timed groups, assuming that's the only files in the folder
+    # Loads events from timed groups, assuming that's the only files in the folder
     @classmethod
     def load_event_list(cls):
         try:
