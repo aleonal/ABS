@@ -18,16 +18,19 @@ class ScriptGenerator():
                 if d["Subtype"] == "leftClick":
                     #script += "pyautogui.PAUSE = " + str(d["time"]) + "\n"
                     # Screenshot click: script += "x, y = pyautogui.locateCenterOnScreen(os.path.join('" + path + "','" + d["content"] + "'), confidence=0.5)\n"
-                    x, y = int(d["Attributes"][1]), int(d["Attributes"][3])
-                    script += "pyautogui.click(x,y)\n"
+                    coordinates = json.loads(d["Attributes"])
+                    x, y = coordinates["x"], coordinates["y"]
+                    script += "pyautogui.leftClick({},{})\n".format(x,y)
                 elif d["Subtype"] == "rightClick":
                     # Screenshot click: script += "x, y = pyautogui.locateCenterOnScreen(os.path.join('" + path + "','" + d["content"] + "'), confidence=0.5)\n"
-                    x, y = int(d["Attributes"][1]), int(d["Attributes"][3])
-                    script += "pyautogui.rightClick(x,y)\n"
+                    coordinates = json.loads(d["Attributes"])
+                    x, y = coordinates["x"], coordinates["y"]
+                    script += "pyautogui.rightClick({},{})\n".format(x,y)
                 elif d["Subtype"] == "doubleClick":
                     # Screenshot click: script += "x, y = pyautogui.locateCenterOnScreen(os.path.join('" + path + "','" + d["content"] + "'), confidence=0.5)\n"
-                    x, y = int(d["Attributes"][1]), int(d["Attributes"][3])
-                    script += "pyautogui.doubleClick(x,y)\n"
+                    coordinates = json.loads(d["Attributes"])
+                    x, y = coordinates["x"], coordinates["y"]
+                    script += "pyautogui.doubleClick({},{})\n".format(x,y)
                 elif d["Subtype"] == "typewrite":
                     script += "pyautogui.typewrite('" + d["content"] + "')\n"
                 elif d["Subtype"] == "typewriteCommand":
@@ -45,4 +48,4 @@ class ScriptGenerator():
         p.close()
 
 if __name__ == "__main__":
-    ScriptGenerator(r"C:\Users\valma\OneDrive\Desktop\practicum-1\Test\TestRunner\testScript1.json")
+    ScriptGenerator(r"C:\Users\valma\OneDrive\Desktop\practicum-1\Test\TestRunner\test2.json")
