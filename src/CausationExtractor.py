@@ -133,8 +133,8 @@ class CausationExtractor:
     
     def _output_to_json(self, l, type):               
         n = 1
-        filename = Path("events/"+type+"_group" + str(n) + '.JSON')
         for group in l:
+            filename = Path("events/"+type+"_group" + str(n) + '.JSON')
             with open(os.path.join(self._output_folder,filename), 'w') as json_file:
                 l = []
                 for obj in group:
