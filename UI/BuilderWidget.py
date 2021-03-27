@@ -163,11 +163,12 @@ class BuilderWidget(QWidget):
                 eventType = "traffic_xy_id"
             if "suricata_id" in child.keys():
                 eventType = "suricata_id"
-            newNode = self.listrelationships.addNode(
-                eventType, 
-                child['start'], 
-                child['content'],
-                parent)
+            if eventType != "traffic_xy_id":
+                newNode = self.listrelationships.addNode(
+                    eventType, 
+                    child['start'], 
+                    child['content'],
+                    parent)
             
     def openArtifacts(self):
         if ProjectController.is_project_loaded():
