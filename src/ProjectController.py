@@ -3,6 +3,7 @@ from pathlib import Path
 from .SalientArtifact import SalientArtifact
 from .Event import *
 import os
+import pathlib
 
 """ This class is based off of the current Causation Extractor class, but only handles project information. Causation Extractor will handle salient artifacts and event grouping.
     This file stores info in project_config so it can be loaded later on.
@@ -205,13 +206,18 @@ class ProjectController:
         fullfilename = os.path.join(base_dir, filename)
         with open(fullfilename, 'w') as outfile:
             json.dump(data, outfile)
-        
-        #Create empty salientArtifacts file
-        data = []
+        # Checks if salientArtifacts.json file exists before creating an empty one
         filename = r'salientArtifacts.json'
         fullfilename = os.path.join(base_dir, filename)
-        with open(fullfilename, 'w') as outfile:
-            json.dump(data, outfile)
+        file = pathlib.Path(fullfilename)
+        if not file.exists():
+            #Create empty salientArtifacts file
+            data = []
+            filename = r'salientArtifacts.json'
+            fullfilename = os.path.join(base_dir, filename)
+            with open(fullfilename, 'w') as outfile:
+                json.dump(data, outfile)
+        ProjectController.load_salient_artifacts_objects()
 
         #Create events folder
         events_directory = r'events'
