@@ -139,12 +139,12 @@ class CreateProjectWidget(QWidget):
 # "\n"
 # "*If directory does not exist,\n"
 # "it will be created"))
-        self.timeframe_field.setText(_translate("Widget", "2000"))
+        self.timeframe_field.setText(_translate("Widget", "00:00:02"))
         self.import_field.setText(_translate("Widget", self.ECELD_root))
         self.root_field.setText(_translate("Widget", self.project_root))
         self.root_button.setText(_translate("Widget", "..."))
         self.ECELD_button.setText(_translate("Widget", "..."))
-        self.timeframe_text.setText(_translate("Widget", "Time Frame (in sec):"))
+        self.timeframe_text.setText(_translate("Widget", "Time Frame in HH:MM:SS :"))
         self.import_text.setText(_translate("Widget", "Imported Data Directory:"))
         self.cancel_button.setText(_translate("Widget", "Cancel"))
         self.salientart_button.setText(_translate("Widget", "Edit Salient Artifacts"))

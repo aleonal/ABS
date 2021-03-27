@@ -36,10 +36,13 @@ class CausationExtractorWidget(QWidget):
         self.progress.setProperty("value", 15)
         self.CE.set_output_folder(output_folder=ProjectController.ProjectController.get_project_directory())
         self.progress.setProperty("value", 20)
+        '''Valeria changed to HH:MM:SS format
         milliseconds = float(ProjectController.ProjectController.get_time_frame())
         timeframe = datetime.fromtimestamp(milliseconds/1000.0)
         formattedTimeframe = timeframe.strftime("%H:%M:%S")
         self.CE.set_time_frame(t=formattedTimeframe)
+        '''
+        self.CE.set_time_frame(str(ProjectController.ProjectController.get_time_frame()))
         self.progress.setProperty("value", 25)
         self.CE.load_salient_artifacts()
         self.progress.setProperty("value", 35)
