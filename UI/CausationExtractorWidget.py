@@ -74,8 +74,10 @@ class CausationExtractorWidget(QWidget):
         self.progress.setProperty("value", 0)
         self.progress.setObjectName("progress")
         self.widget_layout.addWidget(self.progress, 1, 0, 1, 1)
+
         self.pushButton = QtWidgets.QPushButton(self.layoutWidget)#Continue
         self.pushButton2 = QtWidgets.QPushButton(self.layoutWidget)#Canncel
+
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -87,7 +89,7 @@ class CausationExtractorWidget(QWidget):
         self.pushButton.setFlat(False)
         self.pushButton.setObjectName("pushButton")
         self.widget_layout.addWidget(self.pushButton, 2, 0, 1, 1, QtCore.Qt.AlignLeft)#Continue
-        self.pushButton.clicked.connect(self.launchProjectInfoWidget)
+        self.pushButton.clicked.connect(self.successDialog)
         self.pushButton2.clicked.connect(self.closeRoutine)
         self.pushButton2.setSizePolicy(sizePolicy)
         self.pushButton2.setCheckable(False)
@@ -113,10 +115,9 @@ class CausationExtractorWidget(QWidget):
         self.progress_text.setText(_translate("Widget", "Causation Extractor Progress"))
         self.setWindowIcon(QtGui.QIcon("A.png")) #A icon
 
-    def launchProjectInfoWidget(self):
-        self.project_info_widget = ProjectInfoWidget(previous_window=self)
-        self.project_info_widget.show()
-        self.hide()
+    def successDialog(self):
+        QMessageBox.information(self, "Success", "Project has been created successfully.")
+        self.close()
 
     def closeRoutine(self):
     #(TODO): show dialog confirming action. If yes, close (cancel ingestion), if not continue
