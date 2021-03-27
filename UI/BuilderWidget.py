@@ -8,6 +8,7 @@ import os
 import json
 from src.ProjectController import ProjectController
 from src import Event
+from src.ScriptGenerator import ScriptGenerator
 from UI.ArtifactsTableWidget import SalientArtifactWindow
 from UI.ClickOptionsWidget import ClickOptionsWidget
 
@@ -104,6 +105,12 @@ class BuilderWidget(QWidget):
         self.edit_artifacts_button.clicked.connect(self.openArtifacts)
         self.edit_artifacts_button.setEnabled(False)
 
+        # Generate script button
+        self.generate_script_button = QPushButton('Generate Script', self)
+        self.gridLayout.addWidget(self.generate_script_button, 3, 1)
+        self.generate_script_button.setSizePolicy(QtWidgets.QSizePolicy.Fixed,QtWidgets.QSizePolicy.Fixed)
+        self.generate_script_button.clicked.connect(self.generate_script)
+        self.generate_script_button.setEnabled(False)
 
         # Save Button
         self.save_button = QPushButton('Save Project', self)
@@ -121,6 +128,7 @@ class BuilderWidget(QWidget):
             self.dependency_search_button.setEnabled(True)
             self.move_tree_button.setEnabled(True)
             self.click_button.setEnabled(True)
+            self.generate_script_button.setEnabled(True)
 
     def populateTrees(self):
         eventGroups = ProjectController.load_event_list()
@@ -186,8 +194,26 @@ class BuilderWidget(QWidget):
             else:
                 self.invalid_path_alert_message()
                 return False 
-        #TODO: Write file into path (need to figure out file format)
-        self.create_dependencies_json(new_file_path)
+        self.create_dependencies_json(new_file_path + '.json')
+
+    def generate_script(self):
+        script_path, filter_type = QFileDialog.getOpenFileName(self, "Select script to generate...", "")
+        if script_path:
+            self.script_file_path = script_path
+        else:
+            self.invalid_path_alert_message()
+            return False 
+        try:
+            ScriptGenerator(script_path)
+            self.script_gen_success()
+        except:
+            self.invalid_path_alert_message()
+        
+    def script_gen_success(self):
+        messageBox = QMessageBox()
+        messageBox.setWindowTitle("Success")
+        messageBox.setText("Script Generated")
+        messageBox.exec()
 
     def invalid_path_alert_message(self):
         messageBox = QMessageBox()
@@ -216,7 +242,7 @@ class BuilderWidget(QWidget):
             dependencies_list.append(dep_dict)
             it += 1
         with open(filename, 'w') as outfile:
-                    json.dump(dependencies_list, outfile)
+            json.dump(dependencies_list, outfile, indent=2)
 
 
 class ABSRelationshipTreeWidget(QTreeWidget):

@@ -87,12 +87,21 @@ class RunnerWidget(QWidget):
         os.system('python ' + script_py)
 
     def display_script(self):
-        options = QFileDialog.Options()
-        options |= QFileDialog.DontUseNativeDialog
-        self.script_name, _ = QFileDialog.getOpenFileName(self,"Open Script", "","All Files (*);;Python Files (*.json)", options=options)
-        with open(self.script_name, 'r') as f:
-            self.script_read.setPlainText(f.read())
-        self.run_button.setEnabled(True)
+        try:
+            options = QFileDialog.Options()
+            options |= QFileDialog.DontUseNativeDialog
+            self.script_name, _ = QFileDialog.getOpenFileName(self,"Open Script", "","All Files (*);;Python Files (*.json)", options=options)
+            with open(self.script_name, 'r') as f:
+                self.script_read.setPlainText(f.read())
+            self.run_button.setEnabled(True)
+        except:
+            self.load_error_message()
+    
+    def load_error_message(self):
+        messageBox = QMessageBox()
+        messageBox.setWindowTitle("Error")
+        messageBox.setText("Selected file is invalid.")
+        messageBox.exec()
 
 if __name__ == "__main__":
     import sys

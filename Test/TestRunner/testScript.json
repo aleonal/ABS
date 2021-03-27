@@ -1,0 +1,23 @@
+[
+  {
+    "Type": "clicks_id",
+    "Subtype": "leftClick",
+    "Time": "01/22/2021T18:39:36",
+    "Attributes": "(3,1)",
+    "Content": "/home/kali/eceld-netsys/eceld/plugins/collectors/pykeylogger/raw/click_images/1611340776.4804757_qterminal_root.png"
+  },
+  {
+    "Type": "clicks_id",
+    "Subtype": "rightClick",
+    "Time": "01/22/2021T18:39:10",
+    "Attributes": "(4,1)",
+    "Content": "/home/kali/eceld-netsys/eceld/plugins/collectors/pykeylogger/raw/click_images/1611340750.880306_xfdesktop_root.png"
+  },
+  {
+    "Type": "",
+    "Subtype": "",
+    "Time": "01/22/2021T18:39:20",
+    "Attributes": "",
+    "Content": "8 p/s"
+  }
+]
