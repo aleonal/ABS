@@ -6,8 +6,8 @@ from PyQt5.QtGui import QStandardItem
 from PyQt5.QtCore import *
 
 
-class ClickOptionsWidget(QWidget):
-    def __init__(self, img_file=None):
+class ClickOptionsWidget(QtWidgets.QDialog):
+    def __init__(self, selectedItem=None):
         super().__init__()
         self.setGeometry(50, 50, 838, 633)
         self.scrollArea = QScrollArea (self)
@@ -72,7 +72,8 @@ class ClickOptionsWidget(QWidget):
         self.saveButton.setObjectName(u"saveButton")
         self.saveButton.setMinimumSize(QSize(100, 20))
         self.saveButton.setMaximumSize(QSize(300, 20))
-
+        self.saveButton.setEnabled(False)
+        self.saveButton.clicked.connect(self.saveSettings)
         self.horizontalLayout.addWidget(self.saveButton)
 
 
@@ -84,8 +85,9 @@ class ClickOptionsWidget(QWidget):
         self.ylineEdit.textChanged[str].connect(self.yCoorChanged)
 
         QMetaObject.connectSlotsByName(self)
-        if img_file is not None:
-            self.loadImage(img_file)
+        if selectedItem is not None:
+            self.selectedItem = selectedItem
+            self.loadImage(self.selectedItem.text(4))
         #test 
         else:
             self.loadImage(r"C:\Users\dgriv\OneDrive\Documents\GitHub\practicum\ECELdSample\Ping\ecel-export_1613199564\raw\pykeylogger\click_images\1613199453.5309389_qterminal_root.png")
@@ -122,12 +124,20 @@ class ClickOptionsWidget(QWidget):
         self.y = event.pos().y()
         self.xlineEdit.setText(str(self.x))
         self.ylineEdit.setText(str(self.y))
+        self.saveButton.setEnabled(True)
     
     def xCoorChanged(self, text):
         self.xlineEdit.setText(text)
 
     def yCoorChanged(self, text):
         self.ylineEdit.setText(text)
+
+    def saveSettings(self):
+        if self.selectedItem is not None:
+            self.selectedItem.setText(1, self.clickComboBox.currentText())
+            self.selectedItem.setText(3, "{ \"x\":" + str(self.x) + ", \"y\":" + str(self.y) + "}")
+            self.accept()
+
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)

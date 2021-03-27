@@ -139,30 +139,27 @@ class BuilderWidget(QWidget):
             self.populateBranch(group[1:], newNode)
     
     def populateBranch(self, children=None, parent=None):
-        if children == None or len(children) == 0:
-            return
-        else:
+        for child in children:
             eventType = ""
-            if "keypresses_id" in children[0].keys():
+            if "keypresses_id" in child.keys():
                 eventType = "keypresses_id"
-            if "clicks_id" in children[0].keys():
+            if "clicks_id" in child.keys():
                 eventType = "clicks_id"
-            if "audit_id" in children[0].keys():
+            if "audit_id" in child.keys():
                 eventType = "audit_id"
-            if "timed_id" in children[0].keys():
+            if "timed_id" in child.keys():
                 eventType = "timed_id"
-            if "traffic_all_id" in children[0].keys():
+            if "traffic_all_id" in child.keys():
                 eventType = "traffic_all_id"
-            if "traffic_xy_id" in children[0].keys():
+            if "traffic_xy_id" in child.keys():
                 eventType = "traffic_xy_id"
-            if "suricata_id" in children[0].keys():
+            if "suricata_id" in child.keys():
                 eventType = "suricata_id"
             newNode = self.listrelationships.addNode(
                 eventType, 
-                children[0]['start'], 
-                children[0]['content'],
+                child['start'], 
+                child['content'],
                 parent)
-            self.populateBranch(children[1:], newNode)
             
     def openArtifacts(self):
         if ProjectController.is_project_loaded():
@@ -176,20 +173,21 @@ class BuilderWidget(QWidget):
         selectedItem = self.listdependencies.itemAt(selectedRow.row(), selectedRow.column())
         print (selectedItem.text(0))
         if selectedItem.text(0) == "clicks_id":
-            self.clicks_window = ClickOptionsWidget(selectedItem.text(2))
+            self.clicks_window = ClickOptionsWidget(selectedItem)
             self.clicks_window.show()
         else:
             QMessageBox.critical(self, "Input Error", "Event is not a clicks_id type")
 
     def save_script(self):
         if not self.script_file_path:
-            new_file_path, filter_type = QFileDialog.getSaveFileName(self, "Save this script as...", "", "All files(*)")
+            new_file_path, filter_type = QFileDialog.getSaveFileName(self, "Save this script as...", "", ".json")
             if new_file_path:
                 self.script_file_path = new_file_path
             else:
                 self.invalid_path_alert_message()
                 return False 
         #TODO: Write file into path (need to figure out file format)
+        self.create_dependencies_json(new_file_path)
 
     def invalid_path_alert_message(self):
         messageBox = QMessageBox()
@@ -203,6 +201,23 @@ class BuilderWidget(QWidget):
     # def dependency_event_selection_changed(selectedItems, deselectedItems):
     #     if selectedItems[0][0] == "clicks_id":
     #         self.enable_clicks_button(True)
+
+    def create_dependencies_json(self, filename):
+        dependencies_list = []
+        
+        it = QTreeWidgetItemIterator(self.listdependencies)
+        while it.value():
+            dep_dict = {}
+            dep_dict["Type"] = it.value().text(0)
+            dep_dict["Subtype"] = it.value().text(1)
+            dep_dict["Time"] = it.value().text(2)
+            dep_dict["Attributes"] = it.value().text(3)
+            dep_dict["Content"] = it.value().text(4)
+            dependencies_list.append(dep_dict)
+            it += 1
+        with open(filename, 'w') as outfile:
+                    json.dump(dependencies_list, outfile)
+
 
 class ABSRelationshipTreeWidget(QTreeWidget):
     def __init__(self):
@@ -308,14 +323,62 @@ class ABSDependencyTreeWidget(QTreeWidget):
     def addNode(self, _type=None, time=None, content=None, parent=None, canEdit=False):
         if(parent is not None):
             tempQtreewidgetitem = QTreeWidgetItem(parent)
-            if canEdit:
-                tempQtreewidgetitem.setFlags(Qt.ItemIsEditable|Qt.ItemIsSelectable|Qt.ItemIsDragEnabled|Qt.ItemIsDropEnabled|Qt.ItemIsUserCheckable|Qt.ItemIsEnabled)
-            else:
-                tempQtreewidgetitem.setFlags(Qt.ItemIsSelectable|Qt.ItemIsDragEnabled|Qt.ItemIsDropEnabled|Qt.ItemIsUserCheckable|Qt.ItemIsEnabled)
+            tempQtreewidgetitem.setFlags(Qt.ItemIsEditable|Qt.ItemIsSelectable|Qt.ItemIsDragEnabled|Qt.ItemIsDropEnabled|Qt.ItemIsUserCheckable|Qt.ItemIsEnabled)
             tempQtreewidgetitem.setText(4,content)
             tempQtreewidgetitem.setText(2,time)
             tempQtreewidgetitem.setText(0,_type)
             return tempQtreewidgetitem
+
+    def dropEvent(self, event):
+        md = event.mimeData()
+        fmt = "application/x-qabstractitemmodeldatalist"
+        dropIndex = self.indexAt(event.pos())
+        dropIndicator = QAbstractItemView.dropIndicatorPosition(self)
+
+        if md.hasFormat(fmt):
+            encoded = md.data(fmt)
+            stream = QtCore.QDataStream(encoded, QtCore.QIODevice.ReadOnly)
+            tree_items = []
+            parent = self
+
+            while not stream.atEnd():
+                it = QtWidgets.QTreeWidgetItem()
+                # row and column where it comes from
+                for j in range(3): # 3 columns in the tree
+                    row = stream.readInt32()
+                    column = stream.readInt32()
+                    map_items = stream.readInt32()
+
+                    for i in range(map_items):
+                        role = stream.readInt32()
+                        value = QtCore.QVariant()
+                        stream >> value
+                        it.setData(column, role, value)
+                tree_items.append(it)
+
+            if (not dropIndex.parent().isValid() and dropIndex.row() != -1):
+                if dropIndicator == QAbstractItemView.AboveItem:
+                    # manage a boolean for the case when you are above an item
+                    for it in tree_items:
+                        parent = self.addNode(it.text(0), it.text(1), it.text(2), parent, True)
+                    return
+                elif dropIndicator == QAbstractItemView.BelowItem:
+                    #something when being below an item
+                    for it in tree_items:
+                        parent = self.addNode(it.text(0), it.text(1), it.text(2), parent, True)
+                    return
+                elif dropIndicator == QAbstractItemView.OnItem:
+                    #you're on an item, maybe add the current one as a child
+                    parent = self.itemAt(dropIndex.row(), dropIndex.column())
+                    for it in tree_items:
+                        parent = self.addNode(it.text(0), it.text(1), it.text(2), parent, True)
+                    return
+                elif dropIndicator == QAbstractItemView.OnViewport:
+                    #you are not on your tree
+                    return
+            
+            for it in tree_items:
+                        parent = self.addNode(it.text(0), it.text(1), it.text(2), parent, True)
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
