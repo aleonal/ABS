@@ -354,6 +354,13 @@ class ABSDependencyTreeWidget(QTreeWidget):
             tempQtreewidgetitem.setText(2,time)
             tempQtreewidgetitem.setText(0,_type)
             return tempQtreewidgetitem
+        
+    def keyPressEvent(self, event):
+        if event.key() == QtCore.Qt.Key_Delete and self.state() != QTreeWidget.EditingState:
+            row = self.currentItem()
+            self.takeTopLevelItem(self.indexOfTopLevelItem(row))
+        else:
+            super().keyPressEvent(event)
 
     def dropEvent(self, event):
         md = event.mimeData()
