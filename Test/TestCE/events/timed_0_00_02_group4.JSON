@@ -28,7 +28,7 @@
   },
   {
     "clicks_id": 1,
-    "content": "/home/kali/eceld-netsys/eceld/plugins/collectors/pykeylogger/raw/click_images/1611340786.9179325_Navigator_root.png",
+    "content": "C:/Users/valma/OneDrive/Desktop/practicum-1/Test/TestCE\\raw/pykeylogger/click_images/1611340786.9179325_Navigator_root.png",
     "type": "point",
     "classname": "imgPoint",
     "start": "01/22/2021T18:39:46"
@@ -55,7 +55,7 @@
   },
   {
     "clicks_id": 15,
-    "content": "/home/kali/eceld-netsys/eceld/plugins/collectors/pykeylogger/raw/click_images/1611340789.9456437_Navigator_root.png",
+    "content": "C:/Users/valma/OneDrive/Desktop/practicum-1/Test/TestCE\\raw/pykeylogger/click_images/1611340789.9456437_Navigator_root.png",
     "type": "point",
     "classname": "imgPoint",
     "start": "01/22/2021T18:39:49"
@@ -76,7 +76,7 @@
   },
   {
     "clicks_id": 4,
-    "content": "/home/kali/eceld-netsys/eceld/plugins/collectors/pykeylogger/raw/click_images/1611340791.3336642_qterminal_root.png",
+    "content": "C:/Users/valma/OneDrive/Desktop/practicum-1/Test/TestCE\\raw/pykeylogger/click_images/1611340791.3336642_qterminal_root.png",
     "type": "point",
     "classname": "imgPoint",
     "start": "01/22/2021T18:39:51"
@@ -90,21 +90,21 @@
   },
   {
     "clicks_id": 6,
-    "content": "/home/kali/eceld-netsys/eceld/plugins/collectors/pykeylogger/raw/click_images/1611340793.4265962_qterminal_root.png",
+    "content": "C:/Users/valma/OneDrive/Desktop/practicum-1/Test/TestCE\\raw/pykeylogger/click_images/1611340793.4265962_qterminal_root.png",
     "type": "point",
     "classname": "imgPoint",
     "start": "01/22/2021T18:39:53"
   },
   {
     "clicks_id": 18,
-    "content": "/home/kali/eceld-netsys/eceld/plugins/collectors/pykeylogger/raw/click_images/1611340793.8051054_qterminal_root.png",
+    "content": "C:/Users/valma/OneDrive/Desktop/practicum-1/Test/TestCE\\raw/pykeylogger/click_images/1611340793.8051054_qterminal_root.png",
     "type": "point",
     "classname": "imgPoint",
     "start": "01/22/2021T18:39:53"
   },
   {
     "clicks_id": 0,
-    "content": "/home/kali/eceld-netsys/eceld/plugins/collectors/pykeylogger/raw/click_images/1611340794.9971197_main.py_root.png",
+    "content": "C:/Users/valma/OneDrive/Desktop/practicum-1/Test/TestCE\\raw/pykeylogger/click_images/1611340794.9971197_main.py_root.png",
     "type": "point",
     "classname": "imgPoint",
     "start": "01/22/2021T18:39:54"

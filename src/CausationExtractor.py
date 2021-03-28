@@ -85,6 +85,8 @@ class CausationExtractor:
                     if type == "auditd":
                         obj = Auditd(e['auditd_id'], e['content'], "auditd", e['start'])
                     elif type == "clicks":
+                        basename = os.path.basename(e['content'])
+                        e['content'] = os.path.join(self._eceld_project_root, "raw/pykeylogger/click_images/" + basename)
                         obj = Clicks(e['clicks_id'], e['content'], e['type'], e['classname'], e['start'])
                     elif type == "keypresses":
                         obj = Keypresses(e['keypresses_id'], e['content'], e['className'], e['start'])

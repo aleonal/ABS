@@ -21,7 +21,7 @@
   },
   {
     "clicks_id": 10,
-    "content": "/home/kali/eceld-netsys/eceld/plugins/collectors/pykeylogger/raw/click_images/1611340774.1465535_qterminal_root.png",
+    "content": "C:/Users/valma/OneDrive/Desktop/practicum-1/Test/TestCE\\raw/pykeylogger/click_images/1611340774.1465535_qterminal_root.png",
     "type": "point",
     "classname": "imgPoint",
     "start": "01/22/2021T18:39:34"
@@ -35,21 +35,21 @@
   },
   {
     "clicks_id": 3,
-    "content": "/home/kali/eceld-netsys/eceld/plugins/collectors/pykeylogger/raw/click_images/1611340776.4804757_qterminal_root.png",
+    "content": "C:/Users/valma/OneDrive/Desktop/practicum-1/Test/TestCE\\raw/pykeylogger/click_images/1611340776.4804757_qterminal_root.png",
     "type": "point",
     "classname": "imgPoint",
     "start": "01/22/2021T18:39:36"
   },
   {
     "clicks_id": 14,
-    "content": "/home/kali/eceld-netsys/eceld/plugins/collectors/pykeylogger/raw/click_images/1611340777.866307_qterminal_root.png",
+    "content": "C:/Users/valma/OneDrive/Desktop/practicum-1/Test/TestCE\\raw/pykeylogger/click_images/1611340777.866307_qterminal_root.png",
     "type": "point",
     "classname": "imgPoint",
     "start": "01/22/2021T18:39:37"
   },
   {
     "clicks_id": 13,
-    "content": "/home/kali/eceld-netsys/eceld/plugins/collectors/pykeylogger/raw/click_images/1611340779.9138286_Navigator_root.png",
+    "content": "C:/Users/valma/OneDrive/Desktop/practicum-1/Test/TestCE\\raw/pykeylogger/click_images/1611340779.9138286_Navigator_root.png",
     "type": "point",
     "classname": "imgPoint",
     "start": "01/22/2021T18:39:39"
@@ -63,7 +63,7 @@
   },
   {
     "clicks_id": 9,
-    "content": "/home/kali/eceld-netsys/eceld/plugins/collectors/pykeylogger/raw/click_images/1611340780.8250995_Navigator_root.png",
+    "content": "C:/Users/valma/OneDrive/Desktop/practicum-1/Test/TestCE\\raw/pykeylogger/click_images/1611340780.8250995_Navigator_root.png",
     "type": "point",
     "classname": "imgPoint",
     "start": "01/22/2021T18:39:40"
