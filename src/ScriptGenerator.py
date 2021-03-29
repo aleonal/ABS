@@ -1,5 +1,4 @@
 import pyautogui
-#from .ProjectController import ProjectController
 from PIL import Image
 import os, os.path
 import json
@@ -7,7 +6,6 @@ import json
 class ScriptGenerator():
 
     def __init__(self, script_name):
-        #self.path = ProjectController.get_project_info()["project_directory"]   
         self.generate_script(script_name)
     def generate_script(self, script_name):
         script = "import pyautogui\nfrom PIL import Image\nimport os, os.path\n\n"
@@ -31,16 +29,18 @@ class ScriptGenerator():
                     coordinates = json.loads(d["Attributes"])
                     x, y = coordinates["x"], coordinates["y"]
                     script += "pyautogui.doubleClick({},{})\n".format(x,y)
-                elif d["Subtype"] == "typewrite":
-                    script += "pyautogui.typewrite('" + d["content"] + "')\n"
-                elif d["Subtype"] == "typewriteCommand":
+                elif d["Subtype"] == "type":
+                    script += "pyautogui.typewrite('" + d["Attributes"] + "')\n"
+                elif d["Subtype"] == "command":
                     script += "pyautogui.typewrite(['" + d["Attributes"] + "'])\n"
+                    script += "pyautogui.PAUSE = 3\n"
                 elif d["Subtype"] == "hotkey":
                     script += "pyautogui.hotkey(" + d["Attributes"] + ")\n"
                 elif d["Subtype"] == "keyDown":
-                    script += "pyautogui.keyDown('" + d["content"] + "')\n"
+                    script += "pyautogui.keyDown('" + d["Attributes"] + "')\n"
                 elif d["Subtype"] == "keyUp":
-                    script += "pyautogui.keyUp('" + d["content"] + "')\n" 
+                    script += "pyautogui.keyUp('" + d["Attributes"] + "')\n" 
+                script += "pyautogui.PAUSE = 2\n"
                 
 
         p = open(script_name.replace(".json", ".py"), 'w')

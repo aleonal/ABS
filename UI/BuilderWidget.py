@@ -195,7 +195,7 @@ class BuilderWidget(QWidget):
             else:
                 self.invalid_path_alert_message()
                 return False 
-        self.create_dependencies_json(new_file_path + '.json')
+        self.create_dependencies_json(self.script_file_path + '.json')
 
     def generate_script(self):
         script_path, filter_type = QFileDialog.getOpenFileName(self, "Select script to generate...", "")
