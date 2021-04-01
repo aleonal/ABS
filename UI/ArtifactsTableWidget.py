@@ -75,11 +75,13 @@ class SalientArtifactWindow(QWidget):
         self.artifactsTable.setRowCount(len(artifacts_list))
         i=0
         for artifact in artifacts_list:
-            artifactType = QTableWidgetItem(str(artifact['type']))
+            artifactType = QComboBox()
+            artifactType.addItems(["","traffic", "trafficThroughput", "clicks", "keypresses", "timed", "auditd"])
+            index = artifactType.findText(artifact['type'])
+            artifactType.setCurrentIndex(index)
             artifactDescription = QTableWidgetItem(str(artifact['artifact']))
 
-            # (TODO): Create a dropdown item and use setcellwidget to have the type. Use artifact type to set the selected type in the widget
-            self.artifactsTable.setItem(i, 0, artifactType)
+            self.artifactsTable.setCellWidget(i, 0, artifactType)
             self.artifactsTable.setItem(i, 1, artifactDescription)
 
             deleteButton = QPushButton('Delete')
@@ -100,7 +102,9 @@ class SalientArtifactWindow(QWidget):
     def addArtifact(self):
         self.artifactsTable.setRowCount(self.artifactsTable.rowCount()+1)
         current_row_pos = self.artifactsTable.rowCount()-1
-        self.artifactsTable.setItem(current_row_pos, 0, QTableWidgetItem("artifact Type"))
+        artifactType = QComboBox()
+        artifactType.addItems(["","traffic", "trafficThroughput", "clicks", "keypresses", "timed", "auditd"])
+        self.artifactsTable.setCellWidget(current_row_pos, 0, artifactType)
         self.artifactsTable.setItem(current_row_pos, 1, QTableWidgetItem("artifact Description"))
 
         deleteButton = QPushButton('Delete')

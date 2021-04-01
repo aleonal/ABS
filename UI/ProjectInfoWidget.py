@@ -62,24 +62,10 @@ class ProjectInfoWidget(QWidget):
         # populate project info list
         self.populate_project_info()
 
-        # # Assumes project object has property "isNew" labling new project
-        #if len(self.project_data['salient_artifacts']) == 0:
-        #    self.runner_button.setEnabled(False)
-
-        # Close project button
-        self.close_button = QtWidgets.QPushButton(self)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.close_button.sizePolicy().hasHeightForWidth())
-        self.close_button.setSizePolicy(sizePolicy)
-        self.close_button.setObjectName("close_button")
-        self.close_button.clicked.connect(self.closeRoutine)
-
         # Layout for buttons
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.horizontalLayout.addWidget(self.close_button, 0, QtCore.Qt.AlignLeft)
+        #self.horizontalLayout.addWidget(self.close_button, 0, QtCore.Qt.AlignLeft)
         self.horizontalLayout.setStretch(0, 1)
 
         # Widget layout
@@ -114,12 +100,7 @@ class ProjectInfoWidget(QWidget):
         except TypeError as err:
             self.popup = PopupWidget(previous_window = self)
             self.popup.retranslateUi(popup_title = "File Error", popup_text = "File error: {0}".format(err))
-            self.popup.show()
-            
-    #def newProject(self):
-    #    self.creator = CreateProjectWidget(previous_window = self)
-    #    self.creator.show()
-    #    self.hide()
+            self.popup.show()           
 
     def populate_project_info(self):
         # project name, idx 0
@@ -159,9 +140,6 @@ class ProjectInfoWidget(QWidget):
 
         self.update_project_display()
         self.setWindowIcon(QtGui.QIcon("A.png"))# A icon
-
-
-        self.close_button.setText(_translate("Widget", "Close Project"))
         
 
     def update_project_display(self):
@@ -187,42 +165,7 @@ class ProjectInfoWidget(QWidget):
             self.project_info.addItem(QListWidgetItem(str(artifact)))
 
 
-        #item = self.project_info.item(0)
-        #item.setText(_translate("Widget", "Project Name: {0}".format(self.project_data['project_name'])))
-        #item = self.project_info.item(1)
-        #item.setText(_translate("Widget", "Project Directory: {0}".format(self.project_data['project_directory'])))
-        #item = self.project_info.item(2)
-        #item.setText(_translate("Widget", "ECELd Data Directory: {0}".format(self.project_data['eceld_root'])))
-        #item = self.project_info.item(3)
-        #item.setText(_translate("Widget", "Project Timeframe: {0}".format(self.project_data['time_frame'])))
-        #item = self.project_info.item(4)
-        #item.setFlags(Qt.NoItemFlags)
-        #item.setText(_translate("Widget", " "))
-        #item = self.project_info.item(5)
-        #item.setText(_translate("Widget", "Salient Artifacts"))
-
-        #print(self.project_data['salient_artifacts'])
-        #for i in range(6, len(self.project_data['salient_artifacts']) + 6):
-            #item = self.project_info.item(i)
-            #print(i)
-            #print(self.project_data['salient_artifacts'][i-6])
-            #item.setText(_translate("Widget", self.project_data['salient_artifacts'][i-6]))
-
         self.project_info.setSortingEnabled(__sortingEnabled)
-
-    def closeRoutine(self):
-        ProjectController.save_project()
-        
-        if self.previous_window:
-            temp_window = self.previous_window
-            
-            while temp_window.previous_window:
-                temp_window = temp_window.previous_window
-            
-            temp_window.show()
-            self.hide()
-        else:
-            self.close()
 
 
 if __name__ == "__main__":
