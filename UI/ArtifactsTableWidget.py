@@ -96,8 +96,22 @@ class SalientArtifactWindow(QWidget):
             self.artifactsTable.removeRow(row)
 
     def saveArtifacts(self):
-        artifactsList = ""
-        #save whatever is in the table to json file in the correct format
+        artifactsList = []
+        i=0
+        while i < self.artifactsTable.rowCount():
+            artifactType = self.artifactsTable.cellWidget(i,0) #This should be our artifact type
+            json_type =artifactType.currentText()
+            artifactDescription = self.artifactsTable.item(i,1)#This should be our artifact description
+            json_description=artifactDescription.text()
+
+            data = {}
+            data['type'] = json_type
+            data['artifact'] = json_description
+            artifactsList.append(data)
+            i = i+1
+        ProjectController.overwrite_salient_artifacts(artifactsList)
+        QMessageBox.information(self, "Success", "Salient Artifacts have been saved.")
+        #TODO: find a way to call userinterface.py's update_tabs from here to update the project info tab
 
     def addArtifact(self):
         self.artifactsTable.setRowCount(self.artifactsTable.rowCount()+1)

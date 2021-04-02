@@ -244,6 +244,20 @@ class ProjectController:
         with open(fullfilename, 'w') as outfile:
             json.dump(data, outfile)
         return 0
+    
+    #Writes salient artifacts list to salientArtifacts.json
+    @classmethod
+    def overwrite_salient_artifacts(cls, artifactsList):
+        filename = r'salientArtifacts.json'
+        fullfilename = os.path.join(cls._project_directory, filename)
+        file = pathlib.Path(fullfilename)
+
+        try:
+            with open(file, 'w') as outfile:
+                json.dump(artifactsList, outfile)
+        except FileNotFoundError:
+            print("Could not locate salientArtifacts.json")
+
 
     # Loads events from timed groups, assuming that's the only files in the folder
     @classmethod
