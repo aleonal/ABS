@@ -131,7 +131,6 @@ class BuilderWidget(QWidget):
         # Loads events when project is loaded
         if ProjectController.is_project_loaded():
             self.populateTrees()
-            self.loadDependencies()
             self.save_button.setEnabled(True)
             self.edit_artifacts_button.setEnabled(True)
             self.relationship_search_button.setEnabled(True)
@@ -142,6 +141,8 @@ class BuilderWidget(QWidget):
             self.new_node_button.setEnabled(True)
             self.move_node_button.setEnabled(True)
             self.load_button.setEnabled(True)
+            if ProjectController.get_dependencies_file() != "":
+                self.loadDependencies()
 
     def populateTrees(self):
         eventGroups = ProjectController.load_event_list()
