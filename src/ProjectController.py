@@ -13,7 +13,8 @@ class ProjectController:
     _eceld_project_root = ""
     _project_directory = ""
     _project_name = ""
-    _project_info = {"time_frame": "", "eceld_root": "", "project_directory": "", "project_name": "",
+    _dependencies_file = ""
+    _project_info = {"time_frame": "", "eceld_root": "", "project_directory": "", "project_name": "", "dependencies_file": "",
                           "salient_artifacts": []}
     _salient_artifacts = []
 
@@ -75,7 +76,9 @@ class ProjectController:
     def set_artifact_color(cls, artifact_color):
         cls._artifact_color = artifact_color
 
-
+    @classmethod
+    def set_dependencies_file(cls, file_path):
+        cls._dependencies_file = file_path
 
     # Getters
     @classmethod
@@ -103,11 +106,16 @@ class ProjectController:
         return cls._artifact_color
 
     @classmethod
+    def get_dependencies_file(cls):
+        return cls._dependencies_file
+
+    @classmethod
     def get_project_info(cls):
         cls._project_info["time_frame"] = str(cls._time_frame)
         cls._project_info["eceld_root"] = cls._eceld_project_root
         cls._project_info["project_directory"] = cls._project_directory
         cls._project_info["project_name"] = cls._project_name
+        cls._project_info["dependencies_file"] = cls._dependencies_file
         
         count = 1
         for sa in cls._salient_artifacts:
@@ -175,6 +183,7 @@ class ProjectController:
                 cls._time_frame = json_data['time_frame']
                 cls._eceld_project_root = json_data['eceld_root']
                 cls._project_name = json_data['project_name']
+                cls._dependencies_file = json_data['dependencies_file']
 
                 # project root is based on the directory of "project_config", so I made it so it works in any directory
                 cls._project_directory = full_directory
@@ -194,6 +203,7 @@ class ProjectController:
         cls._eceld_project_root = eceld_root
         cls._project_directory = Path(project_directory)
         cls._project_name = project_name
+        cls._dependencies_file = ""
 
         #Create project_config file
         data = {}
@@ -201,6 +211,7 @@ class ProjectController:
         data['project_root'] = str(cls._project_directory)
         data['eceld_root'] = str(cls._eceld_project_root)
         data['time_frame'] = cls._time_frame
+        data['dependencies_file'] = cls._dependencies_file
         base_dir = cls._project_directory
         filename = r'project_config.json'
         fullfilename = os.path.join(base_dir, filename)
@@ -238,6 +249,8 @@ class ProjectController:
         data['project_root'] = str(cls._project_directory)
         data['eceld_root'] = str(cls._eceld_project_root)
         data['time_frame'] = cls._time_frame
+        if cls._dependencies_file is not None:
+            data['dependencies_file'] = cls._dependencies_file
         base_dir = cls._project_directory
         filename = r'project_config.json'
         fullfilename = os.path.join(base_dir, filename)
