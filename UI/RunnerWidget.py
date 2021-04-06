@@ -14,6 +14,7 @@ from PyQt5.QtGui import QStandardItem
 from PyQt5.QtCore import *
 import sys
 import os
+import subprocess, signal, time
 
 class RunnerWidget(QWidget):
     def __init__(self, project=None):
@@ -49,6 +50,13 @@ class RunnerWidget(QWidget):
         self.run_button.clicked.connect(self.execute_script)
         self.run_button.setEnabled(False)
 
+        # Script stop button/stop script execution
+        self.stop_button = QtWidgets.QPushButton(self)
+        self.stop_button.setGeometry(QtCore.QRect(370, 480, 151, 41))
+        self.stop_button.setObjectName("stop_button")
+        self.stop_button.clicked.connect(self.stop_script)
+        self.stop_button.setEnabled(False)
+
         # Script execution progress terminal
         # TODO: Make this work
         self.script_progress_terminal = QtWidgets.QGraphicsView(self)
@@ -74,6 +82,7 @@ class RunnerWidget(QWidget):
         self.gridLayout.addWidget(self.script_progress_terminal,1,3,1,1)
         self.gridLayout.addWidget(self.script_timeout,2,3)
         self.gridLayout.addWidget(self.run_button, 3, 3)
+        self.gridLayout.addWidget(self.stop_button, 2,2)
         self.gridLayout.addWidget(self.load_script_button,0,0,1,1)
         self.gridLayout.addWidget(self.script_read, 1,0,1,1)
         self.gridLayout.addWidget(self.obs_read, 1, 2, 1,1)
@@ -85,11 +94,20 @@ class RunnerWidget(QWidget):
         self.setWindowTitle(_translate("RunnerTab", "Runner"))
         self.load_script_button.setText(_translate("RunnerTab", "Load Script"))
         self.run_button.setText(_translate("RunnerTab", "Run"))
+        self.stop_button.setText(_translate("RunnerTab", "Stop"))
 
     def execute_script(self):
         script_py = self.script_name.replace('.json', '.py')
-        print(script_py)
-        os.system('python ' + script_py)
+        #os.system('python ' + script_py)
+        self.proc = subprocess.Popen('python ' + script_py)
+        self.stop_button.setEnabled(True)
+        self.run_button.setEnabled(False)
+
+    def stop_script(self):
+        self.proc.terminate()
+        self.run_button.setEnabled(True)
+        self.stop_button.setEnabled(False)
+
 
     def display_script(self):
         try:
