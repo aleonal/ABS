@@ -16,6 +16,12 @@ import sys
 import os
 import subprocess, signal, time
 
+class MyStream(QtCore.QObject):
+    message = QtCore.pyqtSignal(str)
+    def __init__(self, parent=None):
+        super(MyStream, self).__init__(parent)
+    def write(self, message):
+        self.message.emit(str(message))
 class RunnerWidget(QWidget):
     def __init__(self, project=None):
         super().__init__()
@@ -58,11 +64,15 @@ class RunnerWidget(QWidget):
         self.stop_button.setEnabled(False)
 
         # Script execution progress terminal
+        self.script_progress_terminal = QtWidgets.QTextEdit(self)
+        self.script_progress_terminal.setGeometry(QtCore.QRect(370,30,151,411))
+        self.script_progress_terminal.setObjectName("script_progress_terminal")
+        '''
         # TODO: Make this work
         self.script_progress_terminal = QtWidgets.QGraphicsView(self)
         self.script_progress_terminal.setGeometry(QtCore.QRect(370, 30, 151, 411))
         self.script_progress_terminal.setObjectName("script_progress_terminal")
-
+        '''
         # Script execution progress bar
         # TODO: Make this work
         self.script_progress_bar = QtWidgets.QProgressBar(self)
@@ -97,15 +107,17 @@ class RunnerWidget(QWidget):
         self.stop_button.setText(_translate("RunnerTab", "Stop"))
 
     def execute_script(self):
-        script_py = self.script_name.replace('.json', '.py')
+        script_py = 'python ' + self.script_name.replace('.json', '.py')
         #os.system('python ' + script_py)
-        self.proc = subprocess.Popen('python ' + script_py)
+        self.proc = subprocess.Popen(script_py, stdout=subprocess.PIPE, shell=True)
         self.stop_button.setEnabled(True)
-        self.run_button.setEnabled(False)
+
+    def print_progress(self, message):
+        self.script_progress_terminal.moveCursor(QtGui.QTextCursor.End)
+        self.script_progress_terminal.insertPlainText(message)
 
     def stop_script(self):
         self.proc.terminate()
-        self.run_button.setEnabled(True)
         self.stop_button.setEnabled(False)
 
 
@@ -139,5 +151,9 @@ if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     ui = RunnerWidget()
     ui.show()
+    #sys.exit(app.exec_())
+    myStream = MyStream()
+    myStream.message.connect(ui.print_progress)
+    sys.stdout = myStream 
     sys.exit(app.exec_())
    

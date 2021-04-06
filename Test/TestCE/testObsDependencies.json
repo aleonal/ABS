@@ -1,0 +1,58 @@
+[
+  {
+    "Type": "clicks_id",
+    "Subtype": "leftClick",
+    "Time": "01/22/2021T18:39:10",
+    "Attributes": "{ \"x\":382, \"y\":384}",
+    "Content": "C:/Users/valma/OneDrive/Desktop/practicum-1/Test/TestCE\\raw/pykeylogger/click_images/1611340750.880306_xfdesktop_root.png",
+    "Children": []
+  },
+  {
+    "Type": "traffic_all_id",
+    "Subtype": "",
+    "Time": "01/22/2021T18:39:17",
+    "Attributes": "",
+    "Content": "39 p/s",
+    "Children": []
+  },
+  {
+    "Type": "timed_id",
+    "Subtype": "",
+    "Time": "01/22/2021T18:39:18",
+    "Attributes": "",
+    "Content": "/home/kali/eceld-netsys/eceld/plugins/collectors/pykeylogger/raw/timed_screenshots/1611340758.7450943_screenshot.png",
+    "Children": []
+  },
+  {
+    "Type": "keypresses_id",
+    "Subtype": "type",
+    "Time": "01/22/2021T18:39:20",
+    "Attributes": "hello",
+    "Content": "wget google.com[Return]ping google.com[Return]",
+    "Children": []
+  },
+  {
+    "Type": "traffic_all_id",
+    "Subtype": "",
+    "Time": "01/22/2021T18:39:22",
+    "Attributes": "",
+    "Content": "2 p/s",
+    "Children": []
+  },
+  {
+    "Type": "traffic_all_id",
+    "Subtype": "",
+    "Time": "01/22/2021T18:39:39",
+    "Attributes": "",
+    "Content": "93 p/s",
+    "Children": []
+  },
+  {
+    "Type": "timed_id",
+    "Subtype": "",
+    "Time": "01/22/2021T18:39:40",
+    "Attributes": "",
+    "Content": "/home/kali/eceld-netsys/eceld/plugins/collectors/pykeylogger/raw/timed_screenshots/1611340780.185864_screenshot.png",
+    "Children": []
+  }
+]

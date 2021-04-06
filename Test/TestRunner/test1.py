@@ -3,8 +3,10 @@ from PIL import Image
 import os, os.path
 
 pyautogui.PAUSE = 1
+print("PAUSE 1 second")
 
 pyautogui.leftClick(179,1068)
+print("LeftClick")
 pyautogui.typewrite('cmd')
 pyautogui.typewrite(['enter'])
 pyautogui.typewrite('cd oneDrive\Desktop')
