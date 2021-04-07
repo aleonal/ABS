@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=ABS
+Comment=
+Exec=sudo /home/kali/practicum/ABS
+Icon=/home/kali/practicum/Resources/ABS.png
+Path=/home/kali/practicum/
+Terminal=true
+StartupNotify=false
