@@ -6,7 +6,6 @@ from PyQt5 import QtGui, QtCore, QtWidgets
 from UI.UserInterface import Ui_MainWindow
 
 def main():
-
     app = QtWidgets.QApplication(sys.argv)
 
     #Splashscreen ABS Logo
@@ -20,7 +19,8 @@ def main():
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
     MainWindow.show()
-    sys.exit(app.exec_())     
+    sys.exit(app.exec_())
 
-if ( __name__ == '__main__' ):
+
+if (__name__ == '__main__'):
     main()

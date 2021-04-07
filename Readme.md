@@ -8,3 +8,10 @@
 - How drag n' drop is being implemented
     - Can we edit items?
     - Do we need backend functions to edit items?
+
+
+
+- use venv instead of abs_venv
+- rename github to ABS
+	- change ABS_DIR folder name in launcher
+	- change launcher
