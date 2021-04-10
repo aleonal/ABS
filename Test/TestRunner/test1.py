@@ -16,6 +16,7 @@ pyautogui.typewrite(['enter'])
 pyautogui.hotkey("ctrl", "a")
 pyautogui.hotkey("ctrl", "c")
 pyautogui.leftClick(179,1068)
+'''
 pyautogui.typewrite('cmd')
 pyautogui.typewrite(['enter'])
 pyautogui.typewrite('git clone ')
@@ -27,3 +28,4 @@ pyautogui.typewrite('cd PracticumDemo')
 pyautogui.typewrite(['enter'])
 pyautogui.typewrite('python PracticumDemo.py')
 pyautogui.typewrite(['enter'])
+'''

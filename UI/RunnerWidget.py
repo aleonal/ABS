@@ -14,14 +14,17 @@ from PyQt5.QtGui import QStandardItem
 from PyQt5.QtCore import *
 import sys
 import os
-import subprocess, signal, time
+import subprocess, signal, time, ctypes
+CP_console = "cp" + str(ctypes.cdll.kernel32.GetConsoleOutputCP())
 
+'''
 class MyStream(QtCore.QObject):
     message = QtCore.pyqtSignal(str)
     def __init__(self, parent=None):
         super(MyStream, self).__init__(parent)
     def write(self, message):
         self.message.emit(str(message))
+'''
 class RunnerWidget(QWidget):
     def __init__(self, project=None):
         super().__init__()
@@ -64,33 +67,42 @@ class RunnerWidget(QWidget):
         self.stop_button.setEnabled(False)
 
         # Script execution progress terminal
-        self.script_progress_terminal = QtWidgets.QTextEdit(self)
+        self.script_progress_terminal = QtWidgets.QTextEdit()
         self.script_progress_terminal.setGeometry(QtCore.QRect(370,30,151,411))
         self.script_progress_terminal.setObjectName("script_progress_terminal")
+        
+        self.proc = QtCore.QProcess(self)
+        self.error = False
+        #self.proc.readyReadStandardOutput.connect(self.stdoutReady)
+        self.proc.readyReadStandardError.connect(self.stderrReady)
+        #self.proc.readyRead.connect(self.print_progress)
+        self.proc.started.connect(lambda: self.run_button.setEnabled(False))
+        self.proc.finished.connect(lambda: self.run_button.setEnabled(True))
+        self.proc.finished.connect(self.success_message)
         '''
         # TODO: Make this work
         self.script_progress_terminal = QtWidgets.QGraphicsView(self)
         self.script_progress_terminal.setGeometry(QtCore.QRect(370, 30, 151, 411))
         self.script_progress_terminal.setObjectName("script_progress_terminal")
-        '''
+        
         # Script execution progress bar
         # TODO: Make this work
         self.script_progress_bar = QtWidgets.QProgressBar(self)
         self.script_progress_bar.setGeometry(QtCore.QRect(370, 0, 161, 20))
         self.script_progress_bar.setProperty("value", 24)
         self.script_progress_bar.setObjectName("script_progress_bar")
-
+        
         # Script execution timeout
         # TODO: Make this work
         self.script_timeout = QtWidgets.QSpinBox(self)
         self.script_timeout.setGeometry(QtCore.QRect(370, 450, 151, 22))
         self.script_timeout.setMinimum(1)
         self.script_timeout.setObjectName("script_timeout")
-
+        '''
         # RunnerWidget layout
-        self.gridLayout.addWidget(self.script_progress_bar,0,3)
+        #self.gridLayout.addWidget(self.script_progress_bar,0,3)
         self.gridLayout.addWidget(self.script_progress_terminal,1,3,1,1)
-        self.gridLayout.addWidget(self.script_timeout,2,3)
+        #self.gridLayout.addWidget(self.script_timeout,2,3)
         self.gridLayout.addWidget(self.run_button, 3, 3)
         self.gridLayout.addWidget(self.stop_button, 2,2)
         self.gridLayout.addWidget(self.load_script_button,0,0,1,1)
@@ -107,17 +119,55 @@ class RunnerWidget(QWidget):
         self.stop_button.setText(_translate("RunnerTab", "Stop"))
 
     def execute_script(self):
+        self.error = False
         script_py = 'python ' + self.script_name.replace('.json', '.py')
         #os.system('python ' + script_py)
-        self.proc = subprocess.Popen(script_py, stdout=subprocess.PIPE, shell=True)
+        #self.proc = subprocess.Popen(script_py, stdout=subprocess.PIPE, shell=True)
+        #self.proc = subprocess.Popen(script_py)
+        #self.proc = subprocess.Popen(script_py, stdout=PIPE, stderr=STDOUT, shell=True, timeout=10, preexec_fn=os.setsid)
+        #self.proc = subprocess.Popen(script_py, stdout=subprocess.PIPE)
+        #output, error = self.proc.communicate()
+        #self.script_progress_terminal.insertPlainText(error.decode("utf-8"))
+        self.proc.start(script_py)
+        #self.proc.started.connect(lambda:self.run_button.setEnabled(False))
+        #self.proc.finished.connect(lambda:self.run_button.setEnabled(True))
         self.stop_button.setEnabled(True)
 
-    def print_progress(self, message):
-        self.script_progress_terminal.moveCursor(QtGui.QTextCursor.End)
-        self.script_progress_terminal.insertPlainText(message)
+    def print_progress(self, text):
+        cursor = self.script_progress_terminal.textCursor()
+        cursor.movePosition(cursor.End)
+
+        #cursor.insertText(str(self.proc.readAll().data().decode(CP_console)))
+        cursor.insertText(text)
+        #self.script_progress_terminal.ensureCursorVisible()
+        #self.script_progress_terminal.moveCursor(QtGui.QTextCursor.End)
+        #self.script_progress_terminal.insertPlainText(self.proc.communicate())
+
+    def stdoutReady(self):
+        for item in self.proc.readAllStandardOutput():
+            self.print_progress(item.decode("utf-8"))
+        '''
+        text = self.proc.readAllStandardOutput()
+        text.decode("UTF-8")
+        self.print_progress(text)
+        '''
+    def stderrReady(self):
+        for item in self.proc.readAllStandardError():
+            self.print_progress(item.decode("utf-8"))
+        '''    
+        self.error = str(self.proc.readAllStandardError())
+        self.error.strip()
+        self.print_progress(self.error)
+        '''
+        self.error = True
+        
+    
+    def success_message(self):
+        if self.error == False:
+            self.print_progress("Success\n")
 
     def stop_script(self):
-        self.proc.terminate()
+        self.proc.kill()
         self.stop_button.setEnabled(False)
 
 
@@ -129,6 +179,7 @@ class RunnerWidget(QWidget):
             with open(self.script_name, 'r') as f:
                 self.script_read.setPlainText(f.read())
             self.run_button.setEnabled(True)
+            self.script_progress_terminal.clear()
             
             # load obs file if any
             try:
@@ -152,8 +203,8 @@ if __name__ == "__main__":
     ui = RunnerWidget()
     ui.show()
     #sys.exit(app.exec_())
-    myStream = MyStream()
-    myStream.message.connect(ui.print_progress)
-    sys.stdout = myStream 
+    #myStream = MyStream()
+    #myStream.message.connect(ui.print_progress)
+    #sys.stdout = myStream 
     sys.exit(app.exec_())
    
