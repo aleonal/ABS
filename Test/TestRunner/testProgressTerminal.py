@@ -1,4 +1,4 @@
-#import time
+import time
 
 print("I am here doing something")
 time.sleep(3)

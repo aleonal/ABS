@@ -15,7 +15,9 @@ from PyQt5.QtCore import *
 import sys
 import os
 import subprocess, signal, time, ctypes
-CP_console = "cp" + str(ctypes.cdll.kernel32.GetConsoleOutputCP())
+#CP_console = "cp" + str(ctypes.cdll.kernel32.GetConsoleOutputCP())
+import re 
+
 
 '''
 class MyStream(QtCore.QObject):
@@ -73,8 +75,10 @@ class RunnerWidget(QWidget):
         
         self.proc = QtCore.QProcess(self)
         self.error = False
+        self.stop = False
         #self.proc.readyReadStandardOutput.connect(self.stdoutReady)
         self.proc.readyReadStandardError.connect(self.stderrReady)
+        self.proc.stateChanged.connect(self.handle_state)
         #self.proc.readyRead.connect(self.print_progress)
         self.proc.started.connect(lambda: self.run_button.setEnabled(False))
         self.proc.finished.connect(lambda: self.run_button.setEnabled(True))
@@ -89,7 +93,8 @@ class RunnerWidget(QWidget):
         # TODO: Make this work
         self.script_progress_bar = QtWidgets.QProgressBar(self)
         self.script_progress_bar.setGeometry(QtCore.QRect(370, 0, 161, 20))
-        self.script_progress_bar.setProperty("value", 24)
+        self.script_progress_bar.setRange(0,100)
+        #self.script_progress_bar.setProperty("value", 24)
         self.script_progress_bar.setObjectName("script_progress_bar")
         
         # Script execution timeout
@@ -120,6 +125,7 @@ class RunnerWidget(QWidget):
 
     def execute_script(self):
         self.error = False
+        self.stop = False
         script_py = 'python ' + self.script_name.replace('.json', '.py')
         #os.system('python ' + script_py)
         #self.proc = subprocess.Popen(script_py, stdout=subprocess.PIPE, shell=True)
@@ -128,6 +134,7 @@ class RunnerWidget(QWidget):
         #self.proc = subprocess.Popen(script_py, stdout=subprocess.PIPE)
         #output, error = self.proc.communicate()
         #self.script_progress_terminal.insertPlainText(error.decode("utf-8"))
+        self.print_progress("Executing:\n " + self.script_name + "...\n")
         self.proc.start(script_py)
         #self.proc.started.connect(lambda:self.run_button.setEnabled(False))
         #self.proc.finished.connect(lambda:self.run_button.setEnabled(True))
@@ -144,9 +151,13 @@ class RunnerWidget(QWidget):
         #self.script_progress_terminal.insertPlainText(self.proc.communicate())
 
     def stdoutReady(self):
+        data = self.proc.readAllStandardOutput()
+        stdout = bytes(data).decode("utf-8")
+        self.print_progress(stdout)
+        '''
         for item in self.proc.readAllStandardOutput():
             self.print_progress(item.decode("utf-8"))
-        '''
+       
         text = self.proc.readAllStandardOutput()
         text.decode("UTF-8")
         self.print_progress(text)
@@ -154,6 +165,7 @@ class RunnerWidget(QWidget):
     def stderrReady(self):
         for item in self.proc.readAllStandardError():
             self.print_progress(item.decode("utf-8"))
+        
         '''    
         self.error = str(self.proc.readAllStandardError())
         self.error.strip()
@@ -161,13 +173,22 @@ class RunnerWidget(QWidget):
         '''
         self.error = True
         
-    
+    def handle_state(self, state):
+        states = {QProcess.NotRunning: "Not running",
+                  QProcess.Starting: "Starting",
+                  QProcess.Running: "Running",
+        }
+        state_name = states[state]
+        self.print_progress(f"\nState changed: {state_name}\n")
+
     def success_message(self):
-        if self.error == False:
-            self.print_progress("Success\n")
+        if not self.stop and not self.error:
+            self.print_progress("\nSuccess\n")
+        
 
     def stop_script(self):
         self.proc.kill()
+        self.stop = True
         self.stop_button.setEnabled(False)
 
 
