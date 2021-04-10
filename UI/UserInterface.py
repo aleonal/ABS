@@ -143,13 +143,16 @@ class Ui_MainWindow(QMainWindow):
 
     def open_directory(self):
         directory = str(QtWidgets.QFileDialog.getExistingDirectory(QtWidgets.QFileDialog(), "Select Directory", directory=os.path.realpath(os.getcwd())))
-        ProjectController.load_project(directory)
 
-        if(ProjectController.is_project_loaded):
-            QMessageBox.information(self.centralwidget, "Success", "Project has been loaded successfully.")
-            self.update_tabs()
+        if (len(directory) <= 0):
+            return
         else:
-            QMessageBox.critical(self.centralwidget, "Project Failure", "Project could not be loaded. Check that directory contains appropriate files")
+            ProjectController.load_project(directory)
+            if(ProjectController.is_project_loaded):
+                QMessageBox.information(self.centralwidget, "Success", "Project has been loaded successfully.")
+                self.update_tabs()
+            else:
+                QMessageBox.critical(self.centralwidget, "Project Failure", "Project could not be loaded. Check that directory contains appropriate files")
 
     def save_file(self):
         file = str(QtWidgets.QFileDialog.getSaveFileName(QtWidgets.QFileDialog(), "Save File", directory=os.path.realpath(os.getcwd())))
@@ -189,6 +192,15 @@ class Ui_MainWindow(QMainWindow):
         self.actionOpen_Builder.setText(_translate("MainWindow", "Open Builder"))
         self.actionOpen_Runner.setText(_translate("MainWindow", "Open Runner"))
         self.actionOpen_Packager.setText(_translate("MainWindow", "Open Packager"))
+
+    def close_window(self):
+        print("Close Window")
+        self.close()
+
+    def closeEvent(self,event):
+        print("Close Event")
+        event.accept()
+        sys.exit()
 
 
 if __name__ == "__main__":
