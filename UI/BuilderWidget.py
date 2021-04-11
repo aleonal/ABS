@@ -6,6 +6,7 @@ from PyQt5.QtGui import QStandardItem
 from PyQt5.QtCore import *
 import os
 import json
+import datetime
 from src.ProjectController import ProjectController
 from src import Event
 from src.ScriptGenerator import ScriptGenerator
@@ -177,10 +178,14 @@ class BuilderWidget(QWidget):
     def copyAllRelationships(self):
         for index in range(self.listrelationships.topLevelItemCount()):
             item = self.listrelationships.topLevelItem(index)
-            newItem = self.listdependencies.addNode(item.text(0), item.text(1), item.text(2), self.listdependencies, True)
+            item_index = self.listrelationships.indexFromItem(item)
+            deltaTime = self.calcDeltaTime(node=item, index=item_index)
+            newItem = self.listdependencies.addNode(item.text(0), deltaTime.__str__(), item.text(2), self.listdependencies, True)
             for childIndex in range(item.childCount()):
                 child = item.child(childIndex)
-                self.listdependencies.addNode(child.text(0), child.text(1), child.text(2), newItem, True)
+                child_index_obj = self.listrelationships.indexFromItem(child)
+                deltaTime = self.calcDeltaTime(node=child, index=child_index_obj)
+                self.listdependencies.addNode(child.text(0), deltaTime.__str__(), child.text(2), newItem, True)
 
     def loadDependencies(self):
         with open(ProjectController.get_dependencies_file()) as f:
@@ -213,9 +218,35 @@ class BuilderWidget(QWidget):
     def moveNode(self):
         if len(self.listrelationships.selectedItems()) > 0:
             selectedItem = self.listrelationships.selectedItems()[0]
-            newItem = self.listdependencies.addNode(selectedItem.text(0), selectedItem.text(1), selectedItem.text(2), self.listdependencies, True)
+            selectedIndex = self.listrelationships.selectedIndexes()[0]
+            deltaTime = self.calcDeltaTime(node=selectedItem, index=selectedIndex)
+            if len(self.listdependencies.selectedItems()) > 0:
+                newItem = self.listdependencies.addNode(selectedItem.text(0), deltaTime.__str__(), selectedItem.text(2), self.listrelationships.selectedItems()[0], True)
+            else:
+                newItem = self.listdependencies.addNode(selectedItem.text(0), deltaTime.__str__(), selectedItem.text(2), self.listdependencies, True)
+            for childIndex in range(selectedItem.childCount()):
+                child = selectedItem.child(childIndex)
+                child_index_obj = self.listrelationships.indexFromItem(child)
+                deltaTime = self.calcDeltaTime(node=child, index=child_index_obj)
+                self.listdependencies.addNode(child.text(0), deltaTime.__str__(), child.text(2), newItem, True)
         else:
             QMessageBox.critical(self, "Project Error", "No node selected.")
+
+
+    def calcDeltaTime(self, node=None, index=None):
+        if node is None or index is None:
+            return datetime.time(0,0,2)
+        else: 
+            deltaTime = datetime.time(0,0,2)
+            if(index.row()>0):
+                prevItem = self.listrelationships.itemAt(index.row()-1, index.column())
+                prevTime = datetime.datetime.strptime(prevItem.text(1), "%Y-%m-%dT%H:%M:%S").time()
+                deltaTime = datetime.datetime.strptime(node.text(1), "%Y-%m-%dT%H:%M:%S").time()
+                if prevTime < deltaTime:
+                    delatDateTime = datetime.datetime.combine(datetime.datetime.today(),deltaTime) - datetime.datetime.combine(datetime.datetime.today(),prevTime)
+                    date = datetime.datetime.strptime("1900-01-01T00:00:00", "%Y-%m-%dT%H:%M:%S") + delatDateTime
+                    deltaTime = date.time()
+            return deltaTime
     
     def populateBranch(self, children=None, parent=None):
         for child in children:
@@ -468,25 +499,25 @@ class ABSDependencyTreeWidget(QTreeWidget):
                 if dropIndicator == QAbstractItemView.AboveItem:
                     # manage a boolean for the case when you are above an item
                     for it in tree_items:
-                        parent = self.addNode(it.text(0), it.text(1), it.text(2), parent, True)
+                        parent = self.addNode(it.text(0), it.text(2), it.text(4), parent, True)
                     return
                 elif dropIndicator == QAbstractItemView.BelowItem:
                     #something when being below an item
                     for it in tree_items:
-                        parent = self.addNode(it.text(0), it.text(1), it.text(2), parent, True)
+                        parent = self.addNode(it.text(0), it.text(2), it.text(4), parent, True)
                     return
                 elif dropIndicator == QAbstractItemView.OnItem:
                     #you're on an item, maybe add the current one as a child
                     parent = self.itemAt(dropIndex.row(), dropIndex.column())
                     for it in tree_items:
-                        self.addNode(it.text(0), it.text(1), it.text(2), parent, True)
+                        self.addNode(it.text(0), it.text(2), it.text(4), parent, True)
                     return
                 elif dropIndicator == QAbstractItemView.OnViewport:
                     #you are not on your tree
                     return
             
             for it in tree_items:
-                        parent = self.addNode(it.text(0), it.text(1), it.text(2), parent, True)
+                        parent = self.addNode(it.text(0), it.text(2), it.text(4), parent, True)
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
