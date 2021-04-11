@@ -99,7 +99,7 @@ class Ui_MainWindow(QMainWindow):
         self.actionSave_Project = QtWidgets.QAction(MainWindow)
         self.actionSave_Project.setObjectName("actionSave_Project")
         self.actionSave_Project = QtWidgets.QAction(MainWindow, triggered=self.save_file)#save project
-        self.actionExit = QtWidgets.QAction(MainWindow)
+        self.actionExit = QtWidgets.QAction(MainWindow, triggered=self.exit)
         self.actionExit.setObjectName("actionExit")
         self.actionUndo = QtWidgets.QAction(MainWindow)
         self.actionUndo.setObjectName("actionUndo")
@@ -139,7 +139,6 @@ class Ui_MainWindow(QMainWindow):
     def new_project(self):
         self.project_window = CreateProjectWidget(previous_window=self)
         self.project_window.show()
-
 
     def open_directory(self):
         directory = str(QtWidgets.QFileDialog.getExistingDirectory(QtWidgets.QFileDialog(), "Select Directory", directory=os.path.realpath(os.getcwd())))
@@ -200,6 +199,9 @@ class Ui_MainWindow(QMainWindow):
     def closeEvent(self,event):
         print("Close Event")
         event.accept()
+        sys.exit()
+
+    def exit(self):
         sys.exit()
 
 
