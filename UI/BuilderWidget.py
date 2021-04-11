@@ -153,10 +153,24 @@ class BuilderWidget(QWidget):
                 eventType = "keypresses_id"
             if "clicks_id" in parent.keys():
                 eventType = "clicks_id"
+            if "audit_id" in parent.keys():
+                eventType = "audit_id"
+            if "timed_id" in parent.keys():
+                eventType = "timed_id"
+            if "traffic_all_id" in parent.keys():
+                eventType = "traffic_all_id"
+            if "traffic_xy_id" in parent.keys():
+                eventType = "traffic_xy_id"
+            if "suricata_id" in parent.keys():
+                eventType = "suricata_id"
+
+            content = ""
+            if "content" in parent.keys():
+                content = parent['content']
             newNode = self.listrelationships.addNode(
                 eventType, 
                 parent['start'], 
-                parent['content'],
+                content,
                 self.listrelationships)
             self.populateBranch(group[1:], newNode)
 
@@ -220,11 +234,15 @@ class BuilderWidget(QWidget):
                 eventType = "traffic_xy_id"
             if "suricata_id" in child.keys():
                 eventType = "suricata_id"
+
+            content = ""
+            if "content" in child.keys():
+                content = child['content']
             if eventType != "traffic_xy_id":
                 newNode = self.listrelationships.addNode(
                     eventType, 
                     child['start'], 
-                    child['content'],
+                    content,
                     parent)
             
     def openArtifacts(self):
@@ -357,6 +375,7 @@ class ABSRelationshipTreeWidget(QTreeWidget):
         self.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.setDefaultDropAction(Qt.CopyAction)
         self.setSortingEnabled(True)
+        self.sortByColumn(1, QtCore.Qt.AscendingOrder)
         self.setWordWrap(True)
         self.setSortingEnabled(True)
 

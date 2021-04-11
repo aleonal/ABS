@@ -183,7 +183,8 @@ class ProjectController:
                 cls._time_frame = json_data['time_frame']
                 cls._eceld_project_root = json_data['eceld_root']
                 cls._project_name = json_data['project_name']
-                cls._dependencies_file = json_data['dependencies_file']
+                if 'dependencies_file' in json_data.keys():
+                    cls._dependencies_file = json_data['dependencies_file']
 
                 # project root is based on the directory of "project_config", so I made it so it works in any directory
                 cls._project_directory = full_directory
