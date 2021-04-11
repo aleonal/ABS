@@ -16,6 +16,8 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 import json
 import os
+from tkinter import *
+import tkinter.messagebox
 
 class CreateProjectWidget(QWidget):
     def __init__(self, projectInfo=None, project_status=True, previous_window=None):
@@ -129,6 +131,9 @@ class CreateProjectWidget(QWidget):
 
         self.create_button.pressed.connect(self.CausationExtractor)
 
+        msg = tkinter.Tk()
+        msg.geometry('0x0')
+
         self.retranslateUi()
         QtCore.QMetaObject.connectSlotsByName(self)
 
@@ -150,13 +155,28 @@ class CreateProjectWidget(QWidget):
         self.salientart_button.setText(_translate("Widget", "Edit Salient Artifacts"))
         self.create_button.setText(_translate("Widget", "Create Project"))
         self.setWindowIcon(QtGui.QIcon("A.png"))# A icon
-    
+
+    def errorRootMsg(self):
+        tkinter.messagebox.showinfo("Error", "Not a Valid Root Directory")
+
+    def errorDataMsg(self):
+        tkinter.messagebox.showinfo("Error", "Not a Valid Imported Data Directory")
+
     def CausationExtractor(self):
-        ProjectController.create_project(self.import_field.text(), self.root_field.text(), "Test",self.timeframe_field.text())
-        self.CEWidget = CausationExtractorWidget(previous_window=self)
-        self.CEWidget.show()
-        self.previous_window.update_tabs()
-        self.hide()
+        check_datafolder = os.path.isdir(self.import_field.text())
+        check_rootfolder = os.path.isdir(self.root_field.text())
+        if not (check_rootfolder):
+          print("Not a Valid Root Directory")
+          self.errorRootMsg()
+        elif not(check_datafolder):
+          print("Not a Valid Imported Data Directory")
+          self.errorDataMsg()
+        else:
+          ProjectController.create_project(self.import_field.text(), self.root_field.text(), "Test",self.timeframe_field.text())
+          self.CEWidget = CausationExtractorWidget(previous_window=self)
+          self.CEWidget.show()
+          self.previous_window.update_tabs()
+          self.hide()
 
     def GetProjectRoot(self):
         self.project_root = QFileDialog.getExistingDirectory(self, 'Open Directory')
@@ -179,11 +199,10 @@ class CreateProjectWidget(QWidget):
         #(TODO): show dialog confirming action. If yes, close, if not continue
 
         if self.previous_window:
-            self.previous_window.show()
+#            self.previous_window.show()
             self.hide()
         else:
             self.hide()
-
 
 if __name__ == "__main__":
     import sys
