@@ -156,7 +156,7 @@ class BuilderWidget(QWidget):
                 eventType = "keypresses_id"
             if "clicks_id" in parent.keys():
                 eventType = "clicks_id"
-            if "audit_id" in parent.keys():
+            if "auditd_id" in parent.keys():
                 eventType = "audit_id"
             if "timed_id" in parent.keys():
                 eventType = "timed_id"
@@ -242,8 +242,25 @@ class BuilderWidget(QWidget):
             deltaTime = datetime.time(0,0,2)
             if(index.row()>0):
                 prevItem = self.listrelationships.itemAt(index.row()-1, index.column())
-                prevTime = datetime.datetime.strptime(prevItem.text(1), "%Y-%m-%dT%H:%M:%S").time()
-                deltaTime = datetime.datetime.strptime(node.text(1), "%Y-%m-%dT%H:%M:%S").time()
+                if prevItem is not None:
+                    try:
+                        prevTime = datetime.datetime.strptime(prevItem.text(1), "%Y-%m-%dT%H:%M:%S").time()
+                    except:
+                        try:
+                            prevTime = datetime.datetime.strptime(prevItem.text(1), "%m/%d/%YT%H:%M:%S").time()
+                        except:
+                            print("Event " + prevItem.text(0) + " time value does not match format %Y-%m-%dT%H:%M:%S or format %m/%d/%YT%H:%M:%S. \n DateTime provided: " + prevItem.text(1)) 
+                            return datetime.time(0,0,2)
+                else:
+                    return datetime.time(0,0,2)
+                try:
+                    deltaTime = datetime.datetime.strptime(node.text(1), "%Y-%m-%dT%H:%M:%S").time()
+                except:
+                    try:
+                        deltaTime = datetime.datetime.strptime(node.text(1), "%m/%d/%YT%H:%M:%S").time()
+                    except:
+                        print("Event " + node.text(0) + " time value does not match format %Y-%m-%dT%H:%M:%S or format %m/%d/%YT%H:%M:%S. \n DateTime provided: " + node.text(1)) 
+                        return datetime.time(0,0,2)
                 if prevTime < deltaTime:
                     delatDateTime = datetime.datetime.combine(datetime.datetime.today(),deltaTime) - datetime.datetime.combine(datetime.datetime.today(),prevTime)
                     date = datetime.datetime.strptime("1900-01-01T00:00:00", "%Y-%m-%dT%H:%M:%S") + delatDateTime
@@ -257,7 +274,7 @@ class BuilderWidget(QWidget):
                 eventType = "keypresses_id"
             if "clicks_id" in child.keys():
                 eventType = "clicks_id"
-            if "audit_id" in child.keys():
+            if "auditd_id" in child.keys():
                 eventType = "audit_id"
             if "timed_id" in child.keys():
                 eventType = "timed_id"
@@ -440,9 +457,8 @@ class ABSDependencyTreeWidget(QTreeWidget):
         self.setDragDropMode(QAbstractItemView.DragDrop)
         self.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.setDefaultDropAction(Qt.CopyAction)
-        self.setSortingEnabled(True)
+        self.setSortingEnabled(False)
         self.setWordWrap(True)
-        self.setSortingEnabled(True)
 
     def addNode(self, _type=None, time=None, content=None, parent=None, canEdit=False):
         if(parent is not None):

@@ -10,7 +10,7 @@ class ScriptGenerator():
 
     def generate_script(self, script_name):
 
-        script = "import pyautogui\nfrom PIL import Image\nimport os, os.path\n\n"
+        script = "import pyautogui\nfrom PIL import Image\nimport os, os.path\nbreakpoint()\n\n"
         obs = []
 
         with open(script_name) as f:
@@ -53,8 +53,11 @@ class ScriptGenerator():
         p.write(script)
         p.close()
 
+        '''
+        TODO: Figure out how obs need to delivered to the runner/validator
         with open(script_name.replace(".json", "Obs.json"), "w") as obsFile:
             json.dump(obs, obsFile, indent=2)
+        '''
 
 if __name__ == "__main__":
-    ScriptGenerator(r"C:\Users\valma\OneDrive\Desktop\practicum-1\Test\TestCE\testObsDependencies.json")
+    ScriptGenerator(r"C:\Users\valma\OneDrive\Desktop\ABS\Test\TestRunner\testSG.json")
