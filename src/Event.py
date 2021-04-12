@@ -23,7 +23,17 @@ class Event:
         return self._className 
     
     def set_start(self, start):
-        self._start = datetime.datetime.strptime(start, '%Y-%m-%dT%H:%M:%S')
+        if '/' in start:
+            try:
+                self._start = datetime.datetime.strptime(start, "%Y/%m/%dT%H:%M:%S")
+            except Exception:
+                self._start = datetime.datetime.strptime(start, "%d/%m/%YT%H:%M:%S")
+        elif '-' in start:
+            try:
+                self._start = datetime.datetime.strptime(start, "%Y-%m-%dT%H:%M:%S")
+            except Exception:
+                self._start = datetime.datetime.strptime(start, "%d-%m-%YT%H:%M:%S")
+        
     def get_start(self):
         return self._start
     def get_start_tostring(self):

@@ -148,6 +148,8 @@ class BuilderWidget(QWidget):
     def populateTrees(self):
         eventGroups = ProjectController.load_event_list()
         for group in eventGroups:
+            if len(group) < 1:
+                continue
             parent = group[0]
             eventType = ""
             if "keypresses_id" in parent.keys():

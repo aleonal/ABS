@@ -1,0 +1,4 @@
+[
+    {"type": "traffic", "artifact": "tcp"},
+    {"type": "clicks", "artifact": "terminal"}
+]

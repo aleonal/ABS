@@ -68,17 +68,28 @@ class CausationExtractor:
     
     #Import events
     def import_events(self):
-        self._import_event("auditd", "/parsed/auditd/auditdData.JSON")
-        self._import_event("clicks", "/parsed/pykeylogger/click.JSON")
-        self._import_event("keypresses", "/parsed/pykeylogger/keypressData.JSON")
-        self._import_event("timed", "/parsed/pykeylogger/timed.JSON")
-        self._import_event("traffic", "/parsed/tshark/networkDataAll.JSON")
-        self._import_event("trafficThroughput", "/parsed/tshark/networkDataXY.JSON")
-        self._import_event("suricata", "/parsed/suricata/suricata.JSON")
+        export = ""
+        for root, subdirs, files in os.walk(self._eceld_project_root):
+            for d in subdirs:
+                if 'ecel-export' in d:
+                    export = d
+                    break
+
+            if len(export) > 0:
+                break
+		
+        export = self._eceld_project_root + "/" + export
+        self._import_event("auditd", export + "/parsed/auditd/auditdData.JSON")
+        self._import_event("clicks", export + "/parsed/pykeylogger/click.JSON")
+        self._import_event("keypresses", export + "/parsed/pykeylogger/keypressData.JSON")
+        self._import_event("timed", export + "/parsed/pykeylogger/timed.JSON")
+        self._import_event("traffic", export + "/parsed/tshark/networkDataAll.JSON")
+        self._import_event("trafficThroughput", export + "/parsed/tshark/networkDataXY.JSON")
+        self._import_event("suricata", export + "/parsed/suricata/suricata.JSON")
 
     def _import_event(self, type, directory):
         try:
-            with open(self._eceld_project_root+directory) as f:
+            with open(directory) as f:
                 data = json.load(f)
                 for d in data:
                     e = d
@@ -102,7 +113,8 @@ class CausationExtractor:
                         self._event_list[type] = [obj]
                     else:
                         self._event_list[type].append(obj)
-        except Exception:
+        except Exception as e:
+            print(e)
             print("Failed to import " + type)
 
     #sort all events by time

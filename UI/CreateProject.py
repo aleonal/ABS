@@ -25,8 +25,8 @@ class CreateProjectWidget(QWidget):
         self.projectInfo = projectInfo
         self.previous_window = previous_window
         self.artifacts_window = SalientArtifactWindow()
-        self.project_root = "C:\\Test\\Ping\\TestOutputCE"
-        self.ECELD_root = r"C:\Test\Ping\ecel-export_1613199564"
+        self.project_root = os.getcwd()
+        self.ECELD_root = os.getcwd()
         self.UI()
         self.show()
     def UI(self):

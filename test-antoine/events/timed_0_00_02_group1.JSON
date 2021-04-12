@@ -1,0 +1,44 @@
+[
+  {
+    "auditd_id": 0,
+    "content": "service /usr/sbin/service auditd stop",
+    "className": "auditd",
+    "start": "04/12/2021T08:46:02"
+  },
+  {
+    "auditd_id": 1,
+    "content": "basename /usr/sbin/service",
+    "className": "auditd",
+    "start": "04/12/2021T08:46:02"
+  },
+  {
+    "auditd_id": 2,
+    "content": "xhost -SI:localuser:root",
+    "className": "auditd",
+    "start": "04/12/2021T08:46:02"
+  },
+  {
+    "auditd_id": 3,
+    "content": "basename /usr/sbin/service",
+    "className": "auditd",
+    "start": "04/12/2021T08:46:02"
+  },
+  {
+    "auditd_id": 4,
+    "content": "systemctl --quiet is-active multi-user.target",
+    "className": "auditd",
+    "start": "04/12/2021T08:46:02"
+  },
+  {
+    "auditd_id": 5,
+    "content": "systemctl list-unit-files --full \u0000",
+    "className": "auditd",
+    "start": "04/12/2021T08:46:02"
+  },
+  {
+    "keypresses_id": 0,
+    "content": "asd",
+    "className": "Keypresses",
+    "start": "04/12/2021T08:46:02"
+  }
+]

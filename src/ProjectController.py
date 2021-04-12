@@ -285,28 +285,28 @@ class ProjectController:
                 with open(os.path.join(cls._project_directory  / 'events', file), 'r') as f:
                     events = json.load(f)
 
-                    # for e in events:
-                    #     k = list(e.keys())
+                    for e in events:
+                        k = list(e.keys())
 
-                    #     if 'audit_id' in k:
-                    #         obj = Auditd(e['auditd_id'], e['content'], "auditd", e['start'])
-                    #     elif 'clicks_id' in k:
-                    #         obj = Clicks(e['clicks_id'], e['content'], e['type'], e['classname'], e['start'])
-                    #     elif 'keypresses_id' in k:
-                    #         obj = Keypresses(e['keypresses_id'], e['content'], e['className'], e['start'])
-                    #     elif 'timed_id' in k:
-                    #         obj = Timed(e["timed_id"], e['type'], e['classname'], e['content'], e['start'])
-                    #     elif 'traffic_all_id' in k:
-                    #         obj = Traffic(e['traffic_all_id'], e['content'], e['className'], e['title'], e['start'])
-                    #     elif 'traffic_xy_id' in k:
-                    #         obj = TrafficThroughput(e['traffic_xy_id'], e['className'], e['start'], e['y'])
-                    #     elif 'suricata_id' in k:
-                    #         obj = Suricata(e['suricata_id'], e['suricata_rule_id'], e['content'], e['className'], e['start'])
+                        if 'auditd_id' in k:
+                            obj = Auditd(e['auditd_id'], e['content'], "auditd", e['start'])
+                        elif 'clicks_id' in k:
+                            obj = Clicks(e['clicks_id'], e['content'], e['type'], e['classname'], e['start'])
+                        elif 'keypresses_id' in k:
+                            obj = Keypresses(e['keypresses_id'], e['content'], e['className'], e['start'])
+                        elif 'timed_id' in k:
+                            obj = Timed(e["timed_id"], e['type'], e['classname'], e['content'], e['start'])
+                        elif 'traffic_all_id' in k:
+                            obj = Traffic(e['traffic_all_id'], e['content'], e['className'], e['title'], e['start'])
+                        elif 'traffic_xy_id' in k:
+                            obj = TrafficThroughput(e['traffic_xy_id'], e['className'], e['start'], e['y'])
+                        elif 'suricata_id' in k:
+                            obj = Suricata(e['suricata_id'], e['suricata_rule_id'], e['content'], e['className'], e['start'])
                         
-                    #     if k[0] not in event_list:
-                    #         event_list[k[0]] = [obj]
-                    #     else:
-                    #         event_list[k[0]].append(obj)
+                        if k[0] not in event_list:
+                            event_list[k[0]] = [obj]
+                        else:
+                            event_list[k[0]].append(obj)
                             
                 timed_groups.append(events)
             

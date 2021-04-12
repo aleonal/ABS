@@ -12,6 +12,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtGui import QStandardItem
 from PyQt5.QtCore import *
+from src.ValidatorController import ValidatorController
 import sys
 import os
 import subprocess, signal, time, ctypes
@@ -126,19 +127,21 @@ class RunnerWidget(QWidget):
     def execute_script(self):
         self.error = False
         self.stop = False
-        script_py = 'python ' + self.script_name.replace('.json', '.py')
-        #os.system('python ' + script_py)
+        script_py = self.script_name.replace('.json', '.py')
         #self.proc = subprocess.Popen(script_py, stdout=subprocess.PIPE, shell=True)
         #self.proc = subprocess.Popen(script_py)
         #self.proc = subprocess.Popen(script_py, stdout=PIPE, stderr=STDOUT, shell=True, timeout=10, preexec_fn=os.setsid)
         #self.proc = subprocess.Popen(script_py, stdout=subprocess.PIPE)
         #output, error = self.proc.communicate()
         #self.script_progress_terminal.insertPlainText(error.decode("utf-8"))
-        self.print_progress("Executing:\n " + self.script_name + "...\n")
-        self.proc.start(script_py)
+        #self.print_progress("Executing:\n " + self.script_name + "...\n")
+        #self.proc.start(script_py)
         #self.proc.started.connect(lambda:self.run_button.setEnabled(False))
         #self.proc.finished.connect(lambda:self.run_button.setEnabled(True))
+        self.v = ValidatorController(script_py)
+        self.v.run_validation()
         self.stop_button.setEnabled(True)
+        self.run_button.setEnabled(False)
 
     def print_progress(self, text):
         cursor = self.script_progress_terminal.textCursor()
@@ -185,11 +188,12 @@ class RunnerWidget(QWidget):
         if not self.stop and not self.error:
             self.print_progress("\nSuccess\n")
         
-
     def stop_script(self):
-        self.proc.kill()
+        self.v.p1.kill()
+        self.v.p2.kill()
         self.stop = True
         self.stop_button.setEnabled(False)
+        self.run_button.setEnabled(True)
 
 
     def display_script(self):
