@@ -114,7 +114,7 @@ class BuilderWidget(QWidget):
         self.generate_script_button.setEnabled(False)
 
         # Load Dependencies Button
-        self.load_button = QPushButton('Load Project', self)
+        self.load_button = QPushButton('Load Script', self)
         self.gridLayout.addWidget(self.load_button, 3, 2)
         self.load_button.setSizePolicy(QtWidgets.QSizePolicy.Fixed,QtWidgets.QSizePolicy.Fixed)
         self.load_button.setStyleSheet("background-color: lightblue")
@@ -122,7 +122,7 @@ class BuilderWidget(QWidget):
         self.load_button.setEnabled(False)
 
         # Save Button
-        self.save_button = QPushButton('Save Project', self)
+        self.save_button = QPushButton('Save Script', self)
         self.gridLayout.addWidget(self.save_button, 3, 3)
         self.save_button.setSizePolicy(QtWidgets.QSizePolicy.Fixed,QtWidgets.QSizePolicy.Fixed)
         self.save_button.setStyleSheet("background-color: lightblue")

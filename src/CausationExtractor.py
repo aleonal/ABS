@@ -69,16 +69,13 @@ class CausationExtractor:
     #Import events
     def import_events(self):
         export = ""
+
         for root, subdirs, files in os.walk(self._eceld_project_root):
             for d in subdirs:
                 if 'ecel-export' in d:
                     export = d
-                    break
-
-            if len(export) > 0:
-                break
-		
         export = self._eceld_project_root + "/" + export
+
         self._import_event("auditd", export + "/parsed/auditd/auditdData.JSON")
         self._import_event("clicks", export + "/parsed/pykeylogger/click.JSON")
         self._import_event("keypresses", export + "/parsed/pykeylogger/keypressData.JSON")
@@ -113,8 +110,7 @@ class CausationExtractor:
                         self._event_list[type] = [obj]
                     else:
                         self._event_list[type].append(obj)
-        except Exception as e:
-            print(e)
+        except Exception:
             print("Failed to import " + type)
 
     #sort all events by time

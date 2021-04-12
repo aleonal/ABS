@@ -140,10 +140,10 @@ class RunnerWidget(QWidget):
         #self.proc.start(script_py)
         #self.proc.started.connect(lambda:self.run_button.setEnabled(False))
         #self.proc.finished.connect(lambda:self.run_button.setEnabled(True))
+
         self.v = ValidatorController(script_py)
         self.v.run_validation()
-        self.stop_button.setEnabled(True)
-        self.run_button.setEnabled(False)
+        self.stop_button.setEnabled(True)            
 
     def print_progress(self, text):
         cursor = self.script_progress_terminal.textCursor()

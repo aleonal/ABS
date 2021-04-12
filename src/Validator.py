@@ -35,7 +35,7 @@ class Validator:
 				self.start_time = datetime.datetime.now()
 			else:
 				if datetime.datetime.now() - self.start_time >= datetime.timedelta(seconds=self.timeout):
-					raise RuntimeError
+					raise RuntimeError("Script validation timed out - Script failed validation.")
 
 			self.eceld.stop_collectors()
 			self.eceld.parse_data_all()
@@ -85,8 +85,10 @@ class Validator:
 
 if __name__ == '__main__':
 	# load timeout from project file instead of hardcoding
-	v = Validator(timeout=5)
-
+	try:
+		v = Validator(timeout=5)
+	except RuntimeError as e:
+		print(e)
 
 	
 
