@@ -44,9 +44,11 @@ class RunnerWidget(QWidget):
         self.script_read = QPlainTextEdit()
         self.script_read.setReadOnly(True)
 
+        '''
         # Obs display window
         self.obs_read = QPlainTextEdit()
         self.obs_read.setReadOnly(True)
+        '''
 
         # Load Script onto display window button/action
         self.load_script_button = QtWidgets.QPushButton(self)
@@ -109,10 +111,10 @@ class RunnerWidget(QWidget):
         self.gridLayout.addWidget(self.script_progress_terminal,1,3,1,1)
         #self.gridLayout.addWidget(self.script_timeout,2,3)
         self.gridLayout.addWidget(self.run_button, 3, 3)
-        self.gridLayout.addWidget(self.stop_button, 2,2)
+        self.gridLayout.addWidget(self.stop_button, 3,2)
         self.gridLayout.addWidget(self.load_script_button,0,0,1,1)
         self.gridLayout.addWidget(self.script_read, 1,0,1,1)
-        self.gridLayout.addWidget(self.obs_read, 1, 2, 1,1)
+        #self.gridLayout.addWidget(self.obs_read, 1, 2, 1,1)
         self.setLayout(self.gridLayout)
         self.retranslateUi()
 
@@ -203,11 +205,13 @@ class RunnerWidget(QWidget):
             self.script_progress_terminal.clear()
             
             # load obs file if any
+            '''
             try:
                 with open(self.script_name.replace(".py", "Obs.json"), 'r') as obsFile:
                     self.obs_read.setPlainText(obsFile.read())
             except:
                 pass
+            '''
 
         except:
             self.load_error_message()
