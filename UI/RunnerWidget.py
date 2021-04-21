@@ -16,22 +16,13 @@ from src.ValidatorController import ValidatorController
 import sys
 import os
 import subprocess, signal, time, ctypes
-#CP_console = "cp" + str(ctypes.cdll.kernel32.GetConsoleOutputCP())
 import re 
 
-
-'''
-class MyStream(QtCore.QObject):
-    message = QtCore.pyqtSignal(str)
-    def __init__(self, parent=None):
-        super(MyStream, self).__init__(parent)
-    def write(self, message):
-        self.message.emit(str(message))
-'''
 class RunnerWidget(QWidget):
     def __init__(self, project=None):
         super().__init__()
         self.setWindowTitle("Runner")
+        self.setGeometry(50,50,482,432)
         self.UI()
         self.show()
         self.script_name = None
@@ -39,17 +30,11 @@ class RunnerWidget(QWidget):
     def UI(self):
         self.gridLayout = QGridLayout(self)
         self.gridLayout.setObjectName(u"gridLayout")
-        self.gridLayout.setColumnStretch(1, 1)
 
         # Script display window
         self.script_read = QPlainTextEdit()
+        self.script_read.setGeometry(QtCore.QRect(10,40,381,471))
         self.script_read.setReadOnly(True)
-
-        '''
-        # Obs display window
-        self.obs_read = QPlainTextEdit()
-        self.obs_read.setReadOnly(True)
-        '''
 
         # Load Script onto display window button/action
         self.load_script_button = QtWidgets.QPushButton(self)
@@ -59,39 +44,32 @@ class RunnerWidget(QWidget):
 
         # Script run button/script execution
         self.run_button = QtWidgets.QPushButton(self)
-        self.run_button.setGeometry(QtCore.QRect(370, 480, 151, 41))
+        self.run_button.setGeometry(QtCore.QRect(700,520,75,23))
         self.run_button.setObjectName("run_button")
         self.run_button.clicked.connect(self.execute_script)
         self.run_button.setEnabled(False)
 
         # Script stop button/stop script execution
         self.stop_button = QtWidgets.QPushButton(self)
-        self.stop_button.setGeometry(QtCore.QRect(370, 480, 151, 41))
+        self.stop_button.setGeometry(QtCore.QRect(620,520,75,23))
         self.stop_button.setObjectName("stop_button")
         self.stop_button.clicked.connect(self.stop_script)
         self.stop_button.setEnabled(False)
 
         # Script execution progress terminal
         self.script_progress_terminal = QtWidgets.QTextEdit()
-        self.script_progress_terminal.setGeometry(QtCore.QRect(370,30,151,411))
+        self.script_progress_terminal.setGeometry(QtCore.QRect(400, 40, 381, 471))
         self.script_progress_terminal.setObjectName("script_progress_terminal")
         
         self.proc = QtCore.QProcess(self)
         self.error = False
         self.stop = False
-        #self.proc.readyReadStandardOutput.connect(self.stdoutReady)
         self.proc.readyReadStandardError.connect(self.stderrReady)
         self.proc.stateChanged.connect(self.handle_state)
-        #self.proc.readyRead.connect(self.print_progress)
         self.proc.started.connect(lambda: self.run_button.setEnabled(False))
         self.proc.finished.connect(lambda: self.run_button.setEnabled(True))
         self.proc.finished.connect(self.success_message)
-        '''
-        # TODO: Make this work
-        self.script_progress_terminal = QtWidgets.QGraphicsView(self)
-        self.script_progress_terminal.setGeometry(QtCore.QRect(370, 30, 151, 411))
-        self.script_progress_terminal.setObjectName("script_progress_terminal")
-        
+        '''        
         # Script execution progress bar
         # TODO: Make this work
         self.script_progress_bar = QtWidgets.QProgressBar(self)
@@ -107,15 +85,13 @@ class RunnerWidget(QWidget):
         self.script_timeout.setMinimum(1)
         self.script_timeout.setObjectName("script_timeout")
         '''
-        # RunnerWidget layout
-        #self.gridLayout.addWidget(self.script_progress_bar,0,3)
-        self.gridLayout.addWidget(self.script_progress_terminal,1,3,1,1)
+        # Widget layout
+        self.gridLayout.addWidget(self.script_progress_terminal,1,3)
         #self.gridLayout.addWidget(self.script_timeout,2,3)
-        self.gridLayout.addWidget(self.run_button, 3, 3)
-        self.gridLayout.addWidget(self.stop_button, 3,2)
-        self.gridLayout.addWidget(self.load_script_button,0,0,1,1)
-        self.gridLayout.addWidget(self.script_read, 1,0,1,1)
-        #self.gridLayout.addWidget(self.obs_read, 1, 2, 1,1)
+        self.gridLayout.addWidget(self.run_button, 0,3)
+        self.gridLayout.addWidget(self.stop_button, 3,3)
+        self.gridLayout.addWidget(self.load_script_button,0,0)
+        self.gridLayout.addWidget(self.script_read, 1, 0)
         self.setLayout(self.gridLayout)
         self.retranslateUi()
 
@@ -130,17 +106,6 @@ class RunnerWidget(QWidget):
         self.error = False
         self.stop = False
         script_py = self.script_name.replace('.json', '.py')
-        #self.proc = subprocess.Popen(script_py, stdout=subprocess.PIPE, shell=True)
-        #self.proc = subprocess.Popen(script_py)
-        #self.proc = subprocess.Popen(script_py, stdout=PIPE, stderr=STDOUT, shell=True, timeout=10, preexec_fn=os.setsid)
-        #self.proc = subprocess.Popen(script_py, stdout=subprocess.PIPE)
-        #output, error = self.proc.communicate()
-        #self.script_progress_terminal.insertPlainText(error.decode("utf-8"))
-        #self.print_progress("Executing:\n " + self.script_name + "...\n")
-        #self.proc.start(script_py)
-        #self.proc.started.connect(lambda:self.run_button.setEnabled(False))
-        #self.proc.finished.connect(lambda:self.run_button.setEnabled(True))
-
         self.v = ValidatorController(script_py)
         self.v.run_validation()
         self.stop_button.setEnabled(True)            
@@ -148,34 +113,11 @@ class RunnerWidget(QWidget):
     def print_progress(self, text):
         cursor = self.script_progress_terminal.textCursor()
         cursor.movePosition(cursor.End)
-
-        #cursor.insertText(str(self.proc.readAll().data().decode(CP_console)))
         cursor.insertText(text)
-        #self.script_progress_terminal.ensureCursorVisible()
-        #self.script_progress_terminal.moveCursor(QtGui.QTextCursor.End)
-        #self.script_progress_terminal.insertPlainText(self.proc.communicate())
 
-    def stdoutReady(self):
-        data = self.proc.readAllStandardOutput()
-        stdout = bytes(data).decode("utf-8")
-        self.print_progress(stdout)
-        '''
-        for item in self.proc.readAllStandardOutput():
-            self.print_progress(item.decode("utf-8"))
-       
-        text = self.proc.readAllStandardOutput()
-        text.decode("UTF-8")
-        self.print_progress(text)
-        '''
     def stderrReady(self):
         for item in self.proc.readAllStandardError():
             self.print_progress(item.decode("utf-8"))
-        
-        '''    
-        self.error = str(self.proc.readAllStandardError())
-        self.error.strip()
-        self.print_progress(self.error)
-        '''
         self.error = True
         
     def handle_state(self, state):
@@ -197,7 +139,6 @@ class RunnerWidget(QWidget):
         self.stop_button.setEnabled(False)
         self.run_button.setEnabled(True)
 
-
     def display_script(self):
         try:
             options = QFileDialog.Options()
@@ -207,16 +148,6 @@ class RunnerWidget(QWidget):
                 self.script_read.setPlainText(f.read())
             self.run_button.setEnabled(True)
             self.script_progress_terminal.clear()
-            
-            # load obs file if any
-            '''
-            try:
-                with open(self.script_name.replace(".py", "Obs.json"), 'r') as obsFile:
-                    self.obs_read.setPlainText(obsFile.read())
-            except:
-                pass
-            '''
-
         except:
             self.load_error_message()
     
@@ -231,9 +162,5 @@ if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     ui = RunnerWidget()
     ui.show()
-    #sys.exit(app.exec_())
-    #myStream = MyStream()
-    #myStream.message.connect(ui.print_progress)
-    #sys.stdout = myStream 
     sys.exit(app.exec_())
    

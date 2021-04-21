@@ -1,14 +1,14 @@
 [
   {
     "clicks_id": 2,
-    "content": "/home/kali/practicum/Test/TestCE/raw/pykeylogger/click_images/1611340750.880306_xfdesktop_root.png",
+    "content": "C:/Users/valma/OneDrive/Desktop/ABS/Test/TestCE\\raw/pykeylogger/click_images/1611340750.880306_xfdesktop_root.png",
     "type": "point",
     "classname": "imgPoint",
     "start": "01/22/2021T18:39:10"
   },
   {
     "clicks_id": 12,
-    "content": "/home/kali/practicum/Test/TestCE/raw/pykeylogger/click_images/1611340752.5230346_xfdesktop_root.png",
+    "content": "C:/Users/valma/OneDrive/Desktop/ABS/Test/TestCE\\raw/pykeylogger/click_images/1611340752.5230346_xfdesktop_root.png",
     "type": "point",
     "classname": "imgPoint",
     "start": "01/22/2021T18:39:12"
@@ -33,14 +33,14 @@
   },
   {
     "clicks_id": 16,
-    "content": "/home/kali/practicum/Test/TestCE/raw/pykeylogger/click_images/1611340753.6540759_xfdesktop_root.png",
+    "content": "C:/Users/valma/OneDrive/Desktop/ABS/Test/TestCE\\raw/pykeylogger/click_images/1611340753.6540759_xfdesktop_root.png",
     "type": "point",
     "classname": "imgPoint",
     "start": "01/22/2021T18:39:13"
   },
   {
     "clicks_id": 8,
-    "content": "/home/kali/practicum/Test/TestCE/raw/pykeylogger/click_images/1611340754.7600853_qterminal_root.png",
+    "content": "C:/Users/valma/OneDrive/Desktop/ABS/Test/TestCE\\raw/pykeylogger/click_images/1611340754.7600853_qterminal_root.png",
     "type": "point",
     "classname": "imgPoint",
     "start": "01/22/2021T18:39:14"
