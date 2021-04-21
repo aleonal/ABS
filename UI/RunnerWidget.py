@@ -32,9 +32,9 @@ class RunnerWidget(QWidget):
         self.gridLayout.setObjectName(u"gridLayout")
 
         # Script display window
-        self.script_read = QPlainTextEdit()
-        self.script_read.setGeometry(QtCore.QRect(10,40,381,471))
-        self.script_read.setReadOnly(True)
+        self.script_display = QPlainTextEdit()
+        self.script_display.setGeometry(QtCore.QRect(10,40,381,471))
+        self.script_display.setReadOnly(True)
 
         # Load Script onto display window button/action
         self.load_script_button = QtWidgets.QPushButton(self)
@@ -56,11 +56,10 @@ class RunnerWidget(QWidget):
         self.stop_button.clicked.connect(self.stop_script)
         self.stop_button.setEnabled(False)
 
-        # Script execution progress terminal
-        self.script_progress_terminal = QtWidgets.QTextEdit()
-        self.script_progress_terminal.setGeometry(QtCore.QRect(400, 40, 381, 471))
-        self.script_progress_terminal.setObjectName("script_progress_terminal")
-        
+        # Progress terminal
+        self.progress_terminal = QtWidgets.QTextEdit()
+        self.progress_terminal.setGeometry(QtCore.QRect(400, 40, 381, 471))
+        self.progress_terminal.setObjectName("progress_terminal")
         self.proc = QtCore.QProcess(self)
         self.error = False
         self.stop = False
@@ -86,12 +85,12 @@ class RunnerWidget(QWidget):
         self.script_timeout.setObjectName("script_timeout")
         '''
         # Widget layout
-        self.gridLayout.addWidget(self.script_progress_terminal,1,3)
+        self.gridLayout.addWidget(self.progress_terminal,1,3)
         #self.gridLayout.addWidget(self.script_timeout,2,3)
         self.gridLayout.addWidget(self.run_button, 0,3)
         self.gridLayout.addWidget(self.stop_button, 3,3)
         self.gridLayout.addWidget(self.load_script_button,0,0)
-        self.gridLayout.addWidget(self.script_read, 1, 0)
+        self.gridLayout.addWidget(self.script_display, 1, 0)
         self.setLayout(self.gridLayout)
         self.retranslateUi()
 
@@ -111,7 +110,7 @@ class RunnerWidget(QWidget):
         self.stop_button.setEnabled(True)            
 
     def print_progress(self, text):
-        cursor = self.script_progress_terminal.textCursor()
+        cursor = self.progress_terminal.textCursor()
         cursor.movePosition(cursor.End)
         cursor.insertText(text)
 
@@ -145,9 +144,9 @@ class RunnerWidget(QWidget):
             options |= QFileDialog.DontUseNativeDialog
             self.script_name, _ = QFileDialog.getOpenFileName(self,"Open Script", "","All Files (*);;Python Files (*.json)", options=options)
             with open(self.script_name, 'r') as f:
-                self.script_read.setPlainText(f.read())
+                self.script_display.setPlainText(f.read())
             self.run_button.setEnabled(True)
-            self.script_progress_terminal.clear()
+            self.progress_terminal.clear()
         except:
             self.load_error_message()
     
