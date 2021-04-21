@@ -147,23 +147,55 @@ class BuilderWidget(QWidget):
 
     def populateTrees(self):
         eventGroups = ProjectController.load_event_list()
+        artifactList = ProjectController.get_salient_artifacts_json()
+        keypressArtifacts = [i['artifact'] for i in artifactList if 'keypresses' in i['type']]
+        clicksArtifacts = [i['artifact'] for i in artifactList if 'clicks' in i['type']]
+        auditArtifacts = [i['artifact'] for i in artifactList if 'auditd' in i['type']]
+        timedArtifacts = [i['artifact'] for i in artifactList if 'timed' in i['type']]
+        trafficArtifacts = [i['artifact'] for i in artifactList if 'traffic' in i['type']]
+        trafficThroughputArtifacts = [i['artifact'] for i in artifactList if 'trafficThroughput' in i['type']]
+
+
         for group in eventGroups:
             if len(group) < 1:
                 continue
             parent = group[0]
             eventType = ""
+            salientArtifactFlag=False
             if "keypresses_id" in parent.keys():
                 eventType = "keypresses_id"
+                if "content" in parent.keys():
+                    if parent['content'] in keypressArtifacts:
+                        salientArtifactFlag=True
+        
             if "clicks_id" in parent.keys():
                 eventType = "clicks_id"
+                if "content" in parent.keys():
+                    if parent['content'] in clicksArtifacts:
+                        salientArtifactFlag=True
+
             if "auditd_id" in parent.keys():
                 eventType = "audit_id"
+                if "content" in parent.keys():
+                    if parent['content'] in auditArtifacts:
+                        salientArtifactFlag=True
+
             if "timed_id" in parent.keys():
                 eventType = "timed_id"
+                if "content" in parent.keys():
+                    if parent['content'] in timedArtifacts:
+                        salientArtifactFlag=True
+
             if "traffic_all_id" in parent.keys():
                 eventType = "traffic_all_id"
+                if "content" in parent.keys():
+                    if parent['content'] in trafficArtifacts:
+                        salientArtifactFlag=True
             if "traffic_xy_id" in parent.keys():
                 eventType = "traffic_xy_id"
+                if "content" in parent.keys():
+                    if parent['content'] in trafficThroughputArtifacts:
+                        salientArtifactFlag=True
             if "suricata_id" in parent.keys():
                 eventType = "suricata_id"
 
@@ -174,7 +206,7 @@ class BuilderWidget(QWidget):
                 eventType, 
                 parent['start'], 
                 content,
-                self.listrelationships)
+                self.listrelationships, isSalientArtifact = salientArtifactFlag)
             self.populateBranch(group[1:], newNode)
 
     def copyAllRelationships(self):
@@ -268,20 +300,48 @@ class BuilderWidget(QWidget):
             return deltaTime
     
     def populateBranch(self, children=None, parent=None):
+        artifactList = ProjectController.get_salient_artifacts_json()
+        keypressArtifacts = [i['artifact'] for i in artifactList if 'keypresses' in i['type']]
+        clicksArtifacts = [i['artifact'] for i in artifactList if 'clicks' in i['type']]
+        auditArtifacts = [i['artifact'] for i in artifactList if 'auditd' in i['type']]
+        timedArtifacts = [i['artifact'] for i in artifactList if 'timed' in i['type']]
+        trafficArtifacts = [i['artifact'] for i in artifactList if 'traffic' in i['type']]
+        trafficThroughputArtifacts = [i['artifact'] for i in artifactList if 'trafficThroughput' in i['type']]
+        
         for child in children:
+            salientArtifactFlag=False
             eventType = ""
             if "keypresses_id" in child.keys():
                 eventType = "keypresses_id"
+                if "content" in child.keys():
+                    if child['content'] in keypressArtifacts:
+                        salientArtifactFlag=True
             if "clicks_id" in child.keys():
                 eventType = "clicks_id"
+                if "content" in child.keys():
+                    if child['content'] in clicksArtifacts:
+                        salientArtifactFlag=True
             if "auditd_id" in child.keys():
                 eventType = "audit_id"
+                if "content" in child.keys():
+                    if child['content'] in auditArtifacts:
+                        salientArtifactFlag=True
             if "timed_id" in child.keys():
                 eventType = "timed_id"
+                if "content" in child.keys():
+                    if child['content'] in timedArtifacts:
+                        salientArtifactFlag=True
             if "traffic_all_id" in child.keys():
                 eventType = "traffic_all_id"
+                if "content" in child.keys():
+                    if child['content'] in trafficArtifacts:
+                        salientArtifactFlag=True
             if "traffic_xy_id" in child.keys():
                 eventType = "traffic_xy_id"
+                if "content" in child.keys():
+                    if child['content'] in trafficThroughputArtifacts:
+                        salientArtifactFlag=True
+
             if "suricata_id" in child.keys():
                 eventType = "suricata_id"
 
@@ -293,7 +353,7 @@ class BuilderWidget(QWidget):
                     eventType, 
                     child['start'], 
                     content,
-                    parent)
+                    parent, isSalientArtifact=salientArtifactFlag)
             
     def openArtifacts(self):
         if ProjectController.is_project_loaded():
@@ -429,13 +489,16 @@ class ABSRelationshipTreeWidget(QTreeWidget):
         self.setWordWrap(True)
         self.setSortingEnabled(True)
 
-    def addNode(self, _type=None, time=None, content=None, parent=None, canEdit=False):
+    def addNode(self, _type=None, time=None, content=None, parent=None, canEdit=False, isSalientArtifact=False):
         if(parent is not None):
             tempQtreewidgetitem = QTreeWidgetItem(parent)
             if canEdit:
                 tempQtreewidgetitem.setFlags(Qt.ItemIsEditable|Qt.ItemIsSelectable|Qt.ItemIsDragEnabled|Qt.ItemIsDropEnabled|Qt.ItemIsUserCheckable|Qt.ItemIsEnabled)
             else:
                 tempQtreewidgetitem.setFlags(Qt.ItemIsSelectable|Qt.ItemIsDragEnabled|Qt.ItemIsDropEnabled|Qt.ItemIsUserCheckable|Qt.ItemIsEnabled)
+            
+            if isSalientArtifact:
+                tempQtreewidgetitem.setForeground(0,QtGui.QBrush(QtGui.QColor(ProjectController.get_artifact_color())))
             tempQtreewidgetitem.setText(2,content)
             tempQtreewidgetitem.setText(1,time)
             tempQtreewidgetitem.setText(0,_type)
