@@ -27,7 +27,10 @@ class Event:
             try:
                 self._start = datetime.datetime.strptime(start, "%Y/%m/%dT%H:%M:%S")
             except Exception:
-                self._start = datetime.datetime.strptime(start, "%d/%m/%YT%H:%M:%S")
+                try:
+                    self._start = datetime.datetime.strptime(start, "%d/%m/%YT%H:%M:%S")
+                except:
+                    self._start = datetime.datetime.strptime(start, "%m/%d/%YT%H:%M:%S")
         elif '-' in start:
             try:
                 self._start = datetime.datetime.strptime(start, "%Y-%m-%dT%H:%M:%S")
