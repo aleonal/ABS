@@ -13,6 +13,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtGui import QStandardItem
 from PyQt5.QtCore import *
+import os
 
 
 class PackagerWidget(QWidget):
@@ -31,23 +32,46 @@ class PackagerWidget(QWidget):
         self.projectLayout = QHBoxLayout()
         self.projectLayout.setObjectName("projectLayout")
 
-        # List of project files
-        self.VMList = QtWidgets.QListWidget()
-        self.VMList.setLayoutMode(QtWidgets.QListView.SinglePass)
-        self.VMList.setViewMode(QtWidgets.QListView.ListMode)
-        self.VMList.setUniformItemSizes(True)
-        self.VMList.setWordWrap(True)
-        self.VMList.setObjectName("VMList")
 
-        # Sample VMs - These will be read from project files
-        item = QtWidgets.QListWidgetItem()
-        self.VMList.addItem(item)
-        item = QtWidgets.QListWidgetItem()
-        self.VMList.addItem(item)
-        item = QtWidgets.QListWidgetItem()
-        self.VMList.addItem(item)
-        item = QtWidgets.QListWidgetItem()
-        self.VMList.addItem(item)
+        #Package Items Table
+        self.vmTable = QTableWidget(0, 3, self)
+
+        # Creating headers for columns in table
+        type_header = QTableWidgetItem('Item Type')
+        self.vmTable.setHorizontalHeaderItem(0, type_header)
+        descriptionHeader = QTableWidgetItem('Name')
+        self.vmTable.setHorizontalHeaderItem(1, descriptionHeader)
+
+        includeHeader = QTableWidgetItem('Include')
+        self.vmTable.setHorizontalHeaderItem(2, includeHeader)
+
+        self.vmTable.horizontalHeader().setStretchLastSection(False)
+        self.vmTable.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.vmTable.horizontalHeader().setSectionResizeMode(0,QHeaderView.ResizeToContents)
+        self.vmTable.horizontalHeader().setSectionResizeMode(2,QHeaderView.ResizeToContents)
+
+        self.populate_table()
+
+        self.projectLayout.addWidget(self.vmTable)
+
+
+        # List of project files
+        # self.VMList = QtWidgets.QListWidget()
+        # self.VMList.setLayoutMode(QtWidgets.QListView.SinglePass)
+        # self.VMList.setViewMode(QtWidgets.QListView.ListMode)
+        # self.VMList.setUniformItemSizes(True)
+        # self.VMList.setWordWrap(True)
+        # self.VMList.setObjectName("VMList")
+
+        # # Sample VMs - These will be read from project files
+        # item = QtWidgets.QListWidgetItem()
+        # self.VMList.addItem(item)
+        # item = QtWidgets.QListWidgetItem()
+        # self.VMList.addItem(item)
+        # item = QtWidgets.QListWidgetItem()
+        # self.VMList.addItem(item)
+        # item = QtWidgets.QListWidgetItem()
+        #self.VMList.addItem(item)
 
         # Project-related buttons
         self.projectVerticalLayout = QtWidgets.QVBoxLayout()
@@ -55,22 +79,24 @@ class PackagerWidget(QWidget):
 
         self.packageProjectButton = QtWidgets.QPushButton()
         self.packageProjectButton.setObjectName("packageProjectButton")
+        self.packageProjectButton.clicked.connect(self.package_files)
 
         self.importVMButton = QtWidgets.QPushButton()
         self.importVMButton.setObjectName("importVMButton")
 
         self.importFilesButton = QtWidgets.QPushButton()
         self.importFilesButton.setObjectName("importFilesButton")
+        self.importFilesButton.clicked.connect(self.add_file)
 
-        self.deleteFilesButton = QtWidgets.QPushButton()
-        self.deleteFilesButton.setObjectName("deleteFilesButton")
+        #self.deleteFilesButton = QtWidgets.QPushButton()
+        #self.deleteFilesButton.setObjectName("deleteFilesButton")
 
         self.projectVerticalLayout.addWidget(self.packageProjectButton)
         self.projectVerticalLayout.addWidget(self.importVMButton)
         self.projectVerticalLayout.addWidget(self.importFilesButton)
-        self.projectVerticalLayout.addWidget(self.deleteFilesButton)
+        #self.projectVerticalLayout.addWidget(self.deleteFilesButton)
         
-        self.projectLayout.addWidget(self.VMList)
+        #self.projectLayout.addWidget(self.VMList)
         self.projectLayout.addLayout(self.projectVerticalLayout)
 
         # Packager button layout
@@ -100,26 +126,73 @@ class PackagerWidget(QWidget):
 
         self.setLayout(self.gridLayout)
         self.retranslateUi()
+    def populate_table(self):
+        #TODO: Connect vm_list to packager.py to get list of vms from virtualbox
+        vm_list = ["VM1", "VM2"]
+        i=0
+        self.vmTable.setRowCount(len(vm_list))
+        for vm in vm_list:
+            checkbox = QCheckBox()
+            self.vmTable.setItem(i,0,QTableWidgetItem("VM"))
+            self.vmTable.setItem(i,1,QTableWidgetItem(vm))
+            self.vmTable.setCellWidget(i,2, checkbox)
+            i=i+1
+
+    def add_file(self):
+        file_list = QtWidgets.QFileDialog.getOpenFileNames(parent=self, caption="Select File", directory=os.path.realpath(os.getcwd()))
+        #TODO: Bug currently requires user to select control and drag over file/s they wish to select
+        for item in file_list[0]:
+            self.vmTable.setRowCount(self.vmTable.rowCount()+1)
+            current_row_pos = self.vmTable.rowCount()-1
+
+            self.vmTable.setItem(current_row_pos, 0, QTableWidgetItem("File"))
+            self.vmTable.setItem(current_row_pos, 1, QTableWidgetItem(item))
+
+            deleteButton = QPushButton('Delete')
+            deleteButton.clicked.connect(self.deleteRow)
+            self.vmTable.setCellWidget(current_row_pos, 2, deleteButton)
+
+    def deleteRow(self):
+        button = self.sender()
+        if button:
+            row = self.vmTable.indexAt(button.pos()).row()
+            self.vmTable.removeRow(row)
+    
+    def package_files(self):
+        output_directory = QtWidgets.QFileDialog.getExistingDirectory(parent=self, caption="Select Output Directory", directory=os.path.realpath(os.getcwd()))
+
+        #For regular files we can use
+        
+        # import shutil
+        # import os
+        # src = r'C:\Users\Administrator.SHAREPOINTSKY\Desktop\Work\file2.txt'
+        # dst = r'C:\Users\Administrator.SHAREPOINTSKY\Desktop\Newfolder\file2.txt'
+        # shutil.copyfile(src, dst)
+        
+        #For VMs, we will use virtualbox package to export selected vms to the output directory
+
+        #At the end we use shutil.make_archive(output_filename_zip, 'zip', output_directory)
+
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("PackagerTab", "Packager"))
 
         # This might need to be done programatically instead of hardcoded
-        item = self.VMList.item(0)
-        item.setText(_translate("Widget", "Project root:\t\t/usr/x/abs/p1/"))
-        item = self.VMList.item(1)
-        item.setText(_translate("Widget", "VM 2:\t\t/usr/x/abs/p1/webserver_kali.ova"))
-        item = self.VMList.item(2)
-        item.setText(_translate("Widget", "VM 3:\t\t/usr/x/abs/p1/webclient_kali.ova"))
-        item = self.VMList.item(3)
-        item.setText(_translate("Widget", "VM 1:\t\t/usr/x/abs/p1/test_kali.ova"))
+        # item = self.VMList.item(0)
+        # item.setText(_translate("Widget", "Project root:\t\t/usr/x/abs/p1/"))
+        # item = self.VMList.item(1)
+        # item.setText(_translate("Widget", "VM 2:\t\t/usr/x/abs/p1/webserver_kali.ova"))
+        # item = self.VMList.item(2)
+        # item.setText(_translate("Widget", "VM 3:\t\t/usr/x/abs/p1/webclient_kali.ova"))
+        # item = self.VMList.item(3)
+        # item.setText(_translate("Widget", "VM 1:\t\t/usr/x/abs/p1/test_kali.ova"))
         
 
         self.packageProjectButton.setText(_translate("Widget", "Package Project..."))
         self.importVMButton.setText(_translate("Widget", "Import VM to Project..."))
         self.importFilesButton.setText(_translate("Widget", "Import Files to Project..."))
-        self.deleteFilesButton.setText(_translate("Widget", "Delete Project Files..."))
+       #self.deleteFilesButton.setText(_translate("Widget", "Delete Project Files..."))
         self.openProjectButton.setText(_translate("Widget", "Open Project..."))
         self.newProjectButton.setText(_translate("Widget", "New Project..."))
         self.launchProjectButton.setText(_translate("Widget", "Launch Project"))
