@@ -68,25 +68,16 @@ class RunnerWidget(QWidget):
         self.proc.started.connect(lambda: self.run_button.setEnabled(False))
         self.proc.finished.connect(lambda: self.run_button.setEnabled(True))
         self.proc.finished.connect(self.success_message)
-        '''        
-        # Script execution progress bar
-        # TODO: Make this work
-        self.script_progress_bar = QtWidgets.QProgressBar(self)
-        self.script_progress_bar.setGeometry(QtCore.QRect(370, 0, 161, 20))
-        self.script_progress_bar.setRange(0,100)
-        #self.script_progress_bar.setProperty("value", 24)
-        self.script_progress_bar.setObjectName("script_progress_bar")
         
-        # Script execution timeout
-        # TODO: Make this work
+        # Timeout
         self.script_timeout = QtWidgets.QSpinBox(self)
         self.script_timeout.setGeometry(QtCore.QRect(370, 450, 151, 22))
         self.script_timeout.setMinimum(1)
         self.script_timeout.setObjectName("script_timeout")
-        '''
+        
         # Widget layout
         self.gridLayout.addWidget(self.progress_terminal,1,3)
-        #self.gridLayout.addWidget(self.script_timeout,2,3)
+        self.gridLayout.addWidget(self.script_timeout,2,3)
         self.gridLayout.addWidget(self.run_button, 0,3)
         self.gridLayout.addWidget(self.stop_button, 3,3)
         self.gridLayout.addWidget(self.load_script_button,0,0)
@@ -101,13 +92,16 @@ class RunnerWidget(QWidget):
         self.run_button.setText(_translate("RunnerTab", "Run"))
         self.stop_button.setText(_translate("RunnerTab", "Stop"))
 
-    def execute_script(self):
+    def execute_script(self):  
         self.error = False
         self.stop = False
         script_py = self.script_name.replace('.json', '.py')
         self.v = ValidatorController(script_py)
         self.v.run_validation()
-        self.stop_button.setEnabled(True)            
+        self.stop_button.setEnabled(True)
+        # THIS CONTAINS THE TIMEOUT VALUE of TYPE INT
+        # CAN THIS BE PASSED TO THE VALIDATOR?
+        self.timeout = self.script_timeout.value()   
 
     def print_progress(self, text):
         cursor = self.progress_terminal.textCursor()
