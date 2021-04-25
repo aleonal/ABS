@@ -165,36 +165,36 @@ class BuilderWidget(QWidget):
             if "keypresses_id" in parent.keys():
                 eventType = "keypresses_id"
                 if "content" in parent.keys():
-                    if parent['content'] in keypressArtifacts:
+                    if any(s in parent['content'] for s in keypressArtifacts):
                         salientArtifactFlag=True
         
             if "clicks_id" in parent.keys():
                 eventType = "clicks_id"
                 if "content" in parent.keys():
-                    if parent['content'] in clicksArtifacts:
+                    if any(s in parent['content'] for s in clicksArtifacts):
                         salientArtifactFlag=True
 
             if "auditd_id" in parent.keys():
                 eventType = "audit_id"
                 if "content" in parent.keys():
-                    if parent['content'] in auditArtifacts:
+                    if any(s in parent['content'] for s in auditArtifacts):
                         salientArtifactFlag=True
 
             if "timed_id" in parent.keys():
                 eventType = "timed_id"
                 if "content" in parent.keys():
-                    if parent['content'] in timedArtifacts:
+                    if any(s in parent['content'] for s in timedArtifacts):
                         salientArtifactFlag=True
 
             if "traffic_all_id" in parent.keys():
                 eventType = "traffic_all_id"
                 if "content" in parent.keys():
-                    if parent['content'] in trafficArtifacts:
+                    if any(s in parent['content'] for s in trafficArtifacts):
                         salientArtifactFlag=True
             if "traffic_xy_id" in parent.keys():
                 eventType = "traffic_xy_id"
                 if "content" in parent.keys():
-                    if parent['content'] in trafficThroughputArtifacts:
+                    if any(s in parent['content'] for s in trafficThroughputArtifacts):
                         salientArtifactFlag=True
             if "suricata_id" in parent.keys():
                 eventType = "suricata_id"
@@ -314,32 +314,32 @@ class BuilderWidget(QWidget):
             if "keypresses_id" in child.keys():
                 eventType = "keypresses_id"
                 if "content" in child.keys():
-                    if child['content'] in keypressArtifacts:
+                    if any(s in child['content'] for s in keypressArtifacts):
                         salientArtifactFlag=True
             if "clicks_id" in child.keys():
                 eventType = "clicks_id"
                 if "content" in child.keys():
-                    if child['content'] in clicksArtifacts:
+                    if any(s in child['content'] for s in clicksArtifacts):
                         salientArtifactFlag=True
             if "auditd_id" in child.keys():
                 eventType = "audit_id"
                 if "content" in child.keys():
-                    if child['content'] in auditArtifacts:
+                    if any(s in child['content'] for s in auditArtifacts):
                         salientArtifactFlag=True
             if "timed_id" in child.keys():
                 eventType = "timed_id"
                 if "content" in child.keys():
-                    if child['content'] in timedArtifacts:
+                    if any(s in child['content'] for s in timedArtifacts):
                         salientArtifactFlag=True
             if "traffic_all_id" in child.keys():
                 eventType = "traffic_all_id"
                 if "content" in child.keys():
-                    if child['content'] in trafficArtifacts:
+                    if any(s in child['content'] for s in trafficArtifacts):
                         salientArtifactFlag=True
             if "traffic_xy_id" in child.keys():
                 eventType = "traffic_xy_id"
                 if "content" in child.keys():
-                    if child['content'] in trafficThroughputArtifacts:
+                    if any(s in child['content'] for s in trafficThroughputArtifacts):
                         salientArtifactFlag=True
 
             if "suricata_id" in child.keys():
