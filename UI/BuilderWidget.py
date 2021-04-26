@@ -12,6 +12,7 @@ from src import Event
 from src.ScriptGenerator import ScriptGenerator
 from UI.ArtifactsTableWidget import SalientArtifactWindow
 from UI.ClickOptionsWidget import ClickOptionsWidget
+from UI.DependencyOptionsWidget import DependencyOptionsWidget
 
 class BuilderWidget(QWidget):
 
@@ -243,11 +244,14 @@ class BuilderWidget(QWidget):
 
 
     def newDependencyNode(self):
+        newItem = None
         if len(self.listdependencies.selectedItems()) > 0:
             selectedItem = self.listdependencies.selectedItems()[0]
             newItem = self.listdependencies.addNode("Type...", "00:00:00.00", "Content...", selectedItem, True)
         else:
             newItem = self.listdependencies.addNode("Type...", "00:00:00.00", "Content...", self.listdependencies, True)
+        self.properties_window = DependencyOptionsWidget(newItem)
+        self.properties_window.show()
     
     def moveNode(self):
         if len(self.listrelationships.selectedItems()) > 0:
@@ -369,10 +373,9 @@ class BuilderWidget(QWidget):
             print (selectedItem.text(0))
             if selectedItem.text(0) == "clicks_id":
                 self.openClicks()
-            elif selectedItem.text(0) == "keypresses_id":
-                    self.openKeypresses()
             else:
-                QMessageBox.critical(self, "Input Error", "Event does not have editable properties")
+                self.properties_window = DependencyOptionsWidget(selectedItem)
+                self.properties_window.show()
 
     def openClicks(self):
         if len(self.listdependencies.selectedItems()) > 0:
@@ -383,15 +386,6 @@ class BuilderWidget(QWidget):
                 self.clicks_window.show()
             else:
                 QMessageBox.critical(self, "Input Error", "Event is not a clicks_id type")
-
-    def openKeypresses(self):
-        if len(self.listdependencies.selectedItems()) > 0:
-            selectedItem = self.listdependencies.selectedItems()[0]
-            print (selectedItem.text(0))
-            if selectedItem.text(0) == "keypresses_id":
-                QMessageBox.critical(self, "Input Error", "Opened Keypresses")
-            else:
-                QMessageBox.critical(self, "Input Error", "Event is not a keypresses_id type")
 
     def save_script(self):
         if not self.script_file_path:
