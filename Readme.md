@@ -1,5 +1,9 @@
 # Agent Build System
-
+- Causation Extractor
+    - Runs at creation of a new project
+- Builder
+- Runner
+- Packager
 - Sorting functions for dependencies & eveents in GUI?
     - This implies that we move sorting functions from CE to ProjectController OR implement front-end sorting separately altogether
     - Discuss as group how we hande the files
