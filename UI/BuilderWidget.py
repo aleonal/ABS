@@ -11,7 +11,8 @@ from src.ProjectController import ProjectController
 from src import Event
 from src.ScriptGenerator import ScriptGenerator
 from UI.ArtifactsTableWidget import SalientArtifactWindow
-from UI.ClickOptionsWidget import ClickOptionsWidget
+from UI.ClickSettings import ClickSettings
+#from UI.ClickOptionsWidget import ClickOptionsWidget
 
 class BuilderWidget(QWidget):
 
@@ -379,7 +380,7 @@ class BuilderWidget(QWidget):
             selectedItem = self.listdependencies.selectedItems()[0]
             print (selectedItem.text(0))
             if selectedItem.text(0) == "clicks_id":
-                self.clicks_window = ClickOptionsWidget(selectedItem)
+                self.clicks_window = ClickSettings(selectedItem)
                 self.clicks_window.show()
             else:
                 QMessageBox.critical(self, "Input Error", "Event is not a clicks_id type")
