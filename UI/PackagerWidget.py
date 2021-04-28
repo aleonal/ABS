@@ -13,6 +13,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtGui import QStandardItem
 from PyQt5.QtCore import *
+from src.Packager import Packager
 import os
 
 
@@ -21,8 +22,10 @@ class PackagerWidget(QWidget):
     def __init__(self, project=None):
         super().__init__()
         self.setWindowTitle("Packager")
+        
         self.UI()
         self.show()
+        self.packager = Packager()
 
     def UI(self):
         self.gridLayout = QGridLayout(self)
@@ -161,6 +164,24 @@ class PackagerWidget(QWidget):
     def package_files(self):
         output_directory = QtWidgets.QFileDialog.getExistingDirectory(parent=self, caption="Select Output Directory", directory=os.path.realpath(os.getcwd()))
 
+        selectedVms = []
+        includedFiles = [] 
+        i=0
+        while i < self.vmTable.rowCount():
+            fileTypeTemp = self.vmTable.item(i,0) #This should be our files type
+            file_type =fileTypeTemp.currentText()
+
+            filePathTemp = self.vmTable.item(i,1)#This should be our files path or VM Name
+            file_path =filePathTemp.text()
+
+            if file_type == "File":
+                includedFiles.append(file_path)
+            if file_type == "VM":
+                checkbox = self.vmTable.cellWidget(i,2)
+                if checkbox.isChecked():
+                    selectedVms.append(file_path)
+            i = i+1
+        self.packager.export_to_zip(vm_list=selectedVms, file_list = includedFiles, directory = output_directory)
         #For regular files we can use
         
         # import shutil
