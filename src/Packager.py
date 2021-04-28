@@ -13,21 +13,29 @@ class Packager:
 
     #def get_vm_list(self):
         #return self.vm_list
-    def export_to_zip(self, vm_list, file_list, output_directory):
+    def export_to_zip(self, vm_list, file_list, output_file):
+        parent_directory = os.path.dirname(output_file)
+        temp_directory = output_file
+        os.mkdir(temp_directory)
+
         for vm in vm_list:
             print(vm)
-            #Use Virtualbox export to ovf functions
+            #Use Virtualbox export to ovf functions to the output folder
+
+        #Copy files to temp directory
         for file_path in file_list:
             file_name = os.path.basename(file_path)
-            output_path = os.path.join(output_directory,file_name)
+            output_path = os.path.join(temp_directory,file_name)
             shutil.copyfile(file_path,output_path)
-        
+        #Create a zip from temp directory
+        final_directory = os.path.join(parent_directory,output_file)
+        shutil.make_archive(final_directory, 'zip', temp_directory)
 
-        
-        # src = r'C:\Users\Administrator.SHAREPOINTSKY\Desktop\Work\file2.txt'
-        # dst = r'C:\Users\Administrator.SHAREPOINTSKY\Desktop\Newfolder\file2.txt'
-        # shutil.copyfile(src, dst)
-
+        #Delete temp directory
+        try:
+            shutil.rmtree(temp_directory)
+        except OSError as e:
+            print ("Error: %s - %s." % (e.filename, e.strerror))
             
 
 if __name__ == "__main__":

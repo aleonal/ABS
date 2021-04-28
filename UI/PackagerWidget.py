@@ -162,14 +162,14 @@ class PackagerWidget(QWidget):
             self.vmTable.removeRow(row)
     
     def package_files(self):
-        output_directory = QtWidgets.QFileDialog.getExistingDirectory(parent=self, caption="Select Output Directory", directory=os.path.realpath(os.getcwd()))
-
+        output_zip = QtWidgets.QFileDialog.getSaveFileName(parent=self, caption="Save Zip File", directory=os.path.realpath(os.getcwd()), filter="Zip (*.zip)")
+        print(output_zip)
         selectedVms = []
         includedFiles = [] 
         i=0
         while i < self.vmTable.rowCount():
             fileTypeTemp = self.vmTable.item(i,0) #This should be our files type
-            file_type =fileTypeTemp.currentText()
+            file_type =fileTypeTemp.text()
 
             filePathTemp = self.vmTable.item(i,1)#This should be our files path or VM Name
             file_path =filePathTemp.text()
@@ -181,7 +181,12 @@ class PackagerWidget(QWidget):
                 if checkbox.isChecked():
                     selectedVms.append(file_path)
             i = i+1
-        self.packager.export_to_zip(vm_list=selectedVms, file_list = includedFiles, directory = output_directory)
+        if output_zip[0] != '':
+            self.packager.export_to_zip(vm_list=selectedVms, file_list = includedFiles, output_file = output_zip[0])
+            QMessageBox.information(self, "Success", "Project ZIP has been created.")
+        else:
+            QMessageBox.critical(self, "Failure", "No File selected.")
+
         #For regular files we can use
         
         # import shutil
