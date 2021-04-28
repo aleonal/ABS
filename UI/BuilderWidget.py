@@ -374,7 +374,7 @@ class BuilderWidget(QWidget):
         if len(self.listdependencies.selectedItems()) > 0:
             selectedItem = self.listdependencies.selectedItems()[0]
             print (selectedItem.text(0))
-            if selectedItem.text(0) == "clicks_id":
+            if selectedItem.text(0) == "clicks_id" or selectedItem.text(0) == "timed_id":
                 self.openClicks()
             else:
                 self.properties_window = DependencyOptionsWidget(selectedItem)
@@ -384,7 +384,7 @@ class BuilderWidget(QWidget):
         if len(self.listdependencies.selectedItems()) > 0:
             selectedItem = self.listdependencies.selectedItems()[0]
             print (selectedItem.text(0))
-            if selectedItem.text(0) == "clicks_id":
+            if selectedItem.text(0) == "clicks_id" or selectedItem.text(0) == "timed_id":
                 self.clicks_window = ClickSettings(selectedItem)
                 self.clicks_window.show()
             else:
