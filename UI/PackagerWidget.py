@@ -38,6 +38,7 @@ class PackagerWidget(QWidget):
 
         #Package Items Table
         self.vmTable = QTableWidget(0, 3, self)
+        self.vmTable.setEditTriggers(QAbstractItemView.NoEditTriggers) 
 
         # Creating headers for columns in table
         type_header = QTableWidgetItem('Item Type')
@@ -84,8 +85,8 @@ class PackagerWidget(QWidget):
         self.packageProjectButton.setObjectName("packageProjectButton")
         self.packageProjectButton.clicked.connect(self.package_files)
 
-        self.importVMButton = QtWidgets.QPushButton()
-        self.importVMButton.setObjectName("importVMButton")
+        #self.importVMButton = QtWidgets.QPushButton()
+        #self.importVMButton.setObjectName("importVMButton")
 
         self.importFilesButton = QtWidgets.QPushButton()
         self.importFilesButton.setObjectName("importFilesButton")
@@ -95,7 +96,7 @@ class PackagerWidget(QWidget):
         #self.deleteFilesButton.setObjectName("deleteFilesButton")
 
         self.projectVerticalLayout.addWidget(self.packageProjectButton)
-        self.projectVerticalLayout.addWidget(self.importVMButton)
+        #self.projectVerticalLayout.addWidget(self.importVMButton)
         self.projectVerticalLayout.addWidget(self.importFilesButton)
         #self.projectVerticalLayout.addWidget(self.deleteFilesButton)
         
@@ -103,29 +104,29 @@ class PackagerWidget(QWidget):
         self.projectLayout.addLayout(self.projectVerticalLayout)
 
         # Packager button layout
-        self.packagerLayout = QHBoxLayout()
-        self.packagerLayout.setObjectName("packagerLayout")
-        self.packagerLayout.setContentsMargins(30, 0, 30, 0)
+        #self.packagerLayout = QHBoxLayout()
+        #self.packagerLayout.setObjectName("packagerLayout")
+        #self.packagerLayout.setContentsMargins(30, 0, 30, 0)
 
         # Packager action buttons
-        self.openProjectButton = QtWidgets.QPushButton()
-        self.openProjectButton.setObjectName("openProjectButton")
+        #self.openProjectButton = QtWidgets.QPushButton()
+        #self.openProjectButton.setObjectName("openProjectButton")
         
-        self.newProjectButton = QtWidgets.QPushButton()
-        self.newProjectButton.setObjectName("newProjectButton")
+        #self.newProjectButton = QtWidgets.QPushButton()
+        #self.newProjectButton.setObjectName("newProjectButton")
 
-        self.launchProjectButton = QtWidgets.QPushButton()
-        self.launchProjectButton.setObjectName("launchProjectButton")
+        #self.launchProjectButton = QtWidgets.QPushButton()
+        #self.launchProjectButton.setObjectName("launchProjectButton")
 
-        spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        #spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
 
-        self.packagerLayout.addWidget(self.openProjectButton)
-        self.packagerLayout.addWidget(self.newProjectButton)
-        self.packagerLayout.addItem(spacer)
-        self.packagerLayout.addWidget(self.launchProjectButton)
+        #self.packagerLayout.addWidget(self.openProjectButton)
+        #self.packagerLayout.addWidget(self.newProjectButton)
+        #self.packagerLayout.addItem(spacer)
+        #self.packagerLayout.addWidget(self.launchProjectButton)
 
         self.gridLayout.addLayout(self.projectLayout, 0, 0)
-        self.gridLayout.addLayout(self.packagerLayout, 1, 0)
+        #self.gridLayout.addLayout(self.packagerLayout, 1, 0)
 
         self.setLayout(self.gridLayout)
         self.retranslateUi()
@@ -216,12 +217,12 @@ class PackagerWidget(QWidget):
         
 
         self.packageProjectButton.setText(_translate("Widget", "Package Project..."))
-        self.importVMButton.setText(_translate("Widget", "Import VM to Project..."))
+        #self.importVMButton.setText(_translate("Widget", "Import VM to Project..."))
         self.importFilesButton.setText(_translate("Widget", "Import Files to Project..."))
        #self.deleteFilesButton.setText(_translate("Widget", "Delete Project Files..."))
-        self.openProjectButton.setText(_translate("Widget", "Open Project..."))
-        self.newProjectButton.setText(_translate("Widget", "New Project..."))
-        self.launchProjectButton.setText(_translate("Widget", "Launch Project"))
+        #self.openProjectButton.setText(_translate("Widget", "Open Project..."))
+        #self.newProjectButton.setText(_translate("Widget", "New Project..."))
+        #self.launchProjectButton.setText(_translate("Widget", "Launch Project"))
 
 if __name__ == "__main__":
     import sys
