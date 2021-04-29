@@ -147,7 +147,10 @@ class BuilderWidget(QWidget):
             self.move_node_button.setEnabled(True)
             self.load_button.setEnabled(True)
             if ProjectController.get_dependencies_file() != "":
-                self.loadDependencies()
+                try:
+                    self.loadDependencies()
+                except:
+                    pass
 
     def populateTrees(self):
         eventGroups = ProjectController.load_event_list()
