@@ -69,4 +69,4 @@ class ScriptGenerator():
         
 
 if __name__ == "__main__":
-    ScriptGenerator(r"C:\Users\valma\OneDrive\Desktop\ABS\Test\TestBuilder\scriptGenTest1.json")
+    ScriptGenerator(r"C:\Users\valma\OneDrive\Desktop\lastDemoProject\fixSG.json")

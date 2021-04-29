@@ -9,7 +9,7 @@ import json
 import datetime
 from src.ProjectController import ProjectController
 from src import Event
-from src.ScriptGenerator import ScriptGenerator
+from src.ScriptGen2 import ScriptGen2
 from UI.ArtifactsTableWidget import SalientArtifactWindow
 
 from UI.ClickSettings import ClickSettings
@@ -424,7 +424,7 @@ class BuilderWidget(QWidget):
             self.invalid_path_alert_message()
             return False 
         try:
-            ScriptGenerator(script_path)
+            ScriptGen2(script_path)
             self.script_gen_success()
         except:
             self.invalid_path_alert_message()
