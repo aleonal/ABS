@@ -14,6 +14,9 @@
     - The packager retrieves the virtual machines recognized by VirtualBox
     - From the packager the user can add multiple files and select which virtual machines to include
     - The packager will create a zip file with all included files at the specified directory
+
+# Installation and Setup
+
 - Sorting functions for dependencies & eveents in GUI?
     - This implies that we move sorting functions from CE to ProjectController OR implement front-end sorting separately altogether
     - Discuss as group how we hande the files
