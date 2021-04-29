@@ -1,26 +1,28 @@
 #import virtualbox
+import subprocess
 import shutil
 import os
+import re
 
 class Packager:
     def __init__(self):
-        print("packager")
-        #self.vbox = virtualbox.VirtualBox()
-        #self.vm_list = [m.name for m in self.vbox.machines]
+        
+        vms_string = subprocess.check_output(["C:\Program Files\Oracle\VirtualBox\VBoxManage.exe","list","vms"]).decode()
 
-        #for item in self.vm_list:
-        #    print(item)
+        self.vm_list = re.findall(r'"(.*?)"', vms_string)
 
-    #def get_vm_list(self):
-        #return self.vm_list
+    def get_vm_list(self):
+        return self.vm_list
+
     def export_to_zip(self, vm_list, file_list, output_file):
         parent_directory = os.path.dirname(output_file)
         temp_directory = output_file
         os.mkdir(temp_directory)
 
         for vm in vm_list:
-            print(vm)
-            #Use Virtualbox export to ovf functions to the output folder
+            vm_filename = vm+".ova"
+            export_vm_path = os.path.join(temp_directory,vm_filename)
+            subprocess.run(["C:\Program Files\Oracle\VirtualBox\VBoxManage.exe","export", vm, "-o", export_vm_path])
 
         #Copy files to temp directory
         for file_path in file_list:

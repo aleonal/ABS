@@ -22,10 +22,10 @@ class PackagerWidget(QWidget):
     def __init__(self, project=None):
         super().__init__()
         self.setWindowTitle("Packager")
+        self.packager = Packager()
         
         self.UI()
         self.show()
-        self.packager = Packager()
 
     def UI(self):
         self.gridLayout = QGridLayout(self)
@@ -131,7 +131,7 @@ class PackagerWidget(QWidget):
         self.retranslateUi()
     def populate_table(self):
         #TODO: Connect vm_list to packager.py to get list of vms from virtualbox
-        vm_list = ["VM1", "VM2"]
+        vm_list = self.packager.get_vm_list()
         i=0
         self.vmTable.setRowCount(len(vm_list))
         for vm in vm_list:
