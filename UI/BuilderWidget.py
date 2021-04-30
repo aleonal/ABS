@@ -283,26 +283,18 @@ class BuilderWidget(QWidget):
                 prevItem = self.listrelationships.itemAt(index.row()-1, index.column())
                 if prevItem is not None:
                     try:
-                        prevTime = datetime.datetime.strptime(prevItem.text(1), "%Y-%m-%dT%H:%M:%S").time()
+                        prevTime = ProjectController.parse_timestamp(prevItem.text(1)).time()
                     except:
-                        try:
-                            prevTime = datetime.datetime.strptime(prevItem.text(1), "%m/%d/%YT%H:%M:%S").time()
-                        except:
-                            print("Event " + prevItem.text(0) + " time value does not match format %Y-%m-%dT%H:%M:%S or format %m/%d/%YT%H:%M:%S. \n DateTime provided: " + prevItem.text(1)) 
-                            return datetime.time(0,0,2)
+                        return datetime.time(0,0,2)
                 else:
                     return datetime.time(0,0,2)
                 try:
-                    deltaTime = datetime.datetime.strptime(node.text(1), "%Y-%m-%dT%H:%M:%S").time()
+                    deltaTime = ProjectController.parse_timestamp(node.text(1)).time()
                 except:
-                    try:
-                        deltaTime = datetime.datetime.strptime(node.text(1), "%m/%d/%YT%H:%M:%S").time()
-                    except:
-                        print("Event " + node.text(0) + " time value does not match format %Y-%m-%dT%H:%M:%S or format %m/%d/%YT%H:%M:%S. \n DateTime provided: " + node.text(1)) 
-                        return datetime.time(0,0,2)
+                    return datetime.time(0,0,2)
                 if prevTime < deltaTime:
                     delatDateTime = datetime.datetime.combine(datetime.datetime.today(),deltaTime) - datetime.datetime.combine(datetime.datetime.today(),prevTime)
-                    date = datetime.datetime.strptime("1900-01-01T00:00:00", "%Y-%m-%dT%H:%M:%S") + delatDateTime
+                    date = datetime.datetime.strptime("1900-01-01T00:00:00.000", "%Y-%m-%dT%H:%M:%S.%f") + delatDateTime
                     deltaTime = date.time()
             return deltaTime
     
