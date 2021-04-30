@@ -17,6 +17,7 @@ import sys
 import os
 import subprocess, signal, time, ctypes
 import re 
+from src.ProjectController import ProjectController
 
 class RunnerWidget(QWidget):
     def __init__(self, project=None):
@@ -96,12 +97,18 @@ class RunnerWidget(QWidget):
         self.error = False
         self.stop = False
         script_py = self.script_name.replace('.json', '.py')
+
         self.v = ValidatorController(script_py)
-        self.v.run_validation()
+        self.v.run_validation(self.script_timeout.value())
+
+#		v.send_input('s\n')
+#		v.send_input('s\n')
+#		v.send_input('s\n')
+#		v.send_input('s\n')
+#		v.send_input('s\n')
+#		v.send_input('s\n')		
+
         self.stop_button.setEnabled(True)
-        # THIS CONTAINS THE TIMEOUT VALUE of TYPE INT
-        # CAN THIS BE PASSED TO THE VALIDATOR?
-        self.timeout = self.script_timeout.value()   
 
     def print_progress(self, text):
         cursor = self.progress_terminal.textCursor()

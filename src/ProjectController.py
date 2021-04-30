@@ -1,9 +1,11 @@
 import json, datetime
-from pathlib import Path
-from .SalientArtifact import SalientArtifact
-from .Event import *
 import os
 import pathlib
+
+from pathlib import Path
+from src.SalientArtifact import SalientArtifact
+from src.Event import *
+
 
 """ This class is based off of the current Causation Extractor class, but only handles project information. Causation Extractor will handle salient artifacts and event grouping.
     This file stores info in project_config so it can be loaded later on.
@@ -17,7 +19,6 @@ class ProjectController:
     _project_info = {"time_frame": "", "eceld_root": "", "project_directory": "", "project_name": "", "dependencies_file": "",
                           "salient_artifacts": []}
     _salient_artifacts = []
-
     _artifact_color = "#FF0000"
 
     # Setters
@@ -70,7 +71,6 @@ class ProjectController:
                 f.write(json.dumps(json_data))
         except FileNotFoundError:
             print("Could not locate file project_config.json")
-
     
     @classmethod
     def set_artifact_color(cls, artifact_color):

@@ -7,10 +7,10 @@ import Pyro4
 import sys
 import shutil
 
-from Event import Event, Auditd, Clicks, Keypresses, Traffic, TrafficThroughput, Timed, Suricata
+from .Event import Event, Auditd, Clicks, Keypresses, Traffic, TrafficThroughput, Timed, Suricata
 
 class Validator:
-	def __init__(self, timeout=None):
+	def __init__(self, timeout):
 		self.eceld = Pyro4.Proxy("PYRONAME:ecel.service")
 		self.start_time = None
 		self.output_path = os.getcwd() + "/validation_temp/"
@@ -35,7 +35,7 @@ class Validator:
 				self.start_time = datetime.datetime.now()
 			else:
 				if datetime.datetime.now() - self.start_time >= datetime.timedelta(seconds=self.timeout):
-					raise RuntimeError("Script validation timed out - Script failed validation.")
+					raise RuntimeError("Script validation timed out ({0} seconds)".format(self.timeout))
 
 			self.eceld.stop_collectors()
 			self.eceld.parse_data_all()
@@ -84,9 +84,8 @@ class Validator:
 			print("Failed to import " + type[i])
 
 if __name__ == '__main__':
-	# load timeout from project file instead of hardcoding
 	try:
-		v = Validator(timeout=5)
+		v = Validator(int(sys.argv[1]))
 	except RuntimeError as e:
 		print(e)
 
