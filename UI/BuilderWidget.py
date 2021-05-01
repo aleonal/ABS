@@ -9,10 +9,13 @@ import json
 import datetime
 from src.ProjectController import ProjectController
 from src import Event
-from src.ScriptGenerator import ScriptGenerator
+from src.ScriptGen2 import ScriptGen2
 from UI.ArtifactsTableWidget import SalientArtifactWindow
-from UI.ClickOptionsWidget import ClickOptionsWidget
+
+from UI.ClickSettings import ClickSettings
+#from UI.ClickOptionsWidget import ClickOptionsWidget
 from UI.DependencyOptionsWidget import DependencyOptionsWidget
+
 
 class BuilderWidget(QWidget):
 
@@ -31,6 +34,12 @@ class BuilderWidget(QWidget):
         self.setLayout(self.gridLayout)
         self.setWindowIcon(QtGui.QIcon("A.png"))# A icons
 
+        self.search_relationship_query = ""
+        self.search_dependencies_query = ""
+
+        self.search_dependencies_index = 0
+        self.search_relationships_index = 0
+
         #Create search bar
         self.label = QLabel('Builder', self)
         self.label.setObjectName(u"label")
@@ -44,9 +53,11 @@ class BuilderWidget(QWidget):
         self.gridLayout.addWidget(self.horizontalTopLeftLayoutWidget, 1, 0)
 
         self.search_relationships_lineedit = QLineEdit(self)
+        self.search_relationships_lineedit.textChanged.connect(self.relationshipQueryChanged)
         self.horizontalTopLeftLayout.addWidget(self.search_relationships_lineedit, 0)
         self.relationship_search_button = QPushButton('Search', self)
         self.horizontalTopLeftLayout.addWidget(self.relationship_search_button, 1)
+        self.relationship_search_button.clicked.connect(self.searchRelationships)
         self.relationship_search_button.setEnabled(False)
         
         self.horizontalTopRightLayoutWidget = QWidget(self)
@@ -56,8 +67,10 @@ class BuilderWidget(QWidget):
         self.gridLayout.addWidget(self.horizontalTopRightLayoutWidget, 1, 3)
 
         self.search_dependency_lineedit = QLineEdit(self)
+        self.search_dependency_lineedit.textChanged.connect(self.dependencyQueryChanged)
         self.horizontalTopRightLayout.addWidget(self.search_dependency_lineedit, 0)
         self.dependency_search_button = QPushButton('Search', self)
+        self.dependency_search_button.clicked.connect(self.searchDependency)
         self.horizontalTopRightLayout.addWidget(self.dependency_search_button, 1)
         self.dependency_search_button.setEnabled(False)
 
@@ -144,7 +157,10 @@ class BuilderWidget(QWidget):
             self.move_node_button.setEnabled(True)
             self.load_button.setEnabled(True)
             if ProjectController.get_dependencies_file() != "":
-                self.loadDependencies()
+                try:
+                    self.loadDependencies()
+                except:
+                    pass
 
     def populateTrees(self):
         eventGroups = ProjectController.load_event_list()
@@ -258,15 +274,18 @@ class BuilderWidget(QWidget):
             selectedItem = self.listrelationships.selectedItems()[0]
             selectedIndex = self.listrelationships.selectedIndexes()[0]
             deltaTime = self.calcDeltaTime(node=selectedItem, index=selectedIndex)
+            parent = self.listdependencies
             if len(self.listdependencies.selectedItems()) > 0:
-                newItem = self.listdependencies.addNode(selectedItem.text(0), deltaTime.__str__(), selectedItem.text(2), self.listrelationships.selectedItems()[0], True)
-            else:
-                newItem = self.listdependencies.addNode(selectedItem.text(0), deltaTime.__str__(), selectedItem.text(2), self.listdependencies, True)
+                parent = self.listdependencies.selectedItems()[0]
+                if parent.parent():
+                    parent = parent.parent()
+
+            newItem = self.listdependencies.addNode(selectedItem.text(0), deltaTime.__str__(), selectedItem.text(2), parent, True)
             for childIndex in range(selectedItem.childCount()):
                 child = selectedItem.child(childIndex)
                 child_index_obj = self.listrelationships.indexFromItem(child)
                 deltaTime = self.calcDeltaTime(node=child, index=child_index_obj)
-                self.listdependencies.addNode(child.text(0), deltaTime.__str__(), child.text(2), newItem, True)
+                self.listdependencies.addNode(child.text(0), deltaTime.__str__(), child.text(2), parent, True)
         else:
             QMessageBox.critical(self, "Project Error", "No node selected.")
 
@@ -280,28 +299,52 @@ class BuilderWidget(QWidget):
                 prevItem = self.listrelationships.itemAt(index.row()-1, index.column())
                 if prevItem is not None:
                     try:
-                        prevTime = datetime.datetime.strptime(prevItem.text(1), "%Y-%m-%dT%H:%M:%S").time()
+                        prevTime = ProjectController.parse_timestamp(prevItem.text(1)).time()
                     except:
-                        try:
-                            prevTime = datetime.datetime.strptime(prevItem.text(1), "%m/%d/%YT%H:%M:%S").time()
-                        except:
-                            print("Event " + prevItem.text(0) + " time value does not match format %Y-%m-%dT%H:%M:%S or format %m/%d/%YT%H:%M:%S. \n DateTime provided: " + prevItem.text(1)) 
-                            return datetime.time(0,0,2)
+                        return datetime.time(0,0,2)
                 else:
                     return datetime.time(0,0,2)
                 try:
-                    deltaTime = datetime.datetime.strptime(node.text(1), "%Y-%m-%dT%H:%M:%S").time()
+                    deltaTime = ProjectController.parse_timestamp(node.text(1)).time()
                 except:
-                    try:
-                        deltaTime = datetime.datetime.strptime(node.text(1), "%m/%d/%YT%H:%M:%S").time()
-                    except:
-                        print("Event " + node.text(0) + " time value does not match format %Y-%m-%dT%H:%M:%S or format %m/%d/%YT%H:%M:%S. \n DateTime provided: " + node.text(1)) 
-                        return datetime.time(0,0,2)
+                    return datetime.time(0,0,2)
                 if prevTime < deltaTime:
                     delatDateTime = datetime.datetime.combine(datetime.datetime.today(),deltaTime) - datetime.datetime.combine(datetime.datetime.today(),prevTime)
-                    date = datetime.datetime.strptime("1900-01-01T00:00:00", "%Y-%m-%dT%H:%M:%S") + delatDateTime
+                    date = datetime.datetime.strptime("1900-01-01T00:00:00.000", "%Y-%m-%dT%H:%M:%S.%f") + delatDateTime
                     deltaTime = date.time()
             return deltaTime
+
+    def searchRelationships(self):
+        query = self.search_relationships_lineedit.text()
+        print("Searching relationship: " + query)
+        results = self.listrelationships.findItems(query, QtCore.Qt.MatchContains | QtCore.Qt.MatchRecursive, 2)
+        if(query == self.search_relationship_query):
+            self.search_relationships_index = self.search_relationships_index + 1 
+            if self.search_relationships_index >= len(results):
+                self.search_relationships_index = 0
+        else:
+            self.search_relationship_query = query
+        print("Searching results lenght: " + len(results).__str__())
+        if len(results) > 0:
+            print(results[self.search_relationships_index].text(2))
+            self.listrelationships.setCurrentItem(results[self.search_relationships_index])
+            self.listrelationships.scrollTo(self.listrelationships.indexFromItem(results[self.search_relationships_index]))
+
+    def searchDependency(self):
+        query = self.search_dependency_lineedit.text()
+        print("Searching dependencies: " + query)
+        results = self.listdependencies.findItems(query, QtCore.Qt.MatchContains | QtCore.Qt.MatchRecursive, 4)
+        if(query == self.search_dependencies_query):
+            self.search_dependencies_index = self.search_dependencies_index + 1 
+            if self.search_dependencies_index >= len(results):
+                self.search_dependencies_index = 0
+        else:
+            self.search_dependencies_query = query
+        print("Searching dependencies results lenght: " + len(results).__str__())
+        if len(results) > 0:
+            print(results[self.search_dependencies_index].text(2))
+            self.listdependencies.setCurrentItem(results[self.search_dependencies_index])
+            self.listdependencies.scrollTo(self.listdependencies.indexFromItem(results[self.search_dependencies_index]))
     
     def populateBranch(self, children=None, parent=None):
         artifactList = ProjectController.get_salient_artifacts_json()
@@ -371,7 +414,7 @@ class BuilderWidget(QWidget):
         if len(self.listdependencies.selectedItems()) > 0:
             selectedItem = self.listdependencies.selectedItems()[0]
             print (selectedItem.text(0))
-            if selectedItem.text(0) == "clicks_id":
+            if selectedItem.text(0) == "clicks_id" or selectedItem.text(0) == "timed_id":
                 self.openClicks()
             else:
                 self.properties_window = DependencyOptionsWidget(selectedItem)
@@ -381,8 +424,8 @@ class BuilderWidget(QWidget):
         if len(self.listdependencies.selectedItems()) > 0:
             selectedItem = self.listdependencies.selectedItems()[0]
             print (selectedItem.text(0))
-            if selectedItem.text(0) == "clicks_id":
-                self.clicks_window = ClickOptionsWidget(selectedItem)
+            if selectedItem.text(0) == "clicks_id" or selectedItem.text(0) == "timed_id":
+                self.clicks_window = ClickSettings(selectedItem)
                 self.clicks_window.show()
             else:
                 QMessageBox.critical(self, "Input Error", "Event is not a clicks_id type")
@@ -418,7 +461,7 @@ class BuilderWidget(QWidget):
             self.invalid_path_alert_message()
             return False 
         try:
-            ScriptGenerator(script_path)
+            ScriptGen2(script_path)
             self.script_gen_success()
         except:
             self.invalid_path_alert_message()
@@ -463,6 +506,11 @@ class BuilderWidget(QWidget):
         with open(filename, 'w') as outfile:
             json.dump(dependencies_list, outfile, indent=2)
 
+    def relationshipQueryChanged(self, text):
+        self.search_relationships_lineedit.setText(text)
+    
+    def dependencyQueryChanged(self, text):
+        self.search_dependency_lineedit.setText(text)
 
 class ABSRelationshipTreeWidget(QTreeWidget):
     def __init__(self):
@@ -471,11 +519,11 @@ class ABSRelationshipTreeWidget(QTreeWidget):
         ___qtreewidgetitem.setText(2,"Content")
         ___qtreewidgetitem.setText(1,"Time")
         ___qtreewidgetitem.setText(0,"Type")
-        self.setAcceptDrops(True)
+        self.setAcceptDrops(False)
         self.setTabKeyNavigation(True)
-        self.setDragEnabled(True)
+        self.setDragEnabled(False)
         self.setDragDropOverwriteMode(False)
-        self.setDragDropMode(QAbstractItemView.DragDrop)
+        self.setDragDropMode(QAbstractItemView.NoDragDrop)
         self.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.setDefaultDropAction(Qt.CopyAction)
         self.setSortingEnabled(True)
@@ -528,8 +576,13 @@ class ABSDependencyTreeWidget(QTreeWidget):
         
     def keyPressEvent(self, event):
         if event.key() == QtCore.Qt.Key_Delete and self.state() != QTreeWidget.EditingState:
-            row = self.selectedItems().pop()
-            self.takeTopLevelItem(self.indexOfTopLevelItem(row))
+            if len(self.selectedItems()) > 0:
+                row = self.selectedItems().pop()
+                if row.parent(): 
+                    parent = row.parent()
+                    parent.removeChild(row)
+                else:
+                    self.takeTopLevelItem(self.indexOfTopLevelItem(row))
         else:
             super().keyPressEvent(event)
 

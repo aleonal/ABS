@@ -99,6 +99,8 @@ class CausationExtractor:
                     elif type == "keypresses":
                         obj = Keypresses(e['keypresses_id'], e['content'], e['className'], e['start'])
                     elif type == "timed":
+                        basename = os.path.basename(e['content'])
+                        e['content'] = os.path.join(self._eceld_project_root, "raw/pykeylogger/timed_screenshots/" + basename)
                         obj = Timed(e["timed_id"], e['type'], e['classname'], e['content'], e['start'])
                     elif type == "traffic":
                         obj = Traffic(e['traffic_all_id'], e['content'], e['className'], e['title'], e['start'])

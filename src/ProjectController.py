@@ -1,9 +1,11 @@
 import json, datetime
-from pathlib import Path
-from .SalientArtifact import SalientArtifact
-from .Event import *
 import os
 import pathlib
+
+from pathlib import Path
+from src.SalientArtifact import SalientArtifact
+from src.Event import *
+
 
 """ This class is based off of the current Causation Extractor class, but only handles project information. Causation Extractor will handle salient artifacts and event grouping.
     This file stores info in project_config so it can be loaded later on.
@@ -17,7 +19,6 @@ class ProjectController:
     _project_info = {"time_frame": "", "eceld_root": "", "project_directory": "", "project_name": "", "dependencies_file": "",
                           "salient_artifacts": []}
     _salient_artifacts = []
-
     _artifact_color = "#FF0000"
 
     # Setters
@@ -60,7 +61,7 @@ class ProjectController:
 
     @classmethod
     def set_time_frame(cls,t):
-        tf = datetime.datetime.strptime(t, '%H:%M:%S')
+        tf = cls.parse_timestamp(t)
         cls._time_frame = datetime.timedelta(hours=tf.hour, minutes=tf.minute, seconds=tf.second)
         try:
             with open('project_config.json', 'r') as f:
@@ -70,7 +71,6 @@ class ProjectController:
                 f.write(json.dumps(json_data))
         except FileNotFoundError:
             print("Could not locate file project_config.json")
-
     
     @classmethod
     def set_artifact_color(cls, artifact_color):
@@ -271,7 +271,16 @@ class ProjectController:
                 json.dump(artifactsList, outfile)
         except FileNotFoundError:
             print("Could not locate salientArtifacts.json")
-
+            
+    @classmethod
+    def parse_timestamp(cls, timestamptStr):
+        formats = {'%H:%M:%S','%H:%M:%S.%f','%Y-%m-%dT%H:%M:%S','%Y/%m/%dT%H:%M:%S', '%d/%m/%YT%H:%M:%S', '%m/%d/%YT%H:%M:%S','%Y-%m-%dT%H:%M:%S.%f','%Y/%m/%dT%H:%M:%S.%f', '%d/%m/%YT%H:%M:%S.%f', '%m/%d/%YT%H:%M:%S.%f'}
+        for format in formats:
+            try:
+                time = datetime.datetime.strptime(timestamptStr, format)
+                return time
+            except:
+                print(format + " format does not match " + timestamptStr)
 
     # Loads events from timed groups, assuming that's the only files in the folder
     @classmethod

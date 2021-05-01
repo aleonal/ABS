@@ -13,6 +13,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtGui import QStandardItem
 from PyQt5.QtCore import *
+from src.Packager import Packager
 import os
 
 
@@ -21,6 +22,8 @@ class PackagerWidget(QWidget):
     def __init__(self, project=None):
         super().__init__()
         self.setWindowTitle("Packager")
+        self.packager = Packager()
+        
         self.UI()
         self.show()
 
@@ -35,6 +38,7 @@ class PackagerWidget(QWidget):
 
         #Package Items Table
         self.vmTable = QTableWidget(0, 3, self)
+        self.vmTable.setEditTriggers(QAbstractItemView.NoEditTriggers) 
 
         # Creating headers for columns in table
         type_header = QTableWidgetItem('Item Type')
@@ -81,8 +85,8 @@ class PackagerWidget(QWidget):
         self.packageProjectButton.setObjectName("packageProjectButton")
         self.packageProjectButton.clicked.connect(self.package_files)
 
-        self.importVMButton = QtWidgets.QPushButton()
-        self.importVMButton.setObjectName("importVMButton")
+        #self.importVMButton = QtWidgets.QPushButton()
+        #self.importVMButton.setObjectName("importVMButton")
 
         self.importFilesButton = QtWidgets.QPushButton()
         self.importFilesButton.setObjectName("importFilesButton")
@@ -92,7 +96,7 @@ class PackagerWidget(QWidget):
         #self.deleteFilesButton.setObjectName("deleteFilesButton")
 
         self.projectVerticalLayout.addWidget(self.packageProjectButton)
-        self.projectVerticalLayout.addWidget(self.importVMButton)
+        #self.projectVerticalLayout.addWidget(self.importVMButton)
         self.projectVerticalLayout.addWidget(self.importFilesButton)
         #self.projectVerticalLayout.addWidget(self.deleteFilesButton)
         
@@ -100,35 +104,35 @@ class PackagerWidget(QWidget):
         self.projectLayout.addLayout(self.projectVerticalLayout)
 
         # Packager button layout
-        self.packagerLayout = QHBoxLayout()
-        self.packagerLayout.setObjectName("packagerLayout")
-        self.packagerLayout.setContentsMargins(30, 0, 30, 0)
+        #self.packagerLayout = QHBoxLayout()
+        #self.packagerLayout.setObjectName("packagerLayout")
+        #self.packagerLayout.setContentsMargins(30, 0, 30, 0)
 
         # Packager action buttons
-        self.openProjectButton = QtWidgets.QPushButton()
-        self.openProjectButton.setObjectName("openProjectButton")
+        #self.openProjectButton = QtWidgets.QPushButton()
+        #self.openProjectButton.setObjectName("openProjectButton")
         
-        self.newProjectButton = QtWidgets.QPushButton()
-        self.newProjectButton.setObjectName("newProjectButton")
+        #self.newProjectButton = QtWidgets.QPushButton()
+        #self.newProjectButton.setObjectName("newProjectButton")
 
-        self.launchProjectButton = QtWidgets.QPushButton()
-        self.launchProjectButton.setObjectName("launchProjectButton")
+        #self.launchProjectButton = QtWidgets.QPushButton()
+        #self.launchProjectButton.setObjectName("launchProjectButton")
 
-        spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        #spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
 
-        self.packagerLayout.addWidget(self.openProjectButton)
-        self.packagerLayout.addWidget(self.newProjectButton)
-        self.packagerLayout.addItem(spacer)
-        self.packagerLayout.addWidget(self.launchProjectButton)
+        #self.packagerLayout.addWidget(self.openProjectButton)
+        #self.packagerLayout.addWidget(self.newProjectButton)
+        #self.packagerLayout.addItem(spacer)
+        #self.packagerLayout.addWidget(self.launchProjectButton)
 
         self.gridLayout.addLayout(self.projectLayout, 0, 0)
-        self.gridLayout.addLayout(self.packagerLayout, 1, 0)
+        #self.gridLayout.addLayout(self.packagerLayout, 1, 0)
 
         self.setLayout(self.gridLayout)
         self.retranslateUi()
     def populate_table(self):
         #TODO: Connect vm_list to packager.py to get list of vms from virtualbox
-        vm_list = ["VM1", "VM2"]
+        vm_list = self.packager.get_vm_list()
         i=0
         self.vmTable.setRowCount(len(vm_list))
         for vm in vm_list:
@@ -159,7 +163,30 @@ class PackagerWidget(QWidget):
             self.vmTable.removeRow(row)
     
     def package_files(self):
-        output_directory = QtWidgets.QFileDialog.getExistingDirectory(parent=self, caption="Select Output Directory", directory=os.path.realpath(os.getcwd()))
+        output_zip = QtWidgets.QFileDialog.getSaveFileName(parent=self, caption="Save Zip File", directory=os.path.realpath(os.getcwd()), filter="Zip (*.zip)")
+        print(output_zip)
+        selectedVms = []
+        includedFiles = [] 
+        i=0
+        while i < self.vmTable.rowCount():
+            fileTypeTemp = self.vmTable.item(i,0) #This should be our files type
+            file_type =fileTypeTemp.text()
+
+            filePathTemp = self.vmTable.item(i,1)#This should be our files path or VM Name
+            file_path =filePathTemp.text()
+
+            if file_type == "File":
+                includedFiles.append(file_path)
+            if file_type == "VM":
+                checkbox = self.vmTable.cellWidget(i,2)
+                if checkbox.isChecked():
+                    selectedVms.append(file_path)
+            i = i+1
+        if output_zip[0] != '':
+            self.packager.export_to_zip(vm_list=selectedVms, file_list = includedFiles, output_file = output_zip[0])
+            QMessageBox.information(self, "Success", "Project ZIP has been created.")
+        else:
+            QMessageBox.critical(self, "Failure", "No File selected.")
 
         #For regular files we can use
         
@@ -190,12 +217,12 @@ class PackagerWidget(QWidget):
         
 
         self.packageProjectButton.setText(_translate("Widget", "Package Project..."))
-        self.importVMButton.setText(_translate("Widget", "Import VM to Project..."))
+        #self.importVMButton.setText(_translate("Widget", "Import VM to Project..."))
         self.importFilesButton.setText(_translate("Widget", "Import Files to Project..."))
        #self.deleteFilesButton.setText(_translate("Widget", "Delete Project Files..."))
-        self.openProjectButton.setText(_translate("Widget", "Open Project..."))
-        self.newProjectButton.setText(_translate("Widget", "New Project..."))
-        self.launchProjectButton.setText(_translate("Widget", "Launch Project"))
+        #self.openProjectButton.setText(_translate("Widget", "Open Project..."))
+        #self.newProjectButton.setText(_translate("Widget", "New Project..."))
+        #self.launchProjectButton.setText(_translate("Widget", "Launch Project"))
 
 if __name__ == "__main__":
     import sys
