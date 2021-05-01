@@ -17,7 +17,7 @@ class ScriptGen2():
         # open dependencies file from builder
         with open(script_name) as f:
             data = json.load(f)
-            # traverse for d in data and for child in d["children"]
+            # traverse for event in data and for child in event["children"]
             for event in data:
                 # if its a click do something
                 if event["Type"] == "clicks_id" or event["Type"] == "timed_id":
@@ -39,6 +39,7 @@ class ScriptGen2():
                     # if its an observation do something
                     else:
                         child["v"] = "observation"
+                # Only append root events in validator list since children events already present within root events
                 self.validator.append(event)
 
         # Create the python file
