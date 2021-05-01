@@ -13,6 +13,8 @@ from PyQt5.QtGui import *
 from PyQt5.QtGui import QStandardItem
 from PyQt5.QtCore import *
 from src.ValidatorController import ValidatorController
+from subprocess import Popen, PIPE
+
 import sys
 import os
 import subprocess, signal, time, ctypes
@@ -98,8 +100,10 @@ class RunnerWidget(QWidget):
         self.stop = False
         script_py = self.script_name.replace('.json', '.py')
 
-        self.v = ValidatorController(script_py)
-        self.v.run_validation(self.script_timeout.value())
+        self.script_process = Popen(["python3", "-m", "pdb", script_py], stdin=PIPE, close_fds=True)
+        
+        # Maybe turn this into thread? 
+        self.validator_process = Popen(["python3", "-m", "src.Validator", str(self.script_timeout.value())], stdin=PIPE, close_fds=True, cwd=os.getcwd())
 
 #		v.send_input('s\n')
 #		v.send_input('s\n')
@@ -133,8 +137,8 @@ class RunnerWidget(QWidget):
             self.print_progress("\nSuccess\n")
         
     def stop_script(self):
-        self.v.p1.kill()
-        self.v.p2.kill()
+        self.script_process.kill()
+        self.validator_process.kill()
         self.stop = True
         self.stop_button.setEnabled(False)
         self.run_button.setEnabled(True)
