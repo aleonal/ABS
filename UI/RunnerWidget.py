@@ -99,20 +99,36 @@ class RunnerWidget(QWidget):
         self.error = False
         self.stop = False
         script_py = self.script_name.replace('.json', '.py')
+        self.stop_button.setEnabled(True)
+
+        '''
+        To communicate with PDB process, write self.script_process.stdin.write(args),
+        where args is a string consisting of a PDB command, followed by a line break (\n).
+
+        I don't expect us to use anything other than 'n' command, as that executes the current line
+        but avoids going into function calls.
+
+        Example: self.script_process.stdin.write('n\n'.encode())
+
+        Command list: https://docs.python.org/3/library/pdb.html
+        '''
 
         self.script_process = Popen(["python3", "-m", "pdb", script_py], stdin=PIPE, close_fds=True)
         
-        # Maybe turn this into thread? 
-        self.validator_process = Popen(["python3", "-m", "src.Validator", str(self.script_timeout.value())], stdin=PIPE, close_fds=True, cwd=os.getcwd())
+        '''
+        Maybe turn this into thread? Makes sense since this process needs to communicate with pdb.
+        The reason that it needs to be a thread is so that it doesn't block GUI?
+        Gotta test super quick, I'll work on this (Antoine). The way the validator works depends
+        on this.      
+        '''
 
-#		v.send_input('s\n')
-#		v.send_input('s\n')
-#		v.send_input('s\n')
-#		v.send_input('s\n')
-#		v.send_input('s\n')
-#		v.send_input('s\n')		
+        # self.validator_process = Popen(["python3", "-m", "src.Validator", str(self.script_timeout.value())], stdin=PIPE, close_fds=True, cwd=os.getcwd())
 
-        self.stop_button.setEnabled(True)
+        '''
+        Used this to test that writing to PDB process worked, which it does
+        for i in range(0, 5):
+            self.script_process.stdin.write('n\n'.encode())
+        '''
 
     def print_progress(self, text):
         cursor = self.progress_terminal.textCursor()
