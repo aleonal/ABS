@@ -63,14 +63,6 @@ class RunnerWidget(QWidget):
         self.progress_terminal = QtWidgets.QTextEdit()
         self.progress_terminal.setGeometry(QtCore.QRect(400, 40, 381, 471))
         self.progress_terminal.setObjectName("progress_terminal")
-        self.proc = QtCore.QProcess(self)
-        self.error = False
-        self.stop = False
-        self.proc.readyReadStandardError.connect(self.stderrReady)
-        self.proc.stateChanged.connect(self.handle_state)
-        self.proc.started.connect(lambda: self.run_button.setEnabled(False))
-        self.proc.finished.connect(lambda: self.run_button.setEnabled(True))
-        self.proc.finished.connect(self.success_message)
         
         # Timeout
         self.script_timeout = QtWidgets.QSpinBox(self)
@@ -96,10 +88,9 @@ class RunnerWidget(QWidget):
         self.stop_button.setText(_translate("RunnerTab", "Stop"))
 
     def execute_script(self):  
-        self.error = False
-        self.stop = False
         script_py = self.script_name.replace('.json', '.py')
         self.stop_button.setEnabled(True)
+        self.run_button.setEnabled(False)
 
         '''
         To communicate with PDB process, write self.script_process.stdin.write(args),
@@ -113,7 +104,7 @@ class RunnerWidget(QWidget):
         Command list: https://docs.python.org/3/library/pdb.html
         '''
 
-        self.script_process = Popen(["python3", "-m", "pdb", script_py], stdin=PIPE, close_fds=True)
+        self.script_process = Popen(["python3", "-m", "pdb", script_py], stdin=PIPE, stdout=PIPE, close_fds=True)       
         
         '''
         Maybe turn line below into thread? Makes sense since validator needs to communicate
@@ -124,38 +115,34 @@ class RunnerWidget(QWidget):
 
         # self.validator_process = Popen(["python3", "-m", "src.Validator", str(self.script_timeout.value())], stdin=PIPE, close_fds=True, cwd=os.getcwd())
 
-        '''
-        Used this to test that writing to PDB process worked. Tested working 5:29am, 5/1/21
-        for i in range(0, 5):
+        
+        #Used this to test that writing to PDB process worked. Tested working 5:29am, 5/1/21
+        for i in range(0, 6):
             self.script_process.stdin.write('n\n'.encode())
+
+        # Script Process: Prints output and errors to GUI
+        output, errors = self.script_process.communicate()
+        self.print_progress(output.decode("utf-8"))
+        if errors:
+                self.print_progress(errors.decode("utf-8")) 
+
+        '''
+        # Validator Process: Prints output and errors to GUI
+        output, errors = self.validator_process.communicate()
+        self.print_progess(output.decode("utf-8"))
+        if errors:
+                self.print_progress(errors.decode("utf-8")
         '''
 
     def print_progress(self, text):
         cursor = self.progress_terminal.textCursor()
         cursor.movePosition(cursor.End)
         cursor.insertText(text)
-
-    def stderrReady(self):
-        for item in self.proc.readAllStandardError():
-            self.print_progress(item.decode("utf-8"))
-        self.error = True
-        
-    def handle_state(self, state):
-        states = {QProcess.NotRunning: "Not running",
-                  QProcess.Starting: "Starting",
-                  QProcess.Running: "Running",
-        }
-        state_name = states[state]
-        self.print_progress(f"\nState changed: {state_name}\n")
-
-    def success_message(self):
-        if not self.stop and not self.error:
-            self.print_progress("\nSuccess\n")
         
     def stop_script(self):
         self.script_process.kill()
-        self.validator_process.kill()
-        self.stop = True
+        #self.validator_process.kill()
+        self.print_progress("Program stopped\n")
         self.stop_button.setEnabled(False)
         self.run_button.setEnabled(True)
 
