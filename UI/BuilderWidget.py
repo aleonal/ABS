@@ -265,7 +265,7 @@ class BuilderWidget(QWidget):
             selectedIndex = self.listrelationships.selectedIndexes()[0]
             deltaTime = self.calcDeltaTime(node=selectedItem, index=selectedIndex)
             if len(self.listdependencies.selectedItems()) > 0:
-                newItem = self.listdependencies.addNode(selectedItem.text(0), deltaTime.__str__(), selectedItem.text(2), self.listrelationships.selectedItems()[0], True)
+                newItem = self.listdependencies.addNode(selectedItem.text(0), deltaTime.__str__(), selectedItem.text(2), self.listdependencies.selectedItems()[0], True)
             else:
                 newItem = self.listdependencies.addNode(selectedItem.text(0), deltaTime.__str__(), selectedItem.text(2), self.listdependencies, True)
             for childIndex in range(selectedItem.childCount()):
@@ -469,11 +469,11 @@ class ABSRelationshipTreeWidget(QTreeWidget):
         ___qtreewidgetitem.setText(2,"Content")
         ___qtreewidgetitem.setText(1,"Time")
         ___qtreewidgetitem.setText(0,"Type")
-        self.setAcceptDrops(True)
+        self.setAcceptDrops(False)
         self.setTabKeyNavigation(True)
-        self.setDragEnabled(True)
+        self.setDragEnabled(False)
         self.setDragDropOverwriteMode(False)
-        self.setDragDropMode(QAbstractItemView.DragDrop)
+        self.setDragDropMode(QAbstractItemView.NoDragDrop)
         self.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.setDefaultDropAction(Qt.CopyAction)
         self.setSortingEnabled(True)
