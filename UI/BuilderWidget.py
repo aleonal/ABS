@@ -34,6 +34,12 @@ class BuilderWidget(QWidget):
         self.setLayout(self.gridLayout)
         self.setWindowIcon(QtGui.QIcon("A.png"))# A icons
 
+        self.search_relationship_query = ""
+        self.search_dependencies_query = ""
+
+        self.search_dependencies_index = 0
+        self.search_relationships_index = 0
+
         #Create search bar
         self.label = QLabel('Builder', self)
         self.label.setObjectName(u"label")
@@ -312,21 +318,33 @@ class BuilderWidget(QWidget):
         query = self.search_relationships_lineedit.text()
         print("Searching relationship: " + query)
         results = self.listrelationships.findItems(query, QtCore.Qt.MatchContains | QtCore.Qt.MatchRecursive, 2)
+        if(query == self.search_relationship_query):
+            self.search_relationships_index = self.search_relationships_index + 1 
+            if self.search_relationships_index >= len(results):
+                self.search_relationships_index = 0
+        else:
+            self.search_relationship_query = query
         print("Searching results lenght: " + len(results).__str__())
         if len(results) > 0:
-            print(results[0].text(2))
-            self.listrelationships.setCurrentItem(results[0])
-            self.listrelationships.scrollTo(self.listrelationships.indexFromItem(results[0]))
+            print(results[self.search_relationships_index].text(2))
+            self.listrelationships.setCurrentItem(results[self.search_relationships_index])
+            self.listrelationships.scrollTo(self.listrelationships.indexFromItem(results[self.search_relationships_index]))
 
     def searchDependency(self):
         query = self.search_dependency_lineedit.text()
         print("Searching dependencies: " + query)
         results = self.listdependencies.findItems(query, QtCore.Qt.MatchContains | QtCore.Qt.MatchRecursive, 4)
+        if(query == self.search_dependencies_query):
+            self.search_dependencies_index = self.search_dependencies_index + 1 
+            if self.search_dependencies_index >= len(results):
+                self.search_dependencies_index = 0
+        else:
+            self.search_dependencies_query = query
         print("Searching dependencies results lenght: " + len(results).__str__())
         if len(results) > 0:
-            print(results[0].text(2))
-            self.listdependencies.setCurrentItem(results[0])
-            self.listdependencies.scrollTo(self.listdependencies.indexFromItem(results[0]))
+            print(results[self.search_dependencies_index].text(2))
+            self.listdependencies.setCurrentItem(results[self.search_dependencies_index])
+            self.listdependencies.scrollTo(self.listdependencies.indexFromItem(results[self.search_dependencies_index]))
     
     def populateBranch(self, children=None, parent=None):
         artifactList = ProjectController.get_salient_artifacts_json()
