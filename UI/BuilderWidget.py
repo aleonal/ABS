@@ -558,8 +558,13 @@ class ABSDependencyTreeWidget(QTreeWidget):
         
     def keyPressEvent(self, event):
         if event.key() == QtCore.Qt.Key_Delete and self.state() != QTreeWidget.EditingState:
-            row = self.selectedItems().pop()
-            self.takeTopLevelItem(self.indexOfTopLevelItem(row))
+            if len(self.selectedItems()) > 0:
+                row = self.selectedItems().pop()
+                if row.parent(): 
+                    parent = row.parent()
+                    parent.removeChild(row)
+                else:
+                    self.takeTopLevelItem(self.indexOfTopLevelItem(row))
         else:
             super().keyPressEvent(event)
 
