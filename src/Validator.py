@@ -12,7 +12,7 @@ import time
 
 # TEST ON KALI, SHOULD WORK
 from .ProjectController import ProjectController
-
+from pathlib import Path
 from .Event import Event, Auditd, Clicks, Keypresses, Traffic, TrafficThroughput, Timed, Suricata
 
 class Validator():
@@ -23,12 +23,13 @@ class Validator():
 		self.code_index = 0
 		
 		# TEST ON KALI, SHOULD WORK TODO: change this to project folder
-		self.output_path = os.getcwd() + "/validation_temp/"
+		#self.output_path = os.getcwd() + "/validation_temp/"
+		# I think we should make this folder automatically from the beginning like the events folder 
+		# it's storing but not creating the folder
+		# for now just create the folder in the project
 		op = ProjectController.get_project_directory()
-		print(op)
-		#self.output_path = op/"validation_temp"
-		#folder_name = Path("validation_temp")
-		#self.output_path = os.path.join(op,folder_name)
+		folder_name = Path("validation_temp/")
+		self.output_path = os.path.join(op,folder_name)
 
 		# get write and read access to dir
 		if not os.access(os.getcwd(), os.W_OK):
@@ -57,7 +58,6 @@ class Validator():
 		try:
 			for item in self.json_script:
 				self.validator_loop(item)
-				#TEST ON KALI, SHOULD WORK TODO: Delta time here 
 				dt = datetime.datetime.strptime(item["Time"], '%H:%M:%S')
 				delta_time = datetime.timedelta(hours=dt.hour, minutes=dt.minute, seconds=dt.second)
 				time.sleep(delta_time.total_seconds())
@@ -92,7 +92,6 @@ class Validator():
 				if "action" in child['v']:
 					self.code_index += 1
 				self.validator_loop(child)
-				#TEST ON KALI, SHOULD WORK TODO: Delta time here 
 				dt = datetime.datetime.strptime(item["Time"], '%H:%M:%S')
 				delta_time = datetime.timedelta(hours=dt.hour, minutes=dt.minute, seconds=dt.second)
 				time.sleep(delta_time.total_seconds())
