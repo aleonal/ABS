@@ -95,7 +95,7 @@ class RunnerWidget(QWidget):
 
         self.validator = Validator(self.script_timeout.value(), script_path)
         self.validator.validate()
-		self.stop_script()
+        self.stop_script()
 
 #        self.validator_thread = threading.Thread(target=Validator.validation_loop, args=(self.validator, self.script_timeout.value(),))		
 #        with concurrent.futures.ThreadPoolExecutor() as executor:
