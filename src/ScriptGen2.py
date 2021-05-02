@@ -7,7 +7,7 @@ class ScriptGen2():
 
     def __init__(self, script_name):
         # Initialize python file contents
-        self.script = "import pyautogui\nfrom PIL import Image\nimport os, os.path\nbreakpoint()\n\n"
+        self.script = "import pyautogui\nfrom PIL import Image\nimport os, os.path\n\n"
         # Initailize validator json file
         self.validator = []
         # Use Builder dependencies file to create script

@@ -25,6 +25,7 @@ class PackagerWidget(QWidget):
         self.packager = Packager()
         
         self.UI()
+        self.resize(1000,500)
         self.show()
 
     def UI(self):

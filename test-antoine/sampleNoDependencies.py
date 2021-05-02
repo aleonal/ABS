@@ -1,7 +1,6 @@
 import pyautogui
 from PIL import Image
 import os, os.path
-breakpoint()
 
 pyautogui.leftClick(14,15)
 pyautogui.leftClick(321,228)

@@ -20,6 +20,8 @@ from UI.ProjectInfoWidget import ProjectInfoWidget
 from src.ProjectController import ProjectController
 import os
 import sys
+import subprocess
+import webbrowser
 
 class Ui_MainWindow(QMainWindow):
 
@@ -80,8 +82,8 @@ class Ui_MainWindow(QMainWindow):
         #self.menuEdit.setObjectName("menuEdit")
         #self.menuAbout = QtWidgets.QMenu(self.menubar)
         #self.menuAbout.setObjectName("menuAbout")
-        #self.menuHelp = QtWidgets.QMenu(self.menubar)
-        #self.menuHelp.setObjectName("menuHelp")
+        self.menuHelp = QtWidgets.QMenu(self.menubar)
+        self.menuHelp.setObjectName("menuHelp")
         MainWindow.setMenuBar(self.menubar)
 
         #Setup statusbar
@@ -96,6 +98,8 @@ class Ui_MainWindow(QMainWindow):
         self.actionOpen_Project.setObjectName("actionOpen_Project")
         #self.actionPackage_Project = QtWidgets.QAction(MainWindow)
         #self.actionPackage_Project.setObjectName("actionPackage_Project")
+        self.actionHelp = QtWidgets.QAction(MainWindow, triggered=self.help_Openpdf)
+        self.actionHelp.setObjectName("actionHelp")
         self.actionSave_Project = QtWidgets.QAction(MainWindow)
         self.actionSave_Project.setObjectName("actionSave_Project")
         self.actionSave_Project = QtWidgets.QAction(MainWindow, triggered=self.save_file)#save project
@@ -130,11 +134,15 @@ class Ui_MainWindow(QMainWindow):
         self.menuFile.addAction(self.actionExit)
         self.menubar.addAction(self.menuFile.menuAction())
         #self.menubar.addAction(self.menuAbout.menuAction())
-        #self.menubar.addAction(self.menuHelp.menuAction())
+        self.menubar.addAction(self.menuHelp.menuAction())
+        self.menuHelp.addAction(self.actionHelp)
 
         self.retranslateUi(MainWindow)
         self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+    def help_Openpdf(self):
+        webbrowser.open_new(r'ABS_document.pdf')
 
     def new_project(self):
         self.project_window = CreateProjectWidget(previous_window=self)
@@ -175,12 +183,14 @@ class Ui_MainWindow(QMainWindow):
 
         self.menuFile.setTitle(_translate("MainWindow", "File"))
         #self.menuAbout.setTitle(_translate("MainWindow", "About"))
-        #self.menuHelp.setTitle(_translate("MainWindow", "Help"))
+        self.menuHelp.setTitle(_translate("MainWindow", "Help"))
         self.actionNew_Project.setText(_translate("MainWindow", "New Project"))
         self.actionOpen_Project.setText(_translate("MainWindow", "Open Project"))
         #self.actionPackage_Project.setText(_translate("MainWindow", "Package Project"))
         self.actionSave_Project.setText(_translate("MainWindow", "Save Project"))
         self.actionExit.setText(_translate("MainWindow", "Exit"))
+        self.actionHelp.setText(_translate("MainWindow", "About ABS"))
+
         #self.actionUndo.setText(_translate("MainWindow", "Undo"))
         #self.actionRedo.setText(_translate("MainWindow", "Redo"))
         #self.actionCopy.setText(_translate("MainWindow", "Copy"))

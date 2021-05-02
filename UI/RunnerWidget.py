@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 # Form implementation generated from reading ui file 'UserInterface.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.2
@@ -12,13 +11,15 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtGui import QStandardItem
 from PyQt5.QtCore import *
-from src.ValidatorController import ValidatorController
 from subprocess import Popen, PIPE
+from src.Validator import Validator
+
 
 import sys
 import os
 import subprocess, signal, time, ctypes
-import re 
+import re
+import threading
 from src.ProjectController import ProjectController
 
 class RunnerWidget(QWidget):
@@ -87,52 +88,38 @@ class RunnerWidget(QWidget):
         self.run_button.setText(_translate("RunnerTab", "Run"))
         self.stop_button.setText(_translate("RunnerTab", "Stop"))
 
-    def execute_script(self):  
-        script_py = self.script_name.replace('.json', '.py')
+    def execute_script(self):
+        script_path = self.script_name.replace('.py', '')
         self.stop_button.setEnabled(True)
         self.run_button.setEnabled(False)
 
-        '''
-        To communicate with PDB process, write self.script_process.stdin.write(args),
-        where args is a string consisting of a PDB command, followed by a line break (\n).
+        self.validator = Validator(self.script_timeout.value(), script_path)
+        self.validator.validate()
+        self.stop_script()
 
-        I don't expect us to use anything other than 'n' command, as that executes the current line
-        but avoids going into function calls.
-
-        Example: self.script_process.stdin.write('n\n'.encode())
-
-        Command list: https://docs.python.org/3/library/pdb.html
-        '''
-
-        self.script_process = Popen(["python3", "-m", "pdb", script_py], stdin=PIPE, stdout=PIPE, close_fds=True)       
-        
-        '''
-        Maybe turn line below into thread? Makes sense since validator needs to communicate
-        with PDB. The reason that it needs to be a thread is so that it doesn't block GUI.
-        Gotta test super quick, I'll work on this (Antoine). The way the validator works depends
-        on this, but I've had that mapped out for a while.
-        '''
-
-        # self.validator_process = Popen(["python3", "-m", "src.Validator", str(self.script_timeout.value())], stdin=PIPE, close_fds=True, cwd=os.getcwd())
-
-        
-        #Used this to test that writing to PDB process worked. Tested working 5:29am, 5/1/21
-        for i in range(0, 6):
-            self.script_process.stdin.write('n\n'.encode())
-
-        # Script Process: Prints output and errors to GUI
-        output, errors = self.script_process.communicate()
-        self.print_progress(output.decode("utf-8"))
-        if errors:
-                self.print_progress(errors.decode("utf-8")) 
-
-        '''
-        # Validator Process: Prints output and errors to GUI
-        output, errors = self.validator_process.communicate()
-        self.print_progess(output.decode("utf-8"))
-        if errors:
-                self.print_progress(errors.decode("utf-8")
-        '''
+#        self.validator_thread = threading.Thread(target=Validator.validation_loop, args=(self.validator, self.script_timeout.value(),))		
+#        with concurrent.futures.ThreadPoolExecutor() as executor:
+#            future = executor.submit(validation_loop, self.script_timeout.value())            
+#            if future.result():
+#                print(future.result())
+#                self.stop_script()
+#        try:
+#            self.validator_thread.start()
+#        except RuntimeError as e:
+#            print(e)
+#            self.stop_script()
+#         self.validator_process = Popen(["python3", "-m", "src.Validator", str(self.script_timeout.value())], stdin=PIPE, close_fds=True, cwd=os.getcwd())
+#        print("Validator created")
+#        self.validator_thread.start()
+#        print("Validator thread started")
+#        while not self.validator.validating:
+#            continue
+#        print("debugging starting")
+#        self.script_process = Popen(["python3", "-m", "pdb", script_py], stdin=PIPE, stdout=PIPE, close_fds=True)
+#        time.sleep(1)
+#        for i in range(0, 10):
+#            self.script_process.stdin.write("n\n".encode())
+#        print("debugger finished")
 
     def print_progress(self, text):
         cursor = self.progress_terminal.textCursor()
@@ -140,8 +127,13 @@ class RunnerWidget(QWidget):
         cursor.insertText(text)
         
     def stop_script(self):
-        self.script_process.kill()
-        #self.validator_process.kill()
+#        Script Process: Prints output and errors to GUI
+#        output, errors = self.script_process.communicate()
+#        self.print_progress(output.decode("utf-8"))
+#
+#        if errors:
+#            self.print_progress(errors.decode("utf-8"))  
+#        self.script_process.kill()
         self.print_progress("Program stopped\n")
         self.stop_button.setEnabled(False)
         self.run_button.setEnabled(True)
