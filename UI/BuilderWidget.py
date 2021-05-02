@@ -272,7 +272,7 @@ class BuilderWidget(QWidget):
     def moveNode(self):
         if len(self.listrelationships.selectedItems()) > 0:
             selectedItem = self.listrelationships.selectedItems()[0]
-            selectedIndex = self.listrelationships.selectedIndexes()[0]
+            selectedIndex = self.listrelationships.indexFromItem(selectedItem)
             deltaTime = self.calcDeltaTime(node=selectedItem, index=selectedIndex)
             parent = self.listdependencies
             if len(self.listdependencies.selectedItems()) > 0:
@@ -292,26 +292,26 @@ class BuilderWidget(QWidget):
 
     def calcDeltaTime(self, node=None, index=None):
         if node is None or index is None:
-            return datetime.time(0,0,2)
+            return datetime.time(0,0,1)
         else: 
-            deltaTime = datetime.time(0,0,2)
-            if(index.row()>0):
-                prevItem = self.listrelationships.itemAt(index.row()-1, index.column())
-                if prevItem is not None:
-                    try:
-                        prevTime = ProjectController.parse_timestamp(prevItem.text(1)).time()
-                    except:
-                        return datetime.time(0,0,2)
-                else:
-                    return datetime.time(0,0,2)
+            deltaTime = datetime.time(0,0,1)
+            prevIndex = self.listrelationships.indexAbove(index)
+            prevItem = self.listrelationships.itemAbove(node)
+            if prevItem is not None:
                 try:
-                    deltaTime = ProjectController.parse_timestamp(node.text(1)).time()
+                    prevTime = ProjectController.parse_timestamp(prevItem.text(1)).time()
                 except:
-                    return datetime.time(0,0,2)
-                if prevTime < deltaTime:
-                    delatDateTime = datetime.datetime.combine(datetime.datetime.today(),deltaTime) - datetime.datetime.combine(datetime.datetime.today(),prevTime)
-                    date = datetime.datetime.strptime("1900-01-01T00:00:00.000", "%Y-%m-%dT%H:%M:%S.%f") + delatDateTime
-                    deltaTime = date.time()
+                    return datetime.time(0,0,1)
+            else:
+                return datetime.time(0,0,1)
+            try:
+                deltaTime = ProjectController.parse_timestamp(node.text(1)).time()
+            except:
+                return datetime.time(0,0,1)
+            if prevTime < deltaTime:
+                delatDateTime = datetime.datetime.combine(datetime.datetime.today(),deltaTime) - datetime.datetime.combine(datetime.datetime.today(),prevTime)
+                date = datetime.datetime.strptime("1900-01-01T00:00:00.000", "%Y-%m-%dT%H:%M:%S.%f") + delatDateTime
+                deltaTime = date.time()
             return deltaTime
 
     def searchRelationships(self):

@@ -280,7 +280,7 @@ class ProjectController:
                 time = datetime.datetime.strptime(timestamptStr, format)
                 return time
             except:
-                print(format + " format does not match " + timestamptStr)
+                continue
 
     # Loads events from timed groups, assuming that's the only files in the folder
     @classmethod
