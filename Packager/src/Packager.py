@@ -6,7 +6,7 @@ import re
 class Packager:
     def __init__(self):
         
-        vms_string = subprocess.check_output(["C:\Program Files\Oracle\VirtualBox\VBoxManage.exe","list","vms"]).decode()
+        vms_string = subprocess.check_output(["C:\Program Files\Oracle\VirtualBox\VBoxManage.exe","list","vms"], stderr=subprocess.PIPE, stdin=subprocess.PIPE).decode()
 
         self.vm_list = re.findall(r'"(.*?)"', vms_string)
 
