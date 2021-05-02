@@ -1,0 +1,12 @@
+20210502|1619964404.4108472|Navigator|.Window'>(|root|Kali Linux [sep_key] Penetration Testing and Ethical Hacking Linux Distribution - Mozilla Firefox|[KeyName:BackSpace]
+20210502|1619964405.5662105|Navigator|.Window'>(|root|Kali Linux [sep_key] Penetration Testing and Ethical Hacking Linux Distribution - Mozilla Firefox|g
+20210502|1619964405.6658368|Navigator|.Window'>(|root|Kali Linux [sep_key] Penetration Testing and Ethical Hacking Linux Distribution - Mozilla Firefox|o
+20210502|1619964405.7919273|Navigator|.Window'>(|root|Kali Linux [sep_key] Penetration Testing and Ethical Hacking Linux Distribution - Mozilla Firefox|o
+20210502|1619964405.8912263|Navigator|.Window'>(|root|Kali Linux [sep_key] Penetration Testing and Ethical Hacking Linux Distribution - Mozilla Firefox|g
+20210502|1619964406.0007155|Navigator|.Window'>(|root|Kali Linux [sep_key] Penetration Testing and Ethical Hacking Linux Distribution - Mozilla Firefox|l
+20210502|1619964406.1135027|Navigator|.Window'>(|root|Kali Linux [sep_key] Penetration Testing and Ethical Hacking Linux Distribution - Mozilla Firefox|e
+20210502|1619964406.2321405|Navigator|.Window'>(|root|Kali Linux [sep_key] Penetration Testing and Ethical Hacking Linux Distribution - Mozilla Firefox|.
+20210502|1619964406.3555257|Navigator|.Window'>(|root|Kali Linux [sep_key] Penetration Testing and Ethical Hacking Linux Distribution - Mozilla Firefox|c
+20210502|1619964406.4031186|Navigator|.Window'>(|root|Kali Linux [sep_key] Penetration Testing and Ethical Hacking Linux Distribution - Mozilla Firefox|o
+20210502|1619964406.5620856|Navigator|.Window'>(|root|Kali Linux [sep_key] Penetration Testing and Ethical Hacking Linux Distribution - Mozilla Firefox|m
+20210502|1619964406.709776|Navigator|.Window'>(|root|Kali Linux [sep_key] Penetration Testing and Ethical Hacking Linux Distribution - Mozilla Firefox|[KeyName:Return]
