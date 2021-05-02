@@ -100,9 +100,9 @@ class Ui_MainWindow(QMainWindow):
         #self.actionPackage_Project.setObjectName("actionPackage_Project")
         self.actionHelp = QtWidgets.QAction(MainWindow, triggered=self.help_Openpdf)
         self.actionHelp.setObjectName("actionHelp")
-        self.actionSave_Project = QtWidgets.QAction(MainWindow)
-        self.actionSave_Project.setObjectName("actionSave_Project")
-        self.actionSave_Project = QtWidgets.QAction(MainWindow, triggered=self.save_file)#save project
+        #self.actionSave_Project = QtWidgets.QAction(MainWindow)
+        #self.actionSave_Project.setObjectName("actionSave_Project")
+        #self.actionSave_Project = QtWidgets.QAction(MainWindow, triggered=self.save_file)#save project
         self.actionExit = QtWidgets.QAction(MainWindow, triggered=self.exit)
         self.actionExit.setObjectName("actionExit")
         #self.actionUndo = QtWidgets.QAction(MainWindow)
@@ -130,7 +130,7 @@ class Ui_MainWindow(QMainWindow):
         self.menuFile.addAction(self.actionNew_Project)
         self.menuFile.addAction(self.actionOpen_Project)
         #self.menuFile.addAction(self.actionPackage_Project)
-        self.menuFile.addAction(self.actionSave_Project)
+        #self.menuFile.addAction(self.actionSave_Project)
         self.menuFile.addAction(self.actionExit)
         self.menubar.addAction(self.menuFile.menuAction())
         #self.menubar.addAction(self.menuAbout.menuAction())
@@ -187,7 +187,7 @@ class Ui_MainWindow(QMainWindow):
         self.actionNew_Project.setText(_translate("MainWindow", "New Project"))
         self.actionOpen_Project.setText(_translate("MainWindow", "Open Project"))
         #self.actionPackage_Project.setText(_translate("MainWindow", "Package Project"))
-        self.actionSave_Project.setText(_translate("MainWindow", "Save Project"))
+        #self.actionSave_Project.setText(_translate("MainWindow", "Save Project"))
         self.actionExit.setText(_translate("MainWindow", "Exit"))
         self.actionHelp.setText(_translate("MainWindow", "About ABS"))
 
