@@ -18,10 +18,13 @@ from UI.PackagerWidget import PackagerWidget
 from UI.CreateProject import CreateProjectWidget
 from UI.ProjectInfoWidget import ProjectInfoWidget
 from src.ProjectController import ProjectController
+from pathlib import Path
 import os
 import sys
 import subprocess
 import webbrowser
+import pathlib
+
 
 class Ui_MainWindow(QMainWindow):
 
@@ -151,15 +154,21 @@ class Ui_MainWindow(QMainWindow):
     def open_directory(self):
         directory = str(QtWidgets.QFileDialog.getExistingDirectory(QtWidgets.QFileDialog(), "Select Directory", directory=os.path.realpath(os.getcwd())))
 
+        full_directory = Path(directory)
+        PATH = full_directory / 'project_config.json'
+        # Check if user clicks on cancel
         if (len(directory) <= 0):
             return
-        else:
+        # Check if project_config exist in chosen directory
+        elif (os.path.isfile(PATH) and os.access(PATH, os.R_OK)):
+            print("File exists and is readable")
             ProjectController.load_project(directory)
             if(ProjectController.is_project_loaded):
                 QMessageBox.information(self.centralwidget, "Success", "Project has been loaded successfully.")
                 self.update_tabs()
-            else:
-                QMessageBox.critical(self.centralwidget, "Project Failure", "Project could not be loaded. Check that directory contains appropriate files")
+        else:
+            print("Either the file is missing or not readable")
+            QMessageBox.critical(self.centralwidget, "Project Failure", "Project could not be loaded. Check that directory contains appropriate files")
 
     def save_file(self):
         file = str(QtWidgets.QFileDialog.getSaveFileName(QtWidgets.QFileDialog(), "Save File", directory=os.path.realpath(os.getcwd())))
