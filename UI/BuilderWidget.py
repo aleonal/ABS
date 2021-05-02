@@ -84,13 +84,19 @@ class BuilderWidget(QWidget):
         self.verticalCenterLayout.setObjectName(u"verticalLayout")
         self.gridLayout.addWidget(self.verticalCenterLayoutWidget, 2, 1)
 
-        self.move_node_button = QPushButton('>', self)
+        self.move_node_button = QPushButton('Move Node', self)
         self.verticalCenterLayout.addWidget(self.move_node_button)
         self.move_node_button.setSizePolicy(QtWidgets.QSizePolicy.Fixed,QtWidgets.QSizePolicy.Fixed)
         self.move_node_button.clicked.connect(self.moveNode)
         self.move_node_button.setEnabled(False)
 
-        self.move_tree_button = QPushButton('>>', self)
+        self.move_branch_button = QPushButton('Move Branch', self)
+        self.verticalCenterLayout.addWidget(self.move_branch_button)
+        self.move_branch_button.setSizePolicy(QtWidgets.QSizePolicy.Fixed,QtWidgets.QSizePolicy.Fixed)
+        self.move_branch_button.clicked.connect(self.moveBranch)
+        self.move_branch_button.setEnabled(False)
+
+        self.move_tree_button = QPushButton('Move Tree', self)
         self.verticalCenterLayout.addWidget(self.move_tree_button)
         self.move_tree_button.setSizePolicy(QtWidgets.QSizePolicy.Fixed,QtWidgets.QSizePolicy.Fixed)
         self.move_tree_button.clicked.connect(self.copyAllRelationships)
@@ -156,6 +162,7 @@ class BuilderWidget(QWidget):
             self.new_node_button.setEnabled(True)
             self.move_node_button.setEnabled(True)
             self.load_button.setEnabled(True)
+            self.move_branch_button.setEnabled(True)
             if ProjectController.get_dependencies_file() != "":
                 try:
                     self.loadDependencies()
@@ -269,6 +276,28 @@ class BuilderWidget(QWidget):
         self.properties_window = DependencyOptionsWidget(newItem)
         self.properties_window.show()
     
+    def moveBranch(self):
+        if len(self.listrelationships.selectedItems()) > 0:
+            selectedItem = self.listrelationships.selectedItems()[0]
+            selectedIndex = self.listrelationships.indexFromItem(selectedItem)
+            deltaTime = self.calcDeltaTime(node=selectedItem, index=selectedIndex)
+            parent = self.listdependencies
+            if len(self.listdependencies.selectedItems()) > 0:
+                parent = self.listdependencies.selectedItems()[0]
+                if parent.parent():
+                    parent = parent.parent()
+
+            newItem = self.listdependencies.addNode(selectedItem.text(0), deltaTime.__str__(), selectedItem.text(2), parent, True)
+            if newItem.parent() is None:
+                    parent = newItem
+            for childIndex in range(selectedItem.childCount()):
+                child = selectedItem.child(childIndex)
+                child_index_obj = self.listrelationships.indexFromItem(child)
+                deltaTime = self.calcDeltaTime(node=child, index=child_index_obj)
+                self.listdependencies.addNode(child.text(0), deltaTime.__str__(), child.text(2), parent, True)
+        else:
+            QMessageBox.critical(self, "Project Error", "No node selected.")
+
     def moveNode(self):
         if len(self.listrelationships.selectedItems()) > 0:
             selectedItem = self.listrelationships.selectedItems()[0]
@@ -281,14 +310,8 @@ class BuilderWidget(QWidget):
                     parent = parent.parent()
 
             newItem = self.listdependencies.addNode(selectedItem.text(0), deltaTime.__str__(), selectedItem.text(2), parent, True)
-            for childIndex in range(selectedItem.childCount()):
-                child = selectedItem.child(childIndex)
-                child_index_obj = self.listrelationships.indexFromItem(child)
-                deltaTime = self.calcDeltaTime(node=child, index=child_index_obj)
-                self.listdependencies.addNode(child.text(0), deltaTime.__str__(), child.text(2), parent, True)
         else:
             QMessageBox.critical(self, "Project Error", "No node selected.")
-
 
     def calcDeltaTime(self, node=None, index=None):
         if node is None or index is None:
@@ -611,7 +634,7 @@ class ABSDependencyTreeWidget(QTreeWidget):
             while not stream.atEnd():
                 it = QtWidgets.QTreeWidgetItem()
                 # row and column where it comes from
-                for j in range(3): # 3 columns in the tree
+                for j in range(5): # 3 columns in the tree
                     row = stream.readInt32()
                     column = stream.readInt32()
                     map_items = stream.readInt32()
