@@ -129,8 +129,43 @@ pip install $REQUIRED_PYTHON_PACKAGES
 ### Creating executable
 
 echo "Creating runner"
-cat > "$INSTALLATION_DIR"/abs-gui <<-'EOFabs-gui'
+cat > "$INSTALLATION_DIR"/abs-gui <<EOFabs-gui
 #!/bin/bash
+prompt_accepted_Yn() {
+    read -r -p "$1 [Y/n] " yn
+    case \$yn in
+        [nN]*) return 1 ;;
+        *) return 0 ;;
+    esac
+}
+
+
+ECEL_NETSYS_DIR="\$(find /home/kali -type d -name "eceld-netsys" )"
+if [ "\$EUID" -ne 0 ]; then
+echo "ECELD-NETSYS must be run as root"
+exit 1
+fi
+
+cd "\$ECEL_NETSYS_DIR"
+if pyro4-nsc list | grep -iq 'ecel.service'; then
+   if prompt_accepted_Yn "ECELd service already running, restart the service?"; then
+      echo ***** Removing Service *****
+      pyro4-nsc remove ecel.service
+      pkill eceld_service -f
+      pkill pyro4 -f
+      echo ***** Starting Service, roughly ~5 seconds *****
+     ./eceld/eceld_service &
+      sleep 0.1
+   fi
+else
+   echo *****Starting Service, roughly ~5 seconds
+   ./eceld/eceld_service &
+   sleep 0.1
+fi
+
+ABS_DIR=$INSTALLATION_DIR
+cd "\$ABS_DIR"
+echo \$PWD
 
 venv/bin/python3 main.py
 EOFabs-gui
@@ -139,27 +174,28 @@ EOFabs-gui
 ### Creating shortcut
 
 echo "Creating shortcut"
-cat > ~/Desktop/ABS.desktop <<-'EOFabs.desktop'
+cat > ~/Desktop/ABS.desktop <<EOFabs.desktop
 [Desktop Entry]
 Name=Agent Build System 
 StartupABSClass=Abs
 Comment=ABS Launcher
 GenericName=ABS UI
-Exec=/home/kali/ABS/abs-gui
-Icon=/home/kali/ABS/UI/A.png
+Exec=sudo $INSTALLATION_DIR/abs-gui
+Icon=$INSTALLATION_DIR/UI/A.png
 Type=Application
 Categories=System;GUIDesigner;
 MimeType=image/gif;image/jpeg;image/png;x-scheme-handler/http;x-scheme-handler/https;application/x-python-code;text/x-python;application/json;image/png;
 Keywords=ABS;Agent;BuildSystem;
 
-Path=/home/kali/ABS
-Terminal=false
+Path= $INSTALLATION_DIR
+Terminal=true
 StartupNotify=false
 
 EOFabs.desktop
 
 
 chmod +x "$INSTALLATION_DIR"/abs-gui
+chmod +x ~/Desktop/ABS.desktop
 chmod +x "$INSTALLATION_DIR"/main.py
 echo
 echo "***************************************************"
