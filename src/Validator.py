@@ -10,6 +10,9 @@ import time
 import pyautogui
 import time
 
+# TEST ON KALI, SHOULD WORK
+from .ProjectController import ProjectController
+
 from .Event import Event, Auditd, Clicks, Keypresses, Traffic, TrafficThroughput, Timed, Suricata
 
 class Validator():
@@ -19,8 +22,13 @@ class Validator():
 		self.script_path = script_path
 		self.code_index = 0
 		
-		#TODO: change this to project folder
+		# TEST ON KALI, SHOULD WORK TODO: change this to project folder
 		self.output_path = os.getcwd() + "/validation_temp/"
+		op = ProjectController.get_project_directory()
+		print(op)
+		#self.output_path = op/"validation_temp"
+		#folder_name = Path("validation_temp")
+		#self.output_path = os.path.join(op,folder_name)
 
 		# get write and read access to dir
 		if not os.access(os.getcwd(), os.W_OK):
@@ -49,8 +57,10 @@ class Validator():
 		try:
 			for item in self.json_script:
 				self.validator_loop(item)
-				#TODO: Delta time here
-				time.sleep(0)
+				#TEST ON KALI, SHOULD WORK TODO: Delta time here 
+				dt = datetime.datetime.strptime(item["Time"], '%H:%M:%S')
+				delta_time = datetime.timedelta(hours=dt.hour, minutes=dt.minute, seconds=dt.second)
+				time.sleep(delta_time.total_seconds())
 				
 		except TimeoutError as e:
 			print(e)
@@ -82,8 +92,11 @@ class Validator():
 				if "action" in child['v']:
 					self.code_index += 1
 				self.validator_loop(child)
-				#TODO: Delta time here
-				time.sleep(0)
+				#TEST ON KALI, SHOULD WORK TODO: Delta time here 
+				dt = datetime.datetime.strptime(item["Time"], '%H:%M:%S')
+				delta_time = datetime.timedelta(hours=dt.hour, minutes=dt.minute, seconds=dt.second)
+				time.sleep(delta_time.total_seconds())
+
 
 	def parse_eceld(self):
 		# remove previously parsed information
