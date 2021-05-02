@@ -30,6 +30,8 @@ class ScriptGen2():
                     event["v"] = "observation"
                 # iterate through children before moving on to the next event
                 for child in event["Children"]:
+                    if "Children" not in child:
+                        child["Children"] = []
                     # if its a click do something
                     if child["Type"] == "clicks_id" or child["Type"] == "timed_id":
                         self.click(child)
