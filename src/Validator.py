@@ -80,7 +80,8 @@ class Validator():
 			timer = datetime.datetime.now()
 
 			while True:
-				if self.parse_eceld():
+				#ADDED SELF.CHECK_OBS(ITEM)
+				if self.parse_eceld():# and self.check_obs(item):
 					break
 
 				if datetime.datetime.now() - timer < datetime.timedelta(seconds=self.timeout):
@@ -107,7 +108,26 @@ class Validator():
 		self.eceld.export_data(self.output_path)
 
 		#TODO: check observations. Currently defaults to True, but it must be a conditional
+	        #Implemented in separate method below	
 		return True
+	'''
+	#TODO: Need a way to open the eceld_export... folder		
+	def check_obs(self, item):
+		obs = item["Attribute"]
+		#with open(self.output_path/"validation_temp"/eceld_export.../parsed/tshark/networkDataAll.JSON) as f:
+		data = json.load(f)
+		for d in data:
+		    for key in d:
+			if type(obs) == type(d[key]):
+			    try:
+				if obs in d[key]:
+				    print("MATCH", obs, d[key])
+			    except TypeError:
+				if int(obs) == d[key]:
+				    print("MATCH", obs, d[key]
+			    else:
+				pass
+	'''
 
 #	def __init__(self):
 #		self.eceld = Pyro4.Proxy("PYRONAME:ecel.service")
