@@ -93,7 +93,7 @@ class RunnerWidget(QWidget):
         self.stop_button.setEnabled(True)
         self.run_button.setEnabled(False)
 
-        self.validator = Validator(self.script_timeout.value(), script_path)
+        self.validator = Validator(self.script_timeout.value(), script_path, self.progress_terminal)
         self.validator.validate()
         self.stop_script()
 

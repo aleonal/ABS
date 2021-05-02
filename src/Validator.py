@@ -15,12 +15,16 @@ from .ProjectController import ProjectController
 from pathlib import Path
 from .Event import Event, Auditd, Clicks, Keypresses, Traffic, TrafficThroughput, Timed, Suricata
 
+from PyQt5.QtWidgets import *
+
+
 class Validator():
-	def __init__(self, timeout, script_path):
+	def __init__(self, timeout, script_path, terminal):
 		self.eceld = Pyro4.Proxy("PYRONAME:ecel.service")
 		self.timeout = timeout
 		self.script_path = script_path
 		self.code_index = 0
+		self.terminal = terminal
 		
 		# TEST ON KALI, SHOULD WORK TODO: change this to project folder
 		#self.output_path = os.getcwd() + "/validation_temp/"
@@ -75,11 +79,13 @@ class Validator():
 		
 		if item['v'] == "action":
 			exec(self.executable_script[self.code_index])
+			self.print_progress("Executed: action at line {}\n".format(self.code_index))
 			self.code_index += 1
 		else:
 			timer = datetime.datetime.now()
 
 			while True:
+				self.print_progress("Checking: " + item["Type"] + "\n")
 				#ADDED SELF.CHECK_OBS(ITEM)
 				if self.parse_eceld():# and self.check_obs(item):
 					break
@@ -128,6 +134,11 @@ class Validator():
 			    else:
 				pass
 	'''
+	def print_progress(self, text):
+	    cursor = self.terminal.textCursor()
+	    cursor.movePosition(cursor.End)
+	    cursor.insertText(text)
+
 
 #	def __init__(self):
 #		self.eceld = Pyro4.Proxy("PYRONAME:ecel.service")
