@@ -136,7 +136,15 @@ class Validator():
 				if 'ecel-export' in d:
 					export = d
 		export = self.output_path + "/" + export
-		
+
+		if item["Type"] == "auditd":
+			return self.check_auditd(item)
+
+		elif item["Type"] == "traffic_all_id":
+			return self.check_traffic(item)
+		return False
+	
+	def check_auditd(self, item):
 		with open(export + "/parsed/auditd/auditdData.JSON") as f:
 			data = json.load(f)
 			print("data ", data)
@@ -161,7 +169,33 @@ class Validator():
 								print("NO MATCH")
 								return False
 		return False
-	
+
+	def check_traffic(self, item):
+		with open(export + "/parsed/tshark/networkDataAll.JSON") as f:
+			data = json.load(f)
+			print("data ", data)
+			for event in data:
+				print("event ", event)
+				for key in event:
+					print("key ", key)
+					if type(obs) == type(event[key]):
+						print("compare obs: ", obs)
+						print("compare data: ", event[key])
+						try:
+							if obs in event[key]:
+								print("MATCH", obs, event[key])
+								self.print_progress("MATCH " + obs + " " + event[key] + "\n")
+								return True
+						except TypeError:
+							if obs == event[key]:
+								print("MATCH", obs, event[key])
+								self.print_progress("MATCH " + obs + " " + event[key] + "\n")
+								return True
+							else:
+								print("NO MATCH")
+								return False
+		return False
+
 	def print_progress(self, text):
 	    cursor = self.terminal.textCursor()
 	    cursor.movePosition(cursor.End)
