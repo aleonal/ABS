@@ -7,11 +7,12 @@ from src.ProjectController import ProjectController
 
 class SalientArtifactWindow(QWidget):
 
-    def __init__(self):
+    def __init__(self, previous_window=None):
         super().__init__()
         self.setGeometry(50, 50, 482, 432)
         self.setWindowTitle("Salient Artifacts")
         self.setWindowIcon(QIcon("A.png"))#A icon
+        self.previous_window=previous_window
         self.UI()
 
     def UI(self):
@@ -110,6 +111,7 @@ class SalientArtifactWindow(QWidget):
             artifactsList.append(data)
             i = i+1
         ProjectController.overwrite_salient_artifacts(artifactsList)
+        self.previous_window.update_tables()
         QMessageBox.information(self, "Success", "Salient Artifacts have been saved.")
         #TODO: find a way to call userinterface.py's update_tabs from here to update the project info tab
 

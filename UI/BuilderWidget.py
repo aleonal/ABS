@@ -24,7 +24,7 @@ class BuilderWidget(QWidget):
         self.setGeometry(50, 50, 482, 432)
         self.setWindowTitle("Builder")
         self.UI()
-        self.artifacts_window = SalientArtifactWindow()
+        self.artifacts_window = SalientArtifactWindow(previous_window=self)
         self.show()
         self.script_file_path = None
 
@@ -552,6 +552,17 @@ class BuilderWidget(QWidget):
     
     def dependencyQueryChanged(self, text):
         self.search_dependency_lineedit.setText(text)
+
+    def update_tables(self):
+        self.listrelationships.clear()
+        #self.listdependencies.clear()
+        if ProjectController.is_project_loaded():
+            self.populateTrees()
+            if ProjectController.get_dependencies_file() != "":
+                try:
+                    self.loadDependencies()
+                except:
+                    pass
 
 class ABSRelationshipTreeWidget(QTreeWidget):
     def __init__(self):
