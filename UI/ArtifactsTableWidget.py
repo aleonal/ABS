@@ -9,7 +9,7 @@ class SalientArtifactWindow(QWidget):
 
     def __init__(self, previous_window=None):
         super().__init__()
-        self.setGeometry(50, 50, 482, 432)
+        self.setGeometry(50, 50, 600, 500)
         self.setWindowTitle("Salient Artifacts")
         self.setWindowIcon(QIcon("A.png"))#A icon
         self.previous_window=previous_window
@@ -29,14 +29,16 @@ class SalientArtifactWindow(QWidget):
         # Creating headers for columns in table
         type_header = QTableWidgetItem('Artifact Type')
         self.artifactsTable.setHorizontalHeaderItem(0, type_header)
-        descriptionHeader = QTableWidgetItem('Description')
+        descriptionHeader = QTableWidgetItem('Key')
         self.artifactsTable.setHorizontalHeaderItem(1, descriptionHeader)
 
         emptyHeader = QTableWidgetItem('')
         self.artifactsTable.setHorizontalHeaderItem(2, emptyHeader)
 
-        self.artifactsTable.horizontalHeader().setStretchLastSection(True)
+        self.artifactsTable.horizontalHeader().setStretchLastSection(False)
         self.artifactsTable.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.artifactsTable.horizontalHeader().setSectionResizeMode(0,QHeaderView.ResizeToContents)
+        self.artifactsTable.horizontalHeader().setSectionResizeMode(2,QHeaderView.ResizeToContents)
 
         self.gridLayout.addWidget(self.artifactsTable, 1, 0)
 
