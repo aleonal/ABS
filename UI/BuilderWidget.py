@@ -126,16 +126,24 @@ class BuilderWidget(QWidget):
         self.edit_artifacts_button.clicked.connect(self.openArtifacts)
         self.edit_artifacts_button.setEnabled(False)
 
+        # View Relationship Info Button
+        self.relationship_details_button = QPushButton('View Relationship Details', self)
+        self.gridLayout.addWidget(self.relationship_details_button, 3, 1)
+        #self.relationship_details_button.setFixedSize(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
+        self.relationship_details_button.setSizePolicy(QtWidgets.QSizePolicy.Fixed,QtWidgets.QSizePolicy.Fixed)
+        self.relationship_details_button.clicked.connect(self.openArtifacts)
+        self.relationship_details_button.setEnabled(False)
+
         # Generate script button
         self.generate_script_button = QPushButton('Generate Script', self)
-        self.gridLayout.addWidget(self.generate_script_button, 3, 1)
+        self.gridLayout.addWidget(self.generate_script_button, 3, 2)
         self.generate_script_button.setSizePolicy(QtWidgets.QSizePolicy.Fixed,QtWidgets.QSizePolicy.Fixed)
         self.generate_script_button.clicked.connect(self.generate_script)
         self.generate_script_button.setEnabled(False)
 
         # Load Dependencies Button
         self.load_button = QPushButton('Load Script', self)
-        self.gridLayout.addWidget(self.load_button, 3, 2)
+        self.gridLayout.addWidget(self.load_button, 3, 3)
         self.load_button.setSizePolicy(QtWidgets.QSizePolicy.Fixed,QtWidgets.QSizePolicy.Fixed)
         self.load_button.setStyleSheet("background-color: lightblue")
         self.load_button.clicked.connect(self.load_script)
@@ -143,7 +151,7 @@ class BuilderWidget(QWidget):
 
         # Save Button
         self.save_button = QPushButton('Save Script', self)
-        self.gridLayout.addWidget(self.save_button, 3, 3)
+        self.gridLayout.addWidget(self.save_button, 3, 4)
         self.save_button.setSizePolicy(QtWidgets.QSizePolicy.Fixed,QtWidgets.QSizePolicy.Fixed)
         self.save_button.setStyleSheet("background-color: lightblue")
         self.save_button.clicked.connect(self.save_script)
@@ -163,6 +171,7 @@ class BuilderWidget(QWidget):
             self.move_node_button.setEnabled(True)
             self.load_button.setEnabled(True)
             self.move_branch_button.setEnabled(True)
+            self.relationship_details_button.setEnabled(True)
             if ProjectController.get_dependencies_file() != "":
                 try:
                     self.loadDependencies()
@@ -547,6 +556,7 @@ class ABSRelationshipTreeWidget(QTreeWidget):
         self.setDragEnabled(False)
         self.setDragDropOverwriteMode(False)
         self.setDragDropMode(QAbstractItemView.NoDragDrop)
+        self.setAlternatingRowColors(True)
         self.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.setDefaultDropAction(Qt.CopyAction)
         self.setSortingEnabled(True)
@@ -582,7 +592,9 @@ class ABSDependencyTreeWidget(QTreeWidget):
         self.setTabKeyNavigation(True)
         self.setDragEnabled(True)
         self.setDragDropOverwriteMode(False)
-        self.setDragDropMode(QAbstractItemView.DragDrop)
+        self.setDragDropMode(QAbstractItemView.InternalMove)
+        self.setDefaultDropAction(Qt.TargetMoveAction)
+        self.setAlternatingRowColors(True)
         self.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.setDefaultDropAction(Qt.CopyAction)
         self.setSortingEnabled(False)
@@ -620,55 +632,57 @@ class ABSDependencyTreeWidget(QTreeWidget):
             QTreeWidget.dragEnterEvent(self, eventQDragEnterEvent)
 
     def dropEvent(self, event):
-        md = event.mimeData()
-        fmt = "application/x-qabstractitemmodeldatalist"
-        dropIndex = self.indexAt(event.pos())
-        dropIndicator = QAbstractItemView.dropIndicatorPosition(self)
+        super().dropEvent(event)
+    # def dropEvent(self, event):
+    #     md = event.mimeData()
+    #     fmt = "application/x-qabstractitemmodeldatalist"
+    #     dropIndex = self.indexAt(event.pos())
+    #     dropIndicator = QAbstractItemView.dropIndicatorPosition(self)
 
-        if md.hasFormat(fmt):
-            encoded = md.data(fmt)
-            stream = QtCore.QDataStream(encoded, QtCore.QIODevice.ReadOnly)
-            tree_items = []
-            parent = self
+    #     if md.hasFormat(fmt):
+    #         encoded = md.data(fmt)
+    #         stream = QtCore.QDataStream(encoded, QtCore.QIODevice.ReadOnly)
+    #         tree_items = []
+    #         parent = self
 
-            while not stream.atEnd():
-                it = QtWidgets.QTreeWidgetItem()
-                # row and column where it comes from
-                for j in range(5): # 3 columns in the tree
-                    row = stream.readInt32()
-                    column = stream.readInt32()
-                    map_items = stream.readInt32()
+    #         while not stream.atEnd():
+    #             it = QtWidgets.QTreeWidgetItem()
+    #             # row and column where it comes from
+    #             for j in range(5): # 3 columns in the tree
+    #                 row = stream.readInt32()
+    #                 column = stream.readInt32()
+    #                 map_items = stream.readInt32()
 
-                    for i in range(map_items):
-                        role = stream.readInt32()
-                        value = QtCore.QVariant()
-                        stream >> value
-                        it.setData(column, role, value)
-                tree_items.append(it)
+    #                 for i in range(map_items):
+    #                     role = stream.readInt32()
+    #                     value = QtCore.QVariant()
+    #                     stream >> value
+    #                     it.setData(column, role, value)
+    #             tree_items.append(it)
 
-            if (not dropIndex.parent().isValid() and dropIndex.row() != -1):
-                if dropIndicator == QAbstractItemView.AboveItem:
-                    # manage a boolean for the case when you are above an item
-                    for it in tree_items:
-                        parent = self.addNode(it.text(0), it.text(2), it.text(4), parent, True)
-                    return
-                elif dropIndicator == QAbstractItemView.BelowItem:
-                    #something when being below an item
-                    for it in tree_items:
-                        parent = self.addNode(it.text(0), it.text(2), it.text(4), parent, True)
-                    return
-                elif dropIndicator == QAbstractItemView.OnItem:
-                    #you're on an item, maybe add the current one as a child
-                    parent = self.itemAt(dropIndex.row(), dropIndex.column())
-                    for it in tree_items:
-                        self.addNode(it.text(0), it.text(2), it.text(4), parent, True)
-                    return
-                elif dropIndicator == QAbstractItemView.OnViewport:
-                    #you are not on your tree
-                    return
+    #         if (not dropIndex.parent().isValid() and dropIndex.row() != -1):
+    #             if dropIndicator == QAbstractItemView.AboveItem:
+    #                 # manage a boolean for the case when you are above an item
+    #                 for it in tree_items:
+    #                     parent = self.addNode(it.text(0), it.text(2), it.text(4), parent, True)
+    #                 return
+    #             elif dropIndicator == QAbstractItemView.BelowItem:
+    #                 #something when being below an item
+    #                 for it in tree_items:
+    #                     parent = self.addNode(it.text(0), it.text(2), it.text(4), parent, True)
+    #                 return
+    #             elif dropIndicator == QAbstractItemView.OnItem:
+    #                 #you're on an item, maybe add the current one as a child
+    #                 parent = self.itemAt(dropIndex.row(), dropIndex.column())
+    #                 for it in tree_items:
+    #                     self.addNode(it.text(0), it.text(2), it.text(4), parent, True)
+    #                 return
+    #             elif dropIndicator == QAbstractItemView.OnViewport:
+    #                 #you are not on your tree
+    #                 return
             
-            for it in tree_items:
-                        parent = self.addNode(it.text(0), it.text(2), it.text(4), parent, True)
+    #         for it in tree_items:
+    #                     parent = self.addNode(it.text(0), it.text(2), it.text(4), parent, True)
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
