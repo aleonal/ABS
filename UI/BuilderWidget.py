@@ -113,15 +113,15 @@ class BuilderWidget(QWidget):
         self.new_node_button.setSizePolicy(QtWidgets.QSizePolicy.Fixed,QtWidgets.QSizePolicy.Fixed)
         self.new_node_button.clicked.connect(self.newDependencyNode)
         self.new_node_button.setEnabled(False)
-
+        '''
         # View Relationship Info Button
         self.relationship_details_button = QPushButton('< Relationship Details', self)
-        self.verticalCenterLayout.addWidget(self.relationship_details_button)
+        #self.verticalCenterLayout.addWidget(self.relationship_details_button)
         #self.relationship_details_button.setFixedSize(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
         self.relationship_details_button.setSizePolicy(QtWidgets.QSizePolicy.Fixed,QtWidgets.QSizePolicy.Fixed)
         self.relationship_details_button.clicked.connect(self.openRelationship)
         self.relationship_details_button.setEnabled(False)
-
+        '''
         self.verticalCenterLayout.setAlignment(Qt.AlignCenter)
 
         self.listdependencies = ABSDependencyTreeWidget()
@@ -171,7 +171,7 @@ class BuilderWidget(QWidget):
             self.move_node_button.setEnabled(True)
             self.load_button.setEnabled(True)
             self.move_branch_button.setEnabled(True)
-            self.relationship_details_button.setEnabled(True)
+            #self.relationship_details_button.setEnabled(True)
             if ProjectController.get_dependencies_file() != "":
                 try:
                     self.loadDependencies()

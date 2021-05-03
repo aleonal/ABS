@@ -85,14 +85,18 @@ class Validator():
 			self.code_index += 1
 		else:
 			timer = datetime.datetime.now()
+			cpTimer = datetime.timedelta(hours=timer.hour, minutes=timer.minute, seconds=timer.second)
 
 			while True:
-				self.print_progress("Checking: " + item["Type"] + "\n")
+				self.print_progress("Checking: " + item["Type"] + ": " + item["Attributes"] + "\n")
 				# Check obs
 				if self.parse_eceld(item):
 					break
-
-				if datetime.datetime.now() - timer < datetime.timedelta(seconds=self.timeout):
+				now = datetime.datetime.now()
+				cpNow = datetime.timedelta(hours=now.hour, minutes=now.minute, seconds=now.second)
+				print("cp Now ", cpNow)
+				print("cpTimer ", cpTimer)
+				if cpTimer - cpNow < datetime.timedelta(seconds=self.timeout):
 					self.print_progress("Script execution timed out after {} seconds\n".format(self.timeout))
 					raise TimeoutError("Script execcution timed out after {0} seconds.".format(self.timeout))
 		
@@ -117,9 +121,9 @@ class Validator():
 		self.eceld.export_data(self.output_path)
 
 		#TODO: TEST: check observations. Currently defaults to True, but it must be a conditional
-		if item:		
-			self.check_obs(item)
-		return True
+		if item is not None:		
+			return self.check_obs(item)
+		return False
 	
 	#TODO: Need a way to open the eceld_export... folder		
 	def check_obs(self, item):
@@ -133,7 +137,7 @@ class Validator():
 					export = d
 		export = self.output_path + "/" + export
 		
-		with open(export + "/parsed/tshark/networkDataAll.JSON") as f:
+		with open(export + "/parsed/auditd/auditdData.JSON") as f:
 			data = json.load(f)
 			print("data ", data)
 			for event in data:
@@ -141,14 +145,22 @@ class Validator():
 				for key in event:
 					print("key ", key)
 					if type(obs) == type(event[key]):
+						print("compare obs: ", obs)
+						print("compare data: ", event[key])
 						try:
-							if obs in d[key]:
-								print("MATCH", obs, d[key])
+							if obs in event[key]:
+								print("MATCH", obs, event[key])
+								self.print_progress("MATCH " + obs + " " + event[key] + "\n")
+								return True
 						except TypeError:
-							if int(obs) == d[key]:
-								print("MATCH", obs, d[key])
+							if obs == event[key]:
+								print("MATCH", obs, event[key])
+								self.print_progress("MATCH " + obs + " " + event[key] + "\n")
+								return True
 							else:
 								print("NO MATCH")
+								return False
+		return False
 	
 	def print_progress(self, text):
 	    cursor = self.terminal.textCursor()
