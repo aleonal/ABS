@@ -114,6 +114,14 @@ class BuilderWidget(QWidget):
         self.new_node_button.clicked.connect(self.newDependencyNode)
         self.new_node_button.setEnabled(False)
 
+        # View Relationship Info Button
+        self.relationship_details_button = QPushButton('< Relationship Details', self)
+        self.verticalCenterLayout.addWidget(self.relationship_details_button)
+        #self.relationship_details_button.setFixedSize(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
+        self.relationship_details_button.setSizePolicy(QtWidgets.QSizePolicy.Fixed,QtWidgets.QSizePolicy.Fixed)
+        self.relationship_details_button.clicked.connect(self.openRelationship)
+        self.relationship_details_button.setEnabled(False)
+
         self.verticalCenterLayout.setAlignment(Qt.AlignCenter)
 
         self.listdependencies = ABSDependencyTreeWidget()
@@ -126,24 +134,16 @@ class BuilderWidget(QWidget):
         self.edit_artifacts_button.clicked.connect(self.openArtifacts)
         self.edit_artifacts_button.setEnabled(False)
 
-        # View Relationship Info Button
-        self.relationship_details_button = QPushButton('View Relationship Details', self)
-        self.gridLayout.addWidget(self.relationship_details_button, 3, 1)
-        #self.relationship_details_button.setFixedSize(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
-        self.relationship_details_button.setSizePolicy(QtWidgets.QSizePolicy.Fixed,QtWidgets.QSizePolicy.Fixed)
-        self.relationship_details_button.clicked.connect(self.openArtifacts)
-        self.relationship_details_button.setEnabled(False)
-
         # Generate script button
         self.generate_script_button = QPushButton('Generate Script', self)
-        self.gridLayout.addWidget(self.generate_script_button, 3, 2)
+        self.gridLayout.addWidget(self.generate_script_button, 3, 1)
         self.generate_script_button.setSizePolicy(QtWidgets.QSizePolicy.Fixed,QtWidgets.QSizePolicy.Fixed)
         self.generate_script_button.clicked.connect(self.generate_script)
         self.generate_script_button.setEnabled(False)
 
         # Load Dependencies Button
         self.load_button = QPushButton('Load Script', self)
-        self.gridLayout.addWidget(self.load_button, 3, 3)
+        self.gridLayout.addWidget(self.load_button, 3, 2)
         self.load_button.setSizePolicy(QtWidgets.QSizePolicy.Fixed,QtWidgets.QSizePolicy.Fixed)
         self.load_button.setStyleSheet("background-color: lightblue")
         self.load_button.clicked.connect(self.load_script)
@@ -151,7 +151,7 @@ class BuilderWidget(QWidget):
 
         # Save Button
         self.save_button = QPushButton('Save Script', self)
-        self.gridLayout.addWidget(self.save_button, 3, 4)
+        self.gridLayout.addWidget(self.save_button, 3, 3)
         self.save_button.setSizePolicy(QtWidgets.QSizePolicy.Fixed,QtWidgets.QSizePolicy.Fixed)
         self.save_button.setStyleSheet("background-color: lightblue")
         self.save_button.clicked.connect(self.save_script)
@@ -441,10 +441,19 @@ class BuilderWidget(QWidget):
         else:
             QMessageBox.critical(self, "Project Error", "No project is currently loaded.")
 
-
     def openProperties(self):
         if len(self.listdependencies.selectedItems()) > 0:
             selectedItem = self.listdependencies.selectedItems()[0]
+            print (selectedItem.text(0))
+            if selectedItem.text(0) == "clicks_id" or selectedItem.text(0) == "timed_id":
+                self.openClicks()
+            else:
+                self.properties_window = DependencyOptionsWidget(selectedItem)
+                self.properties_window.show()
+
+    def openRelationship(self):
+        if len(self.listrelationships.selectedItems()) > 0:
+            selectedItem = self.listrelationships.selectedItems()[0]
             print (selectedItem.text(0))
             if selectedItem.text(0) == "clicks_id" or selectedItem.text(0) == "timed_id":
                 self.openClicks()
