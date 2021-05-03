@@ -138,13 +138,13 @@ class Validator():
 		export = self.output_path + "/" + export
 
 		if item["Type"] == "auditd":
-			return self.check_auditd(item)
+			return self.check_auditd(export, obs)
 
 		elif item["Type"] == "traffic_all_id":
-			return self.check_traffic(item)
+			return self.check_traffic(export, obs)
 		return False
 	
-	def check_auditd(self, item):
+	def check_auditd(self, export, obs):
 		with open(export + "/parsed/auditd/auditdData.JSON") as f:
 			data = json.load(f)
 			print("data ", data)
@@ -170,7 +170,7 @@ class Validator():
 								return False
 		return False
 
-	def check_traffic(self, item):
+	def check_traffic(self, export, obs):
 		with open(export + "/parsed/tshark/networkDataAll.JSON") as f:
 			data = json.load(f)
 			print("data ", data)
