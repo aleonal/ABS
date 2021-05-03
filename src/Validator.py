@@ -39,6 +39,9 @@ class Validator():
 		if not os.access(os.getcwd(), os.W_OK):
 			os.chmod(os.getcwd(), stat.S_IWUSR)
 
+		if not os.path.exists(self.output_path):
+				os.mkdir(self.output_path)	
+
 		# read script files
 		try:
 			self.json_script = json.load(open(script_path + "Validator.json", 'r'))
