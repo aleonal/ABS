@@ -10,11 +10,10 @@ import time
 import pyautogui
 import time
 
-# TEST ON KALI, SHOULD WORK
+
 from .ProjectController import ProjectController
 from pathlib import Path
 from .Event import Event, Auditd, Clicks, Keypresses, Traffic, TrafficThroughput, Timed, Suricata
-
 from PyQt5.QtWidgets import *
 
 
@@ -38,6 +37,9 @@ class Validator():
 		# get write and read access to dir
 		if not os.access(os.getcwd(), os.W_OK):
 			os.chmod(os.getcwd(), stat.S_IWUSR)
+
+		if not os.path.exists(self.output_path):
+				os.mkdir(self.output_path)	
 
 		# read script files
 		try:
@@ -72,7 +74,7 @@ class Validator():
 		self.eceld.stop_collectors()
 
 		# IF YOU WANT TO TEST ECELD WORKING CORRECTLY, UNCOMMENT THIS LINE
-#		self.parse_eceld()
+		self.parse_eceld(None)
 
 	def validator_loop(self, item):
 		print(self.executable_script[self.code_index])
@@ -86,11 +88,12 @@ class Validator():
 
 			while True:
 				self.print_progress("Checking: " + item["Type"] + "\n")
-				#ADDED SELF.CHECK_OBS(ITEM)
-				if self.parse_eceld():# and self.check_obs(item):
+				# Check obs
+				if self.parse_eceld(item):
 					break
 
 				if datetime.datetime.now() - timer < datetime.timedelta(seconds=self.timeout):
+					self.print_progress("Script execution timed out after {} seconds\n".format(self.timeout))
 					raise TimeoutError("Script execcution timed out after {0} seconds.".format(self.timeout))
 		
 
@@ -104,7 +107,7 @@ class Validator():
 				time.sleep(delta_time.total_seconds())
 
 
-	def parse_eceld(self):
+	def parse_eceld(self, item):
 		# remove previously parsed information
 		shutil.rmtree(self.output_path)
 		os.mkdir(self.output_path)
@@ -113,27 +116,40 @@ class Validator():
 		self.eceld.parse_data_all()
 		self.eceld.export_data(self.output_path)
 
-		#TODO: check observations. Currently defaults to True, but it must be a conditional
-	        #Implemented in separate method below	
+		#TODO: TEST: check observations. Currently defaults to True, but it must be a conditional
+		if item:		
+			self.check_obs(item)
 		return True
-	'''
+	
 	#TODO: Need a way to open the eceld_export... folder		
 	def check_obs(self, item):
-		obs = item["Attribute"]
-		#with open(self.output_path/"validation_temp"/eceld_export.../parsed/tshark/networkDataAll.JSON) as f:
-		data = json.load(f)
-		for d in data:
-		    for key in d:
-			if type(obs) == type(d[key]):
-			    try:
-				if obs in d[key]:
-				    print("MATCH", obs, d[key])
-			    except TypeError:
-				if int(obs) == d[key]:
-				    print("MATCH", obs, d[key]
-			    else:
-				pass
-	'''
+		obs = item["Attributes"]
+		print("obs ", obs)
+
+		# get eceld_export unique name
+		for root, subdirs, files in os.walk(self.output_path):
+			for d in subdirs:
+				if 'ecel-export' in d:
+					export = d
+		export = self.output_path + "/" + export
+		
+		with open(export + "/parsed/tshark/networkDataAll.JSON") as f:
+			data = json.load(f)
+			print("data ", data)
+			for event in data:
+				print("event ", event)
+				for key in event:
+					print("key ", key)
+					if type(obs) == type(event[key]):
+						try:
+							if obs in d[key]:
+								print("MATCH", obs, d[key])
+						except TypeError:
+							if int(obs) == d[key]:
+								print("MATCH", obs, d[key])
+							else:
+								print("NO MATCH")
+	
 	def print_progress(self, text):
 	    cursor = self.terminal.textCursor()
 	    cursor.movePosition(cursor.End)
