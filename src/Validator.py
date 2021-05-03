@@ -63,10 +63,10 @@ class Validator():
 
 		try:
 			for item in self.json_script:
-				self.validator_loop(item)
 				dt = datetime.datetime.strptime(item["Time"], '%H:%M:%S')
 				delta_time = datetime.timedelta(hours=dt.hour, minutes=dt.minute, seconds=dt.second)
 				time.sleep(delta_time.total_seconds())
+				self.validator_loop(item)
 				
 		except TimeoutError as e:
 			print(e)
