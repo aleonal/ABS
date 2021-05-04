@@ -71,8 +71,13 @@ class PackagerWidget(QWidget):
         self.importFilesButton.setObjectName("importFilesButton")
         self.importFilesButton.clicked.connect(self.add_file)
 
+        self.importProjectButton = QtWidgets.QPushButton()
+        self.importProjectButton.setObjectName("importProjectButton")
+        self.importProjectButton.clicked.connect(self.import_project)
+
         self.projectVerticalLayout.addWidget(self.packageProjectButton)
         self.projectVerticalLayout.addWidget(self.importFilesButton)
+        self.projectVerticalLayout.addWidget(self.importProjectButton)
         
         self.projectLayout.addLayout(self.projectVerticalLayout)
 
@@ -131,8 +136,27 @@ class PackagerWidget(QWidget):
                     selectedVms.append(file_path)
             i = i+1
         if output_zip[0] != '':
+            self.progressbar = ProgressBar()
+            self.progressbar.show()
             self.packager.export_to_zip(vm_list=selectedVms, file_list = includedFiles, output_file = output_zip[0])
+            self.progressbar.close()
             QMessageBox.information(self, "Success", "Project ZIP has been created.")
+        else:
+            QMessageBox.critical(self, "Failure", "No File selected.")
+
+    def import_project(self):
+        input_zip = QtWidgets.QFileDialog.getOpenFileName(parent=self, caption="Select Zip File", directory=os.path.realpath(os.getcwd()), filter="Zip (*.zip)")
+        if input_zip[0] != '':
+            self.progressbar = ProgressBar()
+            self.progressbar.show()
+            self.packager.import_from_zip(zip_file=input_zip[0])
+            self.progressbar.close()
+
+            self.vmTable.clearContents()
+            self.vmTable.model().removeRows(0, self.vmTable.rowCount())
+            self.populate_table()
+
+            QMessageBox.information(self, "Success", "VIrtual Machines imported to VirtualBox. Extra files have been copied to new folder in zip file directory.")
         else:
             QMessageBox.critical(self, "Failure", "No File selected.")
 
@@ -142,8 +166,24 @@ class PackagerWidget(QWidget):
         
 
         self.packageProjectButton.setText(_translate("Widget", "Package Project..."))
-        self.importFilesButton.setText(_translate("Widget", "Import Files to Project..."))
+        self.importFilesButton.setText(_translate("Widget", "Add Files to Project..."))
+        self.importProjectButton.setText(_translate("Widget", "Import Packaged Project..."))
 
+class ProgressBar(QWidget):
+
+    def __init__(self):
+        super().__init__()
+        self.pbar = QProgressBar(self)
+        self.pbar.setGeometry(30, 40, 500, 75)
+        self.pbar.setRange(0,0)
+        self.layout = QVBoxLayout()
+        self.layout.addWidget(self.pbar)
+        self.setLayout(self.layout)
+        self.setGeometry(300, 300, 550, 100)
+        self.move(QApplication.desktop().screen().rect().center()- self.rect().center())
+        self.setWindowTitle('Progress Bar')
+
+        
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
