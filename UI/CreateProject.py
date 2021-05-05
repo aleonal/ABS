@@ -8,6 +8,7 @@ import json
 import os
 from tkinter import *
 import tkinter.messagebox
+import datetime
 
 class CreateProjectWidget(QWidget):
 
@@ -151,22 +152,33 @@ class CreateProjectWidget(QWidget):
         messageBox.setText("Not a valid ECELd Project Directory")
         messageBox.exec()
 
+    # Error message for invalid time frame format
+    def errorTimeFrame(self):
+        messageBox = QMessageBox()
+        messageBox.setWindowTitle("Error")
+        messageBox.setText("Not a valid time frame format. Please input as HH:MM:SS format.")
+        messageBox.exec()
+
     # Calls Causation Extractor when create project button is pressed
     def CausationExtractor(self):
         check_datafolder = os.path.isdir(self.import_field.text())
         check_rootfolder = os.path.isdir(self.root_field.text())
         if not (check_rootfolder):
-          print("Not a Valid ABS Project Directory")
-          self.errorRootMsg()
+            self.errorRootMsg()
         elif not(check_datafolder):
-          print("Not a Valid ECELd Project Directory")
-          self.errorDataMsg()
+            self.errorDataMsg()
         else:
-          ProjectController.create_project(self.import_field.text(), self.root_field.text(), "Test",self.timeframe_field.text())
-          self.CEWidget = CausationExtractorWidget(previous_window=self)
-          self.CEWidget.show()
-          self.previous_window.update_tabs()
-          self.hide()
+            # Checks for valid time frame format
+            try: 
+                check_time_frame_format = datetime.datetime.strptime(self.timeframe_field.text(), '%H:%M:%S')
+            except:
+                self.errorTimeFrame()
+                return
+            ProjectController.create_project(self.import_field.text(), self.root_field.text(), "Test",self.timeframe_field.text())
+            self.CEWidget = CausationExtractorWidget(previous_window=self)
+            self.CEWidget.show()
+            self.previous_window.update_tabs()
+            self.hide()
 
     # Gets ABS Project Directory
     def GetProjectRoot(self):
