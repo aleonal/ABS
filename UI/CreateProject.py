@@ -209,14 +209,14 @@ class CreateProjectWidget(QWidget):
     def onTimeframeChanged(self, text):
         self.timeframe_field.setText(text)
 
+    # Displays instructions to user
     def help_window(self):
         messageBox = QMessageBox()
         messageBox.setWindowTitle("Help")
-        messageBox.setText("ABS Project Directory: Select folder to store ABS Project data.\n\n" +
-                           "ECELd Project Directory: Select the folder that contains the ECELd Project recorded\n \tdata.\n" +
-                           "\tA valid ECELd project file contains the ecel-export.. parsed data.\n\n" +
-                           "Time Frame: Input the time in the format HH:MM:SS by which you would like the data\n \tto be separated in the Builder.\n\n" +
-                           "Create Project: Select Create Project after filing out all of the fields above.\n\n" +
+        messageBox.setText("ABS Project Directory: Select a folder to store the new ABS Project data. A valid selection is any existing folder in the system.\n\n" +
+                           "ECELd Project Directory: Select the folder that contains the ECELd Project recorded data. A valid selection contains the ecel-export folder.\n\n" +
+                           "Time Frame: Input the time frame for the Causation Extractor to use to separate the data. A valid input is in HH:MM:SS.\n\n" +
+                           "Create Project: The ECELd project data is sent to the Causation Extractor which separates the data by the time frame, stores it in the ABS Project folder and uploads it to the Builder.\n\n" +
                            "Cancel by closing the window.")
         messageBox.exec()
 
