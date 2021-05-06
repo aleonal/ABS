@@ -25,7 +25,7 @@ class BuilderWidget(QWidget):
         self.UI()
         self.artifacts_window = SalientArtifactWindow(previous_window=self)
         self.show()
-        self.script_file_path = None
+        #self.script_file_path = None
 
     def UI(self):
         self.gridLayout = QGridLayout(self)
@@ -254,6 +254,7 @@ class BuilderWidget(QWidget):
                 self.listdependencies.addNode(child.text(0), deltaTime.__str__(), child.text(2), newItem, True)
 
     def loadDependencies(self):
+        self.listdependencies.clear()
         with open(ProjectController.get_dependencies_file()) as f:
             data = json.load(f)
             for node in data:
@@ -471,40 +472,46 @@ class BuilderWidget(QWidget):
                 QMessageBox.critical(self, "Input Error", "Event is not a clicks_id type")
 
     def save_script(self):
-        if not self.script_file_path:
-            new_file_path, filter_type = QFileDialog.getSaveFileName(self, "Save this script as...", "", ".json")
-            if new_file_path:
-                self.script_file_path = new_file_path
-            else:
-                self.invalid_path_alert_message()
-                return False 
-        ProjectController.set_dependencies_file(self.script_file_path + '.json')
+        #if not self.script_file_path:
+        new_file_path, filter_type = QFileDialog.getSaveFileName(self, "Save this script as...", "", ".json")
+        if new_file_path:
+            script_file_path = new_file_path
+        else:
+            self.invalid_path_alert_message()
+            return False 
+        ProjectController.set_dependencies_file(script_file_path + '.json')
         ProjectController.save_project()
-        self.create_dependencies_json(self.script_file_path + '.json')
+        self.create_dependencies_json(script_file_path + '.json')
 
     def load_script(self):
         script_file = QFileDialog.getOpenFileName(self, 'Open file')[0]
         if script_file:
-            self.script_file_path = script_file
+            script_file_path = script_file
         else:
             self.invalid_path_alert_message()
             return False 
-        ProjectController.set_dependencies_file(self.script_file_path)
+        ProjectController.set_dependencies_file(script_file_path)
         ProjectController.save_project()
         self.loadDependencies()
 
     def generate_script(self):
-        script_path, filter_type = QFileDialog.getOpenFileName(self, "Select script to generate...", "")
+        filter = "json(*.json)"
+        script_path, filter_type = QFileDialog.getOpenFileName(self, "Select script to generate...", "", filter)
         if script_path:
-            self.script_file_path = script_path
+            script_file_path = script_path
         else:
-            self.invalid_path_alert_message()
             return False 
         try:
             ScriptGen2(script_path)
             self.script_gen_success()
         except:
-            self.invalid_path_alert_message()
+            self.generateScriptError()
+    
+    def generateScriptError(self):
+        messageBox = QMessageBox()
+        messageBox.setWindowTitle("Error")
+        messageBox.setText("Error: Missing Fields")
+        messageBox.exec()
         
     def script_gen_success(self):
         messageBox = QMessageBox()
