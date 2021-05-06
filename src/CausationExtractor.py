@@ -14,7 +14,7 @@ class CausationExtractor:
         self._output_folder = "" # ABS Project Directory
         self._project_name = ""
         self._event_list = {} # event_list = {type : [obj, obj, obj]}
-        self._sorted_by_time = [] # all events sorted in chronological order. Achieve same by setting ._time_frame = 00:00:00
+        self._sorted_by_time = [] # all events sorted in chronological order.
         self._grouped_by_salient_artifact = [] #grouped_by_salient_artifact = [[obj_sa1, ob_sa1, obj_sa1], [obj_sa2, obj_sa2]]
         self._grouped_by_time = [] # grouped_by_time = [[obj_group1, ob_group1, obj_group1], [obj_group2, obj_group2]]
         self._project_info = {"time_frame" : "", "project_root" : "", "output_folder": "", "project_name": "", "salient_artifact": ""}
