@@ -239,6 +239,14 @@ class ProjectController:
         except OSError as error:
             print(error)
 
+        #Create validation_temp folder
+        validation_temp = r'validation_temp'
+        full_path = os.path.join(base_dir, validation_temp)
+        try:
+            os.mkdir(full_path)
+        except OSError as error:
+            print(error)
+
 
         ProjectController.load_salient_artifacts_objects()
 
