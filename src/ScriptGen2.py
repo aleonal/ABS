@@ -78,7 +78,11 @@ class ScriptGen2():
             self.script += "pyautogui.typewrite(['" + k["Attributes"] + "'])\n"
         # hotkey
         elif k["Subtype"] == "hotkey":
-            self.script += "pyautogui.hotkey(" + k["Attributes"] + ")\n"
+            removeSpace = k["Attributes"].strip()
+            hotkeys = removeSpace.split(",")
+            hk1 = hotkeys[0]
+            hk2 = hotkeys[1]
+            self.script += "pyautogui.hotkey('" + hk1 + "', '" + hk2 + "')\n"
         # keyDown
         elif k["Subtype"] == "keyDown":
             self.script += "pyautogui.keyDown('" + k["Attributes"] + "')\n"
