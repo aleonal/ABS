@@ -7,21 +7,20 @@ class Event:
         self._className = ""
         self._start = None
     
+    # Setters/Getters
     def set_id(self,id):
         self._id = id 
     def get_id(self):
         return self._id 
-
     def set_content(self,content):
         self._content = content 
     def get_content(self):
         return self._content 
-
     def set_className(self, className):
         self._className = className 
     def get_className(self):
         return self._className 
-    
+    # Start is datetime object
     def set_start(self, start):
         if '/' in start:
             try:
@@ -36,12 +35,14 @@ class Event:
                 self._start = datetime.datetime.strptime(start, "%Y-%m-%dT%H:%M:%S")
             except Exception:
                 self._start = datetime.datetime.strptime(start, "%d-%m-%YT%H:%M:%S")
-        
     def get_start(self):
         return self._start
+    # Returns string of start datetime object
     def get_start_tostring(self):
         return self._start.strftime("%m/%d/%YT%H:%M:%S")
 
+# Each of the following event classes inherit the Event class and contain additional fields unique to their event
+# Each class contains a tojson that returns the object information in json data format
 class Auditd(Event):
     def __init__(self, id, content, className, start):
         self.set_id(id)
