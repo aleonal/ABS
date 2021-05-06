@@ -115,8 +115,12 @@ class CausationExtractorWidget(QWidget):
         self.progress_text.setText(_translate("Widget", "Causation Extractor Progress"))
         self.setWindowIcon(QtGui.QIcon("A.png")) # ABS logo
 
-    # Continue closes the window
+    # Continue notifies the user of events loaded and not loaded before closing the window
     def continueDialog(self):
+        messageBox = QMessageBox()
+        messageBox.setWindowTitle("Event information")
+        messageBox.setText(self.CE.get_notify_events_loaded() + "\n" + self.CE.get_notify_events_not_loaded())
+        messageBox.exec()
         self.close()
 
     # Cancel takes you back to Create Project window

@@ -18,6 +18,8 @@ class CausationExtractor:
         self._grouped_by_salient_artifact = [] #grouped_by_salient_artifact = [[obj_sa1, ob_sa1, obj_sa1], [obj_sa2, obj_sa2]]
         self._grouped_by_time = [] # grouped_by_time = [[obj_group1, ob_group1, obj_group1], [obj_group2, obj_group2]]
         self._project_info = {"time_frame" : "", "project_root" : "", "output_folder": "", "project_name": "", "salient_artifact": ""}
+        self._notify_events_loaded = "Events Loaded:\n" # String of event files loaded
+        self._notify_events_not_loaded = "Events Not Loaded:\n" # String of events not loaded
         
     #Setters    
     def set_time_frame(self, t):
@@ -53,6 +55,10 @@ class CausationExtractor:
             self._project_info["salient_artifact"] += (str(count) + ") " + sa.to_str() + "\n")
             count += 1
         return self._project_info
+    def get_notify_events_loaded(self):
+        return self._notify_events_loaded
+    def get_notify_events_not_loaded(self):
+        return self._notify_events_not_loaded
     
     # adds salient artifact object to list of artifacts
     def add_salient_artifact(self, salient_artifact):
@@ -112,9 +118,11 @@ class CausationExtractor:
                         self._event_list[type] = [obj]
                     else:
                         self._event_list[type].append(obj)
-        # If that data type does not exist in ECELd recorded data
+            # Notify user of events loaded
+            self._notify_events_loaded += (type + "\n")
         except Exception:
-            print("Failed to import " + type)
+            # Notify user of events not loaded
+            self._notify_events_not_loaded += (type + "\n")
 
     # All events sorted in chronological order
     def _sort_by_time(self):
