@@ -8,13 +8,13 @@ import os
 class CausationExtractor:
 
     def __init__(self):
-        self._salient_artifacts = []
-        self._time_frame = 0
-        self._eceld_project_root = ""
-        self._output_folder = ""
+        self._salient_artifacts = [] # Stores list of SalientArtifact objects
+        self._time_frame = 0 # In datetime delta time HH:MM:SS
+        self._eceld_project_root = "" # ECELd Project Directory
+        self._output_folder = "" # ABS Project Directory
         self._project_name = ""
         self._event_list = {} # event_list = {type : [obj, obj, obj]}
-        self._sorted_by_time = []
+        self._sorted_by_time = [] # all events sorted in chronological order. Achieve same by setting ._time_frame = 00:00:00
         self._grouped_by_salient_artifact = [] #grouped_by_salient_artifact = [[obj_sa1, ob_sa1, obj_sa1], [obj_sa2, obj_sa2]]
         self._grouped_by_time = [] # grouped_by_time = [[obj_group1, ob_group1, obj_group1], [obj_group2, obj_group2]]
         self._project_info = {"time_frame" : "", "project_root" : "", "output_folder": "", "project_name": "", "salient_artifact": ""}
@@ -58,7 +58,7 @@ class CausationExtractor:
     def add_salient_artifact(self, salient_artifact):
         self._salient_artifacts.append(salient_artifact)
 
-
+    # Loads salient artifact object data onto salientArtifacts.json
     def load_salient_artifacts(self):
         with open(self._output_folder/"salientArtifacts.json") as f:
             data = json.load(f)
@@ -66,7 +66,7 @@ class CausationExtractor:
                 sa = d
                 self.add_salient_artifact(SalientArtifact(sa["type"], sa["artifact"]))
     
-    #Import events
+    # Loads ECELd events as Event objects and stores in ._event_list for sorting
     def import_events(self):
         export = ""
 
@@ -112,10 +112,11 @@ class CausationExtractor:
                         self._event_list[type] = [obj]
                     else:
                         self._event_list[type].append(obj)
+        # If that data type does not exist in ECELd recorded data
         except Exception:
             print("Failed to import " + type)
 
-    #sort all events by time
+    # All events sorted in chronological order
     def _sort_by_time(self):
         self._sorted_by_time = []
         for event in self._event_list:
@@ -154,7 +155,7 @@ class CausationExtractor:
                 json.dump(l, json_file, indent=2)
             n+=1
 
-    #group all events by salient artifacts
+    #group all events by salient artifacts and output as json file
     def group_by_salient_artifacts(self):
         self._grouped_by_salient_artifact = [[]]
         index = 0
