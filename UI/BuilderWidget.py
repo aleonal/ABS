@@ -13,7 +13,6 @@ from src.ScriptGen2 import ScriptGen2
 from UI.ArtifactsTableWidget import SalientArtifactWindow
 
 from UI.ClickSettings import ClickSettings
-#from UI.ClickOptionsWidget import ClickOptionsWidget
 from UI.DependencyOptionsWidget import DependencyOptionsWidget
 
 

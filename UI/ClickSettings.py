@@ -21,37 +21,40 @@ class ClickSettings(QMainWindow):
 
         # load image
         self.label = QLabel(self)
+        # For testing purposes, if there is no selected click or timed item from the Builder, it will load a preset image
         if selectedItem is not None:
             self.selectedItem = selectedItem
             pixmap = QPixmap(self.selectedItem.text(4))
         else:
             self.selectedItem = None
-            pixmap = QPixmap(r"C:\Users\valma\OneDrive\Desktop\Capture2.png")
+            pixmap = QPixmap(r"C:\Users\valma\OneDrive\Desktop\Capture2.png") # Pre-set image filepath to load for testing purposes
         self.label.setPixmap(pixmap)
         self.label.mousePressEvent = self.getPos
         self.vbox.addWidget(self.label)
 
-        # Create coor box
-        self.coorBoxWidget = QWidget(self) #Might be an issue
+        # Clicks coordinate widget setup
+        self.coorBoxWidget = QWidget(self)
         self.coorBoxLayout = QHBoxLayout(self.coorBoxWidget)
         self.coorBoxLayout.addStretch(1)
         self.coorBoxLayout.setObjectName(u"coorBoxLayout")
-        self.xCoor = QLabel(self) #Might be an issue
+        self.xCoor = QLabel(self)
         self.xCoor.setObjectName(u"xCoor")
         self.coorBoxLayout.addWidget(self.xCoor)
-        self.xlineEdit = QLineEdit(self) # Might be an issue
+        self.xlineEdit = QLineEdit(self)
         self.xlineEdit.setObjectName(u"xlineEdit")
         self.coorBoxLayout.addWidget(self.xlineEdit)
-        self.yCoor = QLabel(self) # MIght be an issue
+        self.yCoor = QLabel(self)
         self.yCoor.setObjectName(u"yCoor")
         self.coorBoxLayout.addWidget(self.yCoor)
-        self.ylineEdit = QLineEdit(self) # Might be an issue
+        self.ylineEdit = QLineEdit(self)
         self.ylineEdit.setObjectName(u"ylineEdit")
         self.coorBoxLayout.addWidget(self.ylineEdit)
-        self.clickOptionsLabel = QLabel(self) # Might be an issue
+
+        # Click option setup / leftClick, rightClick, doubleClick
+        self.clickOptionsLabel = QLabel(self)
         self.clickOptionsLabel.setObjectName(u"clickOptionsLabel")
         self.coorBoxLayout.addWidget(self.clickOptionsLabel)
-        self.clickComboBox = QComboBox(self) # Might be an issue
+        self.clickComboBox = QComboBox(self)
         self.clickComboBox.addItem("")
         self.clickComboBox.addItem("")
         self.clickComboBox.addItem("")
@@ -59,27 +62,29 @@ class ClickSettings(QMainWindow):
         self.clickComboBox.setMinimumSize(QSize(300,20))
         self.clickComboBox.setMaximumSize(QSize(400,20))
         self.coorBoxLayout.addWidget(self.clickComboBox)
-        self.saveButton = QPushButton(self) # Might be an issue
+
+        # Save button setup
+        self.saveButton = QPushButton(self)
         self.saveButton.setObjectName(u"saveButton")
         self.saveButton.setMinimumSize(QSize(100,20))
         self.saveButton.setMaximumSize(QSize(300,20))
         self.saveButton.setEnabled(False)
         self.saveButton.clicked.connect(self.saveSettings)
         self.coorBoxLayout.addWidget(self.saveButton)
-        #self.xlineEdit.textChanged[str].connect(self.xCoorChanged)
-        #self.ylineEdit.textChanged[str].connect(self.yCoorChanged)
 
-        self.vbox.addWidget(self.coorBoxWidget) # I think
+        # Adds the coordinate widget to the vbox
+        self.vbox.addWidget(self.coorBoxWidget)
+        # Adds the vbox to the widget
         self.widget.setLayout(self.vbox)
 
-        #Scroll Area Properties
+        #Scroll Area setup
         self.scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
         self.scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
         self.scroll.setWidgetResizable(True)
         self.scroll.setWidget(self.widget)
 
-        # Add scroll to widget
-        self.setCentralWidget(self.scroll) # Central widget is the entire scroll area
+        # Make the scroll area the central widget
+        self.setCentralWidget(self.scroll)
 
         # Sets up window
         self.setGeometry(600, 100, 1000, 900)
@@ -93,9 +98,10 @@ class ClickSettings(QMainWindow):
         self.clickComboBox.setCurrentText(QCoreApplication.translate("Click Options", u"leftClick", None))
         self.saveButton.setText(QCoreApplication.translate("Click Options", u"Save", None))
 
-
+        # Displays window
         self.show()
 
+    # Returns coordinate position of click
     def getPos(self, event):
         self.x = event.pos().x()
         self.y = event.pos().y()
@@ -103,12 +109,13 @@ class ClickSettings(QMainWindow):
         self.ylineEdit.setText(str(self.y))
         self.saveButton.setEnabled(True)
 
+    # Saves the coordinate position onto the click or timed event object and displays it on the Builder Custom Attributes field.
     def saveSettings(self):
         if self.selectedItem is not None:
             self.selectedItem.setText(1, self.clickComboBox.currentText())
             self.selectedItem.setText(3, "{\"x\":" + str(self.x) + ", \"y\":" + str(self.y) + "}")
+            # Closes the window after updating the coordinates in the Custom Attributes field in the Builder
             self.close()
-
         return
 
 def main():
