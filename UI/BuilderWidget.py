@@ -56,7 +56,7 @@ class BuilderWidget(QWidget):
         self.horizontalTopLeftLayout.addWidget(self.search_relationships_lineedit, 0)
         self.relationship_search_button = QPushButton('Search', self)
         self.horizontalTopLeftLayout.addWidget(self.relationship_search_button, 1)
-        self.relationship_search_button.clicked.connect(self.searchRelationships)
+        self.relationship_search_button.clicked.connect(self.search_relationships)
         self.relationship_search_button.setEnabled(False)
         
         self.horizontalTopRightLayoutWidget = QWidget(self)
@@ -69,7 +69,7 @@ class BuilderWidget(QWidget):
         self.search_dependency_lineedit.textChanged.connect(self.dependencyQueryChanged)
         self.horizontalTopRightLayout.addWidget(self.search_dependency_lineedit, 0)
         self.dependency_search_button = QPushButton('Search', self)
-        self.dependency_search_button.clicked.connect(self.searchDependency)
+        self.dependency_search_button.clicked.connect(self.search_dependency)
         self.horizontalTopRightLayout.addWidget(self.dependency_search_button, 1)
         self.dependency_search_button.setEnabled(False)
 
@@ -86,19 +86,19 @@ class BuilderWidget(QWidget):
         self.move_node_button = QPushButton('Move Node', self)
         self.verticalCenterLayout.addWidget(self.move_node_button)
         self.move_node_button.setSizePolicy(QtWidgets.QSizePolicy.Fixed,QtWidgets.QSizePolicy.Fixed)
-        self.move_node_button.clicked.connect(self.moveNode)
+        self.move_node_button.clicked.connect(self.move_node)
         self.move_node_button.setEnabled(False)
 
         self.move_branch_button = QPushButton('Move Branch', self)
         self.verticalCenterLayout.addWidget(self.move_branch_button)
         self.move_branch_button.setSizePolicy(QtWidgets.QSizePolicy.Fixed,QtWidgets.QSizePolicy.Fixed)
-        self.move_branch_button.clicked.connect(self.moveBranch)
+        self.move_branch_button.clicked.connect(self.move_branch)
         self.move_branch_button.setEnabled(False)
 
         self.move_tree_button = QPushButton('Move Tree', self)
         self.verticalCenterLayout.addWidget(self.move_tree_button)
         self.move_tree_button.setSizePolicy(QtWidgets.QSizePolicy.Fixed,QtWidgets.QSizePolicy.Fixed)
-        self.move_tree_button.clicked.connect(self.copyAllRelationships)
+        self.move_tree_button.clicked.connect(self.copy_all_relationships)
         self.move_tree_button.setEnabled(False)
 
         self.properties_button = QPushButton('Node Properties', self)
@@ -110,17 +110,16 @@ class BuilderWidget(QWidget):
         self.new_node_button = QPushButton('New Node >', self)
         self.verticalCenterLayout.addWidget(self.new_node_button)
         self.new_node_button.setSizePolicy(QtWidgets.QSizePolicy.Fixed,QtWidgets.QSizePolicy.Fixed)
-        self.new_node_button.clicked.connect(self.newDependencyNode)
+        self.new_node_button.clicked.connect(self.new_dependency_node)
         self.new_node_button.setEnabled(False)
-        '''
-        # View Relationship Info Button
-        self.relationship_details_button = QPushButton('< Relationship Details', self)
-        #self.verticalCenterLayout.addWidget(self.relationship_details_button)
-        #self.relationship_details_button.setFixedSize(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
-        self.relationship_details_button.setSizePolicy(QtWidgets.QSizePolicy.Fixed,QtWidgets.QSizePolicy.Fixed)
-        self.relationship_details_button.clicked.connect(self.openRelationship)
-        self.relationship_details_button.setEnabled(False)
-        '''
+
+        self.clearDependenciesButton = QPushButton('Clear Dependencies >', self)
+        self.verticalCenterLayout.addWidget(self.clearDependenciesButton)
+        self.clearDependenciesButton.setSizePolicy(QtWidgets.QSizePolicy.Fixed,QtWidgets.QSizePolicy.Fixed)
+        self.clearDependenciesButton.clicked.connect(self.clear_dependencies)
+        self.clearDependenciesButton.setEnabled(False)
+
+
         self.verticalCenterLayout.setAlignment(Qt.AlignCenter)
 
         self.listdependencies = ABSDependencyTreeWidget()
@@ -128,9 +127,8 @@ class BuilderWidget(QWidget):
 
         self.edit_artifacts_button = QPushButton('Edit Salient Artifacts', self)
         self.gridLayout.addWidget(self.edit_artifacts_button, 3, 0)
-        #self.edit_artifacts_button.setFixedSize(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
         self.edit_artifacts_button.setSizePolicy(QtWidgets.QSizePolicy.Fixed,QtWidgets.QSizePolicy.Fixed)
-        self.edit_artifacts_button.clicked.connect(self.openArtifacts)
+        self.edit_artifacts_button.clicked.connect(self.open_artifacts)
         self.edit_artifacts_button.setEnabled(False)
 
         # Generate script button
@@ -158,7 +156,7 @@ class BuilderWidget(QWidget):
 
         # Loads events when project is loaded
         if ProjectController.is_project_loaded():
-            self.populateTrees()
+            self.populate_trees()
             self.save_button.setEnabled(True)
             self.edit_artifacts_button.setEnabled(True)
             self.relationship_search_button.setEnabled(True)
@@ -170,14 +168,14 @@ class BuilderWidget(QWidget):
             self.move_node_button.setEnabled(True)
             self.load_button.setEnabled(True)
             self.move_branch_button.setEnabled(True)
-            #self.relationship_details_button.setEnabled(True)
+            self.clearDependenciesButton.setEnabled(True)
             if ProjectController.get_dependencies_file() != "":
                 try:
-                    self.loadDependencies()
+                    self.load_dependencies()
                 except:
                     pass
 
-    def populateTrees(self):
+    def populate_trees(self):
         eventGroups = ProjectController.load_event_list()
         artifactList = ProjectController.get_salient_artifacts_json()
         keypressArtifacts = [i['artifact'] for i in artifactList if 'keypresses' in i['type']]
@@ -234,27 +232,26 @@ class BuilderWidget(QWidget):
             content = ""
             if "content" in parent.keys():
                 content = parent['content']
-            newNode = self.listrelationships.addNode(
+            newNode = self.listrelationships.add_node(
                 eventType, 
                 parent['start'], 
                 content,
                 self.listrelationships, isSalientArtifact = salientArtifactFlag)
-            self.populateBranch(group[1:], newNode)
+            self.populate_branch(group[1:], newNode)
 
-    def copyAllRelationships(self):
+    def copy_all_relationships(self):
         for index in range(self.listrelationships.topLevelItemCount()):
             item = self.listrelationships.topLevelItem(index)
             item_index = self.listrelationships.indexFromItem(item)
-            deltaTime = self.calcDeltaTime(node=item, index=item_index)
-            newItem = self.listdependencies.addNode(item.text(0), deltaTime.__str__(), item.text(2), self.listdependencies, True)
+            deltaTime = self.calc_delta_time(node=item, index=item_index)
+            newItem = self.listdependencies.add_node(item.text(0), deltaTime.__str__(), item.text(2), self.listdependencies)
             for childIndex in range(item.childCount()):
                 child = item.child(childIndex)
                 child_index_obj = self.listrelationships.indexFromItem(child)
-                deltaTime = self.calcDeltaTime(node=child, index=child_index_obj)
-                self.listdependencies.addNode(child.text(0), deltaTime.__str__(), child.text(2), newItem, True)
+                deltaTime = self.calc_delta_time(node=child, index=child_index_obj)
+                self.listdependencies.add_node(child.text(0), deltaTime.__str__(), child.text(2), newItem)
 
-    def loadDependencies(self):
-        self.listdependencies.clear()
+    def load_dependencies(self):
         with open(ProjectController.get_dependencies_file()) as f:
             data = json.load(f)
             for node in data:
@@ -274,55 +271,57 @@ class BuilderWidget(QWidget):
                     childItem.setText(1,child['Subtype'])
                     childItem.setText(0,child['Type'])
 
+    def clear_dependencies(self):
+        self.listdependencies.clear()
 
-    def newDependencyNode(self):
+    def new_dependency_node(self):
         newItem = None
         if len(self.listdependencies.selectedItems()) > 0:
             selectedItem = self.listdependencies.selectedItems()[0]
-            newItem = self.listdependencies.addNode("Type...", "00:00:00.00", "Content...", selectedItem, True)
+            newItem = self.listdependencies.add_node("Type...", "00:00:00.00", "Content...", selectedItem)
         else:
-            newItem = self.listdependencies.addNode("Type...", "00:00:00.00", "Content...", self.listdependencies, True)
+            newItem = self.listdependencies.add_node("Type...", "00:00:00.00", "Content...", self.listdependencies)
         self.properties_window = DependencyOptionsWidget(newItem)
         self.properties_window.show()
     
-    def moveBranch(self):
+    def move_branch(self):
         if len(self.listrelationships.selectedItems()) > 0:
             selectedItem = self.listrelationships.selectedItems()[0]
             selectedIndex = self.listrelationships.indexFromItem(selectedItem)
-            deltaTime = self.calcDeltaTime(node=selectedItem, index=selectedIndex)
+            deltaTime = self.calc_delta_time(node=selectedItem, index=selectedIndex)
             parent = self.listdependencies
             if len(self.listdependencies.selectedItems()) > 0:
                 parent = self.listdependencies.selectedItems()[0]
                 if parent.parent():
                     parent = parent.parent()
 
-            newItem = self.listdependencies.addNode(selectedItem.text(0), deltaTime.__str__(), selectedItem.text(2), parent, True)
+            newItem = self.listdependencies.add_node(selectedItem.text(0), deltaTime.__str__(), selectedItem.text(2), parent)
             if newItem.parent() is None:
                     parent = newItem
             for childIndex in range(selectedItem.childCount()):
                 child = selectedItem.child(childIndex)
                 child_index_obj = self.listrelationships.indexFromItem(child)
-                deltaTime = self.calcDeltaTime(node=child, index=child_index_obj)
-                self.listdependencies.addNode(child.text(0), deltaTime.__str__(), child.text(2), parent, True)
+                deltaTime = self.calc_delta_time(node=child, index=child_index_obj)
+                self.listdependencies.add_node(child.text(0), deltaTime.__str__(), child.text(2), parent)
         else:
             QMessageBox.critical(self, "Project Error", "No node selected.")
 
-    def moveNode(self):
+    def move_node(self):
         if len(self.listrelationships.selectedItems()) > 0:
             selectedItem = self.listrelationships.selectedItems()[0]
             selectedIndex = self.listrelationships.indexFromItem(selectedItem)
-            deltaTime = self.calcDeltaTime(node=selectedItem, index=selectedIndex)
+            deltaTime = self.calc_delta_time(node=selectedItem, index=selectedIndex)
             parent = self.listdependencies
             if len(self.listdependencies.selectedItems()) > 0:
                 parent = self.listdependencies.selectedItems()[0]
                 if parent.parent():
                     parent = parent.parent()
 
-            newItem = self.listdependencies.addNode(selectedItem.text(0), deltaTime.__str__(), selectedItem.text(2), parent, True)
+            newItem = self.listdependencies.add_node(selectedItem.text(0), deltaTime.__str__(), selectedItem.text(2), parent)
         else:
             QMessageBox.critical(self, "Project Error", "No node selected.")
 
-    def calcDeltaTime(self, node=None, index=None):
+    def calc_delta_time(self, node=None, index=None):
         if node is None or index is None:
             return datetime.time(0,0,1)
         else: 
@@ -346,7 +345,7 @@ class BuilderWidget(QWidget):
                 deltaTime = date.time()
             return deltaTime
 
-    def searchRelationships(self):
+    def search_relationships(self):
         query = self.search_relationships_lineedit.text()
         print("Searching relationship: " + query)
         results = self.listrelationships.findItems(query, QtCore.Qt.MatchContains | QtCore.Qt.MatchRecursive, 2)
@@ -362,7 +361,7 @@ class BuilderWidget(QWidget):
             self.listrelationships.setCurrentItem(results[self.search_relationships_index])
             self.listrelationships.scrollTo(self.listrelationships.indexFromItem(results[self.search_relationships_index]))
 
-    def searchDependency(self):
+    def search_dependency(self):
         query = self.search_dependency_lineedit.text()
         print("Searching dependencies: " + query)
         results = self.listdependencies.findItems(query, QtCore.Qt.MatchContains | QtCore.Qt.MatchRecursive, 4)
@@ -378,7 +377,7 @@ class BuilderWidget(QWidget):
             self.listdependencies.setCurrentItem(results[self.search_dependencies_index])
             self.listdependencies.scrollTo(self.listdependencies.indexFromItem(results[self.search_dependencies_index]))
     
-    def populateBranch(self, children=None, parent=None):
+    def populate_branch(self, children=None, parent=None):
         artifactList = ProjectController.get_salient_artifacts_json()
         keypressArtifacts = [i['artifact'] for i in artifactList if 'keypresses' in i['type']]
         clicksArtifacts = [i['artifact'] for i in artifactList if 'clicks' in i['type']]
@@ -428,13 +427,13 @@ class BuilderWidget(QWidget):
             if "content" in child.keys():
                 content = child['content']
             if eventType != "traffic_xy_id":
-                newNode = self.listrelationships.addNode(
+                newNode = self.listrelationships.add_node(
                     eventType, 
                     child['start'], 
                     content,
                     parent, isSalientArtifact=salientArtifactFlag)
             
-    def openArtifacts(self):
+    def open_artifacts(self):
         if ProjectController.is_project_loaded():
             self.artifacts_window.populate_table()
             self.artifacts_window.show()
@@ -492,7 +491,7 @@ class BuilderWidget(QWidget):
             return False 
         ProjectController.set_dependencies_file(script_file_path)
         ProjectController.save_project()
-        self.loadDependencies()
+        self.load_dependencies()
 
     def generate_script(self):
         filter = "json(*.json)"
@@ -563,10 +562,10 @@ class BuilderWidget(QWidget):
         self.listrelationships.clear()
         #self.listdependencies.clear()
         if ProjectController.is_project_loaded():
-            self.populateTrees()
+            self.populate_trees()
             if ProjectController.get_dependencies_file() != "":
                 try:
-                    self.loadDependencies()
+                    self.load_dependencies()
                 except:
                     pass
 
@@ -590,13 +589,10 @@ class ABSRelationshipTreeWidget(QTreeWidget):
         self.setWordWrap(True)
         self.setSortingEnabled(True)
 
-    def addNode(self, _type=None, time=None, content=None, parent=None, canEdit=False, isSalientArtifact=False):
+    def add_node(self, _type=None, time=None, content=None, parent=None, isSalientArtifact=False):
         if(parent is not None):
             tempQtreewidgetitem = QTreeWidgetItem(parent)
-            if canEdit:
-                tempQtreewidgetitem.setFlags(Qt.ItemIsEditable|Qt.ItemIsSelectable|Qt.ItemIsDragEnabled|Qt.ItemIsDropEnabled|Qt.ItemIsUserCheckable|Qt.ItemIsEnabled)
-            else:
-                tempQtreewidgetitem.setFlags(Qt.ItemIsSelectable|Qt.ItemIsDragEnabled|Qt.ItemIsDropEnabled|Qt.ItemIsUserCheckable|Qt.ItemIsEnabled)
+            tempQtreewidgetitem.setFlags(Qt.ItemIsSelectable|Qt.ItemIsDragEnabled|Qt.ItemIsDropEnabled|Qt.ItemIsUserCheckable|Qt.ItemIsEnabled)
             
             if isSalientArtifact:
                 tempQtreewidgetitem.setForeground(0,QtGui.QBrush(QtGui.QColor(ProjectController.get_artifact_color())))
@@ -605,6 +601,7 @@ class ABSRelationshipTreeWidget(QTreeWidget):
             tempQtreewidgetitem.setText(0,_type)
             return tempQtreewidgetitem
 
+#Class that holds the depencency tree objects
 class ABSDependencyTreeWidget(QTreeWidget):
     def __init__(self):
         super().__init__()
@@ -626,7 +623,8 @@ class ABSDependencyTreeWidget(QTreeWidget):
         self.setSortingEnabled(False)
         self.setWordWrap(True)
 
-    def addNode(self, _type=None, time=None, content=None, parent=None, canEdit=False):
+    #Add a new node to the dependency tree
+    def add_node(self, _type=None, time=None, content=None, parent=None):
         if(parent is not None):
             tempQtreewidgetitem = QTreeWidgetItem(parent)
             tempQtreewidgetitem.setFlags(Qt.ItemIsEditable|Qt.ItemIsSelectable|Qt.ItemIsDragEnabled|Qt.ItemIsDropEnabled|Qt.ItemIsUserCheckable|Qt.ItemIsEnabled)
@@ -634,7 +632,8 @@ class ABSDependencyTreeWidget(QTreeWidget):
             tempQtreewidgetitem.setText(2,time)
             tempQtreewidgetitem.setText(0,_type)
             return tempQtreewidgetitem
-        
+
+    #Delete selected dependency node if one is selected. (Reimplemented Method)
     def keyPressEvent(self, event):
         if event.key() == QtCore.Qt.Key_Delete and self.state() != QTreeWidget.EditingState:
             if len(self.selectedItems()) > 0:
@@ -647,70 +646,5 @@ class ABSDependencyTreeWidget(QTreeWidget):
         else:
             super().keyPressEvent(event)
 
-    def dragEnterEvent (self, eventQDragEnterEvent):
-        sourceQCustomTreeWidget = eventQDragEnterEvent.source()
-        if isinstance(sourceQCustomTreeWidget, ABSDependencyTreeWidget):
-            if self != sourceQCustomTreeWidget:
-                eventQDragEnterEvent.accept()
-            else:
-                QTreeWidget.dragEnterEvent(self, eventQDragEnterEvent)
-        else:
-            QTreeWidget.dragEnterEvent(self, eventQDragEnterEvent)
-
     def dropEvent(self, event):
         super().dropEvent(event)
-    # def dropEvent(self, event):
-    #     md = event.mimeData()
-    #     fmt = "application/x-qabstractitemmodeldatalist"
-    #     dropIndex = self.indexAt(event.pos())
-    #     dropIndicator = QAbstractItemView.dropIndicatorPosition(self)
-
-    #     if md.hasFormat(fmt):
-    #         encoded = md.data(fmt)
-    #         stream = QtCore.QDataStream(encoded, QtCore.QIODevice.ReadOnly)
-    #         tree_items = []
-    #         parent = self
-
-    #         while not stream.atEnd():
-    #             it = QtWidgets.QTreeWidgetItem()
-    #             # row and column where it comes from
-    #             for j in range(5): # 3 columns in the tree
-    #                 row = stream.readInt32()
-    #                 column = stream.readInt32()
-    #                 map_items = stream.readInt32()
-
-    #                 for i in range(map_items):
-    #                     role = stream.readInt32()
-    #                     value = QtCore.QVariant()
-    #                     stream >> value
-    #                     it.setData(column, role, value)
-    #             tree_items.append(it)
-
-    #         if (not dropIndex.parent().isValid() and dropIndex.row() != -1):
-    #             if dropIndicator == QAbstractItemView.AboveItem:
-    #                 # manage a boolean for the case when you are above an item
-    #                 for it in tree_items:
-    #                     parent = self.addNode(it.text(0), it.text(2), it.text(4), parent, True)
-    #                 return
-    #             elif dropIndicator == QAbstractItemView.BelowItem:
-    #                 #something when being below an item
-    #                 for it in tree_items:
-    #                     parent = self.addNode(it.text(0), it.text(2), it.text(4), parent, True)
-    #                 return
-    #             elif dropIndicator == QAbstractItemView.OnItem:
-    #                 #you're on an item, maybe add the current one as a child
-    #                 parent = self.itemAt(dropIndex.row(), dropIndex.column())
-    #                 for it in tree_items:
-    #                     self.addNode(it.text(0), it.text(2), it.text(4), parent, True)
-    #                 return
-    #             elif dropIndicator == QAbstractItemView.OnViewport:
-    #                 #you are not on your tree
-    #                 return
-            
-    #         for it in tree_items:
-    #                     parent = self.addNode(it.text(0), it.text(2), it.text(4), parent, True)
-
-if __name__ == "__main__":
-    app = QtWidgets.QApplication(sys.argv)
-    window = BuilderWidget()
-    sys.exit(app.exec())
