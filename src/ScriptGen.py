@@ -3,7 +3,7 @@ from PIL import Image
 import os, os.path
 import json
 
-class ScriptGen2():
+class ScriptGen():
 
     def __init__(self, script_name):
         # Initialize python file contents

@@ -9,7 +9,7 @@ import json
 import datetime
 from src.ProjectController import ProjectController
 from src import Event
-from src.ScriptGen2 import ScriptGen2
+from src.ScriptGen import ScriptGen
 from UI.ArtifactsTableWidget import SalientArtifactWindow
 
 from UI.ClickSettings import ClickSettings
@@ -501,7 +501,7 @@ class BuilderWidget(QWidget):
         else:
             return False 
         try:
-            ScriptGen2(script_path)
+            ScriptGen(script_path)
             self.script_gen_success()
         except:
             self.generateScriptError()
