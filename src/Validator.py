@@ -200,6 +200,12 @@ class Validator():
 	    cursor = self.terminal.textCursor()
 	    cursor.movePosition(cursor.End)
 	    cursor.insertText(text)
+	
+	def stop(self):
+		self.eceld.stop_collectors()
+		self.json_script = None
+		self.executable_script = None
+
 
 
 #	def __init__(self):
