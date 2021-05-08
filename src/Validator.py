@@ -137,7 +137,7 @@ class Validator():
 					export = d
 		export = self.output_path + "/" + export
 
-		if item["Type"] == "auditd":
+		if item["Type"] == "auditd_id":
 			return self.check_auditd(export, obs)
 
 		elif item["Type"] == "traffic_all_id":
