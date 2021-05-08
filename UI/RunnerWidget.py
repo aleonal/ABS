@@ -99,6 +99,8 @@ class RunnerWidget(QWidget):
         
     # Prints to the program that the process has stopped
     def stop_script(self):
+        self.validator.stop()
+        self.validator = None
         self.print_progress("Program stopped\n")
         self.stop_button.setEnabled(False)
         self.run_button.setEnabled(True)
