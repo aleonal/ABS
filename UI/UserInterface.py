@@ -30,12 +30,9 @@ class Ui_MainWindow(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        #app = QtWidgets.QApplication(sys.argv)
         MainWindow = QtWidgets.QMainWindow()
-        #ui = Ui_MainWindow()
         self.setupUi(MainWindow)
         MainWindow.show()
-        #sys.exit(app.exec_())
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -62,15 +59,13 @@ class Ui_MainWindow(QMainWindow):
         self.builder_tab.setAccessibleName("BuilderWidget")
         self.builder_tab.setObjectName("builder_tab")
         self.tabWidget.addTab(self.builder_tab, "")
-        #self.tabWidget.setTabEnabled(1,False) #Disable Builder Tab
 
         #Creating Runner tab
         self.runner_tab = RunnerWidget()
         self.runner_tab.setAccessibleName("RunnerWidget")
         self.runner_tab.setObjectName("runner_tab")
         self.tabWidget.addTab(self.runner_tab, "")
-        #self.tabWidget.setTabEnabled(2,False) #Disable Runner Tab
-
+        
         #Add all our tabs into our main windows layout
         self.layout.addWidget(self.tabWidget)
         MainWindow.setCentralWidget(self.centralwidget)
@@ -81,10 +76,6 @@ class Ui_MainWindow(QMainWindow):
         self.menubar.setObjectName("menubar")
         self.menuFile = QtWidgets.QMenu(self.menubar)
         self.menuFile.setObjectName("menuFile")
-        #self.menuEdit = QtWidgets.QMenu(self.menubar)
-        #self.menuEdit.setObjectName("menuEdit")
-        #self.menuAbout = QtWidgets.QMenu(self.menubar)
-        #self.menuAbout.setObjectName("menuAbout")
         self.menuHelp = QtWidgets.QMenu(self.menubar)
         self.menuHelp.setObjectName("menuHelp")
         MainWindow.setMenuBar(self.menubar)
@@ -99,44 +90,22 @@ class Ui_MainWindow(QMainWindow):
         self.actionNew_Project.setObjectName("actionNew_Project")
         self.actionOpen_Project = QtWidgets.QAction(MainWindow, triggered=self.open_directory)
         self.actionOpen_Project.setObjectName("actionOpen_Project")
-        #self.actionPackage_Project = QtWidgets.QAction(MainWindow)
-        #self.actionPackage_Project.setObjectName("actionPackage_Project")
         self.actionHelp = QtWidgets.QAction(MainWindow, triggered=self.help_Openpdf)
         self.actionHelp.setObjectName("actionHelp")
-        #self.actionSave_Project = QtWidgets.QAction(MainWindow)
-        #self.actionSave_Project.setObjectName("actionSave_Project")
-        #self.actionSave_Project = QtWidgets.QAction(MainWindow, triggered=self.save_file)#save project
         self.actionExit = QtWidgets.QAction(MainWindow, triggered=self.exit)
         self.actionExit.setObjectName("actionExit")
-        #self.actionUndo = QtWidgets.QAction(MainWindow)
-        #self.actionUndo.setObjectName("actionUndo")
-        #self.actionRedo = QtWidgets.QAction(MainWindow)
-        #self.actionRedo.setObjectName("actionRedo")
-        #self.actionCopy = QtWidgets.QAction(MainWindow)
-        #self.actionCopy.setObjectName("actionCopy")
-        #self.actionPaste = QtWidgets.QAction(MainWindow)
-        #self.actionPaste.setObjectName("actionPaste")
-        #self.actionCut = QtWidgets.QAction(MainWindow)
-        #self.actionCut.setObjectName("actionCut")
-        #self.actionFind_Replace = QtWidgets.QAction(MainWindow)
-        #self.actionFind_Replace.setObjectName("actionFind_Replace")
         self.actionCausation_Extractor = QtWidgets.QAction(MainWindow)
         self.actionCausation_Extractor.setObjectName("actionCausation_Extractor")
         self.actionOpen_Builder = QtWidgets.QAction(MainWindow)
         self.actionOpen_Builder.setObjectName("actionOpen_Builder")
         self.actionOpen_Runner = QtWidgets.QAction(MainWindow)
         self.actionOpen_Runner.setObjectName("actionOpen_Runner")
-        #self.actionOpen_Packager = QtWidgets.QAction(MainWindow)
-        #self.actionOpen_Packager.setObjectName("actionOpen_Packager")
-
+        
         #Add actions to menu buttons
         self.menuFile.addAction(self.actionNew_Project)
         self.menuFile.addAction(self.actionOpen_Project)
-        #self.menuFile.addAction(self.actionPackage_Project)
-        #self.menuFile.addAction(self.actionSave_Project)
         self.menuFile.addAction(self.actionExit)
         self.menubar.addAction(self.menuFile.menuAction())
-        #self.menubar.addAction(self.menuAbout.menuAction())
         self.menubar.addAction(self.menuHelp.menuAction())
         self.menuHelp.addAction(self.actionHelp)
 
@@ -159,7 +128,7 @@ class Ui_MainWindow(QMainWindow):
         # Check if user clicks on cancel
         if (len(directory) <= 0):
             return
-        # Check if project_config exist in chosen directory
+        # Check if project_config exists in chosen directory
         elif (os.path.isfile(PATH) and os.access(PATH, os.R_OK)):
             print("File exists and is readable")
             ProjectController.load_project(directory)
@@ -169,11 +138,6 @@ class Ui_MainWindow(QMainWindow):
         else:
             print("Either the file is missing or not readable")
             QMessageBox.critical(self.centralwidget, "Project Failure", "Project could not be loaded. Check that directory contains appropriate files")
-
-    def save_file(self):
-        file = str(QtWidgets.QFileDialog.getSaveFileName(QtWidgets.QFileDialog(), "Save File", directory=os.path.realpath(os.getcwd())))
-        #save file
-        #We will get the file name, now we have to write to it
 
     # Updates Builder tab when project is loaded
     def update_tabs(self):
@@ -191,26 +155,15 @@ class Ui_MainWindow(QMainWindow):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.runner_tab), _translate("MainWindow", "Runner"))
 
         self.menuFile.setTitle(_translate("MainWindow", "File"))
-        #self.menuAbout.setTitle(_translate("MainWindow", "About"))
         self.menuHelp.setTitle(_translate("MainWindow", "Help"))
         self.actionNew_Project.setText(_translate("MainWindow", "New Project"))
         self.actionOpen_Project.setText(_translate("MainWindow", "Open Project"))
-        #self.actionPackage_Project.setText(_translate("MainWindow", "Package Project"))
-        #self.actionSave_Project.setText(_translate("MainWindow", "Save Project"))
         self.actionExit.setText(_translate("MainWindow", "Exit"))
         self.actionHelp.setText(_translate("MainWindow", "About ABS"))
-
-        #self.actionUndo.setText(_translate("MainWindow", "Undo"))
-        #self.actionRedo.setText(_translate("MainWindow", "Redo"))
-        #self.actionCopy.setText(_translate("MainWindow", "Copy"))
-        #self.actionPaste.setText(_translate("MainWindow", "Paste"))
-        #self.actionCut.setText(_translate("MainWindow", "Cut"))
-        #self.actionFind_Replace.setText(_translate("MainWindow", "Find/Replace"))
         self.actionCausation_Extractor.setText(_translate("MainWindow", "Causation Extractor"))
         self.actionOpen_Builder.setText(_translate("MainWindow", "Open Builder"))
         self.actionOpen_Runner.setText(_translate("MainWindow", "Open Runner"))
-        #self.actionOpen_Packager.setText(_translate("MainWindow", "Open Packager"))
-
+    
     def close_window(self):
         print("Close Window")
         self.close()
@@ -222,7 +175,6 @@ class Ui_MainWindow(QMainWindow):
 
     def exit(self):
         sys.exit()
-
 
 if __name__ == "__main__":
     import sys
