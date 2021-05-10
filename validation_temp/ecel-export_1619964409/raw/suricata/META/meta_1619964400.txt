@@ -1,4 +1,0 @@
-suricata
-===============================
-Commands:# suricata -c /home/kali/eceld/plugins/collectors/suricata/config/suricata.yaml -i eth0 -l /home/kali/eceld-netsys/eceld/plugins/collectors/suricata/raw -s /home/kali/eceld/plugins/collectors/suricata/config/rules/suricata.rules -k none
-===============================

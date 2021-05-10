@@ -1,8 +1,6 @@
 import sys
 import time
 from PyQt5 import QtGui, QtCore, QtWidgets
-#from UI.StartWindow import ProjectInfoWidget
-#from UI.ProjectInfoWidget import ProjectInfoWidget
 from UI.UserInterface import Ui_MainWindow
 
 def main():

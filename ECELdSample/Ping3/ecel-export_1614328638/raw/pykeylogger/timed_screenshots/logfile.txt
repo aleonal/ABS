@@ -1,2 +1,0 @@
-SNAP: /home/kali/eceld-netsys/eceld/plugins/collectors/pykeylogger/raw/timed_screenshots/1614328607.812868_screenshot.png
-SNAP: /home/kali/eceld-netsys/eceld/plugins/collectors/pykeylogger/raw/timed_screenshots/1614328619.6401157_screenshot.png
