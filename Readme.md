@@ -16,6 +16,15 @@
     - The packager will create a zip file with all included files at the specified directory
 
 # Installation and Setup
+- ABS can be installed in Kali Linux using the script install.sh
+    - Running install.sh installs ABS in the user's home directory
+    - The script creates a desktop shortcut for the user
+    - The script creates a new script: abs-gui, that the user can run manually if they wish
+- The Packager can be ran on Windows as a standalone exe file
+    - Located under Packager/dist
+
+
+
 
 - Sorting functions for dependencies & eveents in GUI?
     - This implies that we move sorting functions from CE to ProjectController OR implement front-end sorting separately altogether
