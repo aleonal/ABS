@@ -11,7 +11,6 @@ from src.ProjectController import ProjectController
 from src import Event
 from src.ScriptGen import ScriptGen
 from UI.ArtifactsTableWidget import SalientArtifactWindow
-
 from UI.ClickSettings import ClickSettings
 from UI.DependencyOptionsWidget import DependencyOptionsWidget
 
@@ -25,7 +24,6 @@ class BuilderWidget(QWidget):
         self.UI()
         self.artifacts_window = SalientArtifactWindow(previous_window=self)
         self.show()
-        #self.script_file_path = None
 
     def UI(self):
         self.gridLayout = QGridLayout(self)
@@ -33,24 +31,28 @@ class BuilderWidget(QWidget):
         self.setLayout(self.gridLayout)
         self.setWindowIcon(QtGui.QIcon("A.png"))# A icons
 
+        #Set up default values for search bars
         self.search_relationship_query = ""
         self.search_dependencies_query = ""
 
+        #Search results index used to cycle through the results. 
         self.search_dependencies_index = 0
         self.search_relationships_index = 0
 
-        #Create search bar
+        #Top label
         self.label = QLabel('Builder', self)
         self.label.setObjectName(u"label")
         self.label.setFont(QFont('MS Shell Dlg 2', 12))
         self.gridLayout.addWidget(self.label, 0, 0)
         
+        #Layout for left search bar.
         self.horizontalTopLeftLayoutWidget = QWidget(self)
         self.horizontalTopLeftLayoutWidget.setObjectName(u"horizontalTopLeftLayoutWidget")
         self.horizontalTopLeftLayout = QHBoxLayout(self.horizontalTopLeftLayoutWidget)
         self.horizontalTopLeftLayout.setObjectName(u"horizontalTopLayout")
         self.gridLayout.addWidget(self.horizontalTopLeftLayoutWidget, 1, 0)
 
+        #Create left search bar
         self.search_relationships_lineedit = QLineEdit(self)
         self.search_relationships_lineedit.textChanged.connect(self.relationshipQueryChanged)
         self.horizontalTopLeftLayout.addWidget(self.search_relationships_lineedit, 0)
@@ -59,12 +61,14 @@ class BuilderWidget(QWidget):
         self.relationship_search_button.clicked.connect(self.search_relationships)
         self.relationship_search_button.setEnabled(False)
         
+        #Layout for right searchbar
         self.horizontalTopRightLayoutWidget = QWidget(self)
         self.horizontalTopRightLayoutWidget.setObjectName(u"horizontalTopRightLayoutWidget")
         self.horizontalTopRightLayout = QHBoxLayout(self.horizontalTopRightLayoutWidget)
         self.horizontalTopRightLayout.setObjectName(u"horizontalTopRightLayout")
         self.gridLayout.addWidget(self.horizontalTopRightLayoutWidget, 1, 3)
 
+        #Create right search bar
         self.search_dependency_lineedit = QLineEdit(self)
         self.search_dependency_lineedit.textChanged.connect(self.dependencyQueryChanged)
         self.horizontalTopRightLayout.addWidget(self.search_dependency_lineedit, 0)
@@ -73,16 +77,18 @@ class BuilderWidget(QWidget):
         self.horizontalTopRightLayout.addWidget(self.dependency_search_button, 1)
         self.dependency_search_button.setEnabled(False)
 
-
+        #Create relationships tree holder
         self.listrelationships = ABSRelationshipTreeWidget()
         self.gridLayout.addWidget(self.listrelationships, 2, 0)
 
+        #Vertical layout to hold center buttons. 
         self.verticalCenterLayoutWidget = QWidget(self)
         self.verticalCenterLayoutWidget.setObjectName(u"verticalLayoutWidget")
         self.verticalCenterLayout = QVBoxLayout(self.verticalCenterLayoutWidget)
         self.verticalCenterLayout.setObjectName(u"verticalLayout")
         self.gridLayout.addWidget(self.verticalCenterLayoutWidget, 2, 1)
 
+        #Center layout buttons. 
         self.move_node_button = QPushButton('Move Node', self)
         self.verticalCenterLayout.addWidget(self.move_node_button)
         self.move_node_button.setSizePolicy(QtWidgets.QSizePolicy.Fixed,QtWidgets.QSizePolicy.Fixed)
@@ -119,9 +125,10 @@ class BuilderWidget(QWidget):
         self.clearDependenciesButton.clicked.connect(self.clear_dependencies)
         self.clearDependenciesButton.setEnabled(False)
 
-
+        #Align center buttons to the center of the layout. 
         self.verticalCenterLayout.setAlignment(Qt.AlignCenter)
 
+        #Create tree to hold dependency information. 
         self.listdependencies = ABSDependencyTreeWidget()
         self.gridLayout.addWidget(self.listdependencies, 2, 2, 1, 2)
 
@@ -139,7 +146,7 @@ class BuilderWidget(QWidget):
         self.generate_script_button.setEnabled(False)
 
         # Load Dependencies Button
-        self.load_button = QPushButton('Load Script', self)
+        self.load_button = QPushButton('Load Dependencies', self)
         self.gridLayout.addWidget(self.load_button, 3, 2)
         self.load_button.setSizePolicy(QtWidgets.QSizePolicy.Fixed,QtWidgets.QSizePolicy.Fixed)
         self.load_button.setStyleSheet("background-color: lightblue")
@@ -147,7 +154,7 @@ class BuilderWidget(QWidget):
         self.load_button.setEnabled(False)
 
         # Save Button
-        self.save_button = QPushButton('Save Script', self)
+        self.save_button = QPushButton('Save Dependencies', self)
         self.gridLayout.addWidget(self.save_button, 3, 3)
         self.save_button.setSizePolicy(QtWidgets.QSizePolicy.Fixed,QtWidgets.QSizePolicy.Fixed)
         self.save_button.setStyleSheet("background-color: lightblue")
@@ -175,6 +182,7 @@ class BuilderWidget(QWidget):
                 except:
                     pass
 
+    #Load event groups in the /events directory into the relationship tree
     def populate_trees(self):
         eventGroups = ProjectController.load_event_list()
         artifactList = ProjectController.get_salient_artifacts_json()
@@ -191,6 +199,7 @@ class BuilderWidget(QWidget):
                 continue
             parent = group[0]
             eventType = ""
+            content = ""
             salientArtifactFlag=False
             if "keypresses_id" in parent.keys():
                 eventType = "keypresses_id"
@@ -215,42 +224,50 @@ class BuilderWidget(QWidget):
                 if "content" in parent.keys():
                     if any(s in parent['content'] for s in timedArtifacts):
                         salientArtifactFlag=True
-
+            #Traffic events hold no 'content' field, so they need to use alternative fields for content. 
             if "traffic_all_id" in parent.keys():
                 eventType = "traffic_all_id"
-                if "content" in parent.keys():
-                    if any(s in parent['content'] for s in trafficArtifacts):
+                content = parent['title']
+                if "title" in parent.keys():
+                    if any(s in parent['title'] for s in trafficArtifacts):
                         salientArtifactFlag=True
             if "traffic_xy_id" in parent.keys():
+                content = parent['y']
                 eventType = "traffic_xy_id"
-                if "content" in parent.keys():
-                    if any(s in parent['content'] for s in trafficThroughputArtifacts):
+                if "y" in parent.keys():
+                    if any(s in parent['y'] for s in trafficThroughputArtifacts):
                         salientArtifactFlag=True
             if "suricata_id" in parent.keys():
                 eventType = "suricata_id"
 
-            content = ""
             if "content" in parent.keys():
                 content = parent['content']
+                
             newNode = self.listrelationships.add_node(
                 eventType, 
                 parent['start'], 
                 content,
                 self.listrelationships, isSalientArtifact = salientArtifactFlag)
+
+            #Recursively populate the relationship child nodes. Relationship tree is limited to 1 level. 
             self.populate_branch(group[1:], newNode)
 
+    #Copy the relationships to the dependencies tree where they can be edited. 
     def copy_all_relationships(self):
+        #Copy top level objects
         for index in range(self.listrelationships.topLevelItemCount()):
             item = self.listrelationships.topLevelItem(index)
             item_index = self.listrelationships.indexFromItem(item)
             deltaTime = self.calc_delta_time(node=item, index=item_index)
             newItem = self.listdependencies.add_node(item.text(0), deltaTime.__str__(), item.text(2), self.listdependencies)
+            #Copy children
             for childIndex in range(item.childCount()):
                 child = item.child(childIndex)
                 child_index_obj = self.listrelationships.indexFromItem(child)
                 deltaTime = self.calc_delta_time(node=child, index=child_index_obj)
                 self.listdependencies.add_node(child.text(0), deltaTime.__str__(), child.text(2), newItem)
 
+    #Load dependencies stored in JSON file. 
     def load_dependencies(self):
         with open(ProjectController.get_dependencies_file()) as f:
             data = json.load(f)
@@ -271,31 +288,41 @@ class BuilderWidget(QWidget):
                     childItem.setText(1,child['Subtype'])
                     childItem.setText(0,child['Type'])
 
+    #Delete all dependencies from the dependency tree. 
     def clear_dependencies(self):
         self.listdependencies.clear()
 
+    #Add new dependency node to the tree
     def new_dependency_node(self):
         newItem = None
+        #If a dependency node is selected, add the node as a child of the top level parent. 
         if len(self.listdependencies.selectedItems()) > 0:
             selectedItem = self.listdependencies.selectedItems()[0]
             newItem = self.listdependencies.add_node("Type...", "00:00:00.00", "Content...", selectedItem)
+        #Otherwise add the node at the end of the tree widget. 
         else:
             newItem = self.listdependencies.add_node("Type...", "00:00:00.00", "Content...", self.listdependencies)
         self.properties_window = DependencyOptionsWidget(newItem)
         self.properties_window.show()
     
+    #Move a branch from the relationship tree to the dependency tree. 
     def move_branch(self):
+        #move selected top level items
         if len(self.listrelationships.selectedItems()) > 0:
             selectedItem = self.listrelationships.selectedItems()[0]
             selectedIndex = self.listrelationships.indexFromItem(selectedItem)
+            #Calculate Delta Time
             deltaTime = self.calc_delta_time(node=selectedItem, index=selectedIndex)
             parent = self.listdependencies
+            # If a dependency is selected, make it the partent for all the branch
             if len(self.listdependencies.selectedItems()) > 0:
                 parent = self.listdependencies.selectedItems()[0]
+                #If the dependency is a child, select the partent as the root for the import. 
                 if parent.parent():
                     parent = parent.parent()
 
             newItem = self.listdependencies.add_node(selectedItem.text(0), deltaTime.__str__(), selectedItem.text(2), parent)
+            #If no item was on the top level. Keep the branch root as root in the dependencies. 
             if newItem.parent() is None:
                     parent = newItem
             for childIndex in range(selectedItem.childCount()):
@@ -306,11 +333,16 @@ class BuilderWidget(QWidget):
         else:
             QMessageBox.critical(self, "Project Error", "No node selected.")
 
+    #Move relationship node to the dependency tree
     def move_node(self):
         if len(self.listrelationships.selectedItems()) > 0:
             selectedItem = self.listrelationships.selectedItems()[0]
             selectedIndex = self.listrelationships.indexFromItem(selectedItem)
+
+            #Calculate delta time
             deltaTime = self.calc_delta_time(node=selectedItem, index=selectedIndex)
+
+            #If a dependency node is selected, add the node as a child of the top level parent.
             parent = self.listdependencies
             if len(self.listdependencies.selectedItems()) > 0:
                 parent = self.listdependencies.selectedItems()[0]
@@ -322,56 +354,65 @@ class BuilderWidget(QWidget):
             QMessageBox.critical(self, "Project Error", "No node selected.")
 
     def calc_delta_time(self, node=None, index=None):
+        #If arguments are not correct. Return default value of 1 sec.
         if node is None or index is None:
             return datetime.time(0,0,1)
         else: 
             deltaTime = datetime.time(0,0,1)
+            #Select previous relationship to calculate time difference.
             prevIndex = self.listrelationships.indexAbove(index)
             prevItem = self.listrelationships.itemAbove(node)
             if prevItem is not None:
                 try:
                     prevTime = ProjectController.parse_timestamp(prevItem.text(1)).time()
                 except:
-                    return datetime.time(0,0,1)
+                    #Return default if formatting is incorrect.
+                    return deltaTime
             else:
-                return datetime.time(0,0,1)
+                #Return default if no previous item is found
+                return deltaTime
             try:
+                #Extract time from current relationship node. 
                 deltaTime = ProjectController.parse_timestamp(node.text(1)).time()
             except:
-                return datetime.time(0,0,1)
+                #Return default if time format is not valid. 
+                return deltaTime
             if prevTime < deltaTime:
+                #Return difference betweem current and previous node. 
                 delatDateTime = datetime.datetime.combine(datetime.datetime.today(),deltaTime) - datetime.datetime.combine(datetime.datetime.today(),prevTime)
                 date = datetime.datetime.strptime("1900-01-01T00:00:00.000", "%Y-%m-%dT%H:%M:%S.%f") + delatDateTime
                 deltaTime = date.time()
+            else: 
+                return datetime.time(0,0,1)
             return deltaTime
 
+    #Search content from items in the relationships tree. 
     def search_relationships(self):
         query = self.search_relationships_lineedit.text()
-        print("Searching relationship: " + query)
         results = self.listrelationships.findItems(query, QtCore.Qt.MatchContains | QtCore.Qt.MatchRecursive, 2)
         if(query == self.search_relationship_query):
+            #Cycle through the results found in the items. 
             self.search_relationships_index = self.search_relationships_index + 1 
             if self.search_relationships_index >= len(results):
                 self.search_relationships_index = 0
         else:
             self.search_relationship_query = query
-        print("Searching results lenght: " + len(results).__str__())
         if len(results) > 0:
             print(results[self.search_relationships_index].text(2))
             self.listrelationships.setCurrentItem(results[self.search_relationships_index])
             self.listrelationships.scrollTo(self.listrelationships.indexFromItem(results[self.search_relationships_index]))
 
+    #Search content from items in the dependencies tree.
     def search_dependency(self):
         query = self.search_dependency_lineedit.text()
-        print("Searching dependencies: " + query)
         results = self.listdependencies.findItems(query, QtCore.Qt.MatchContains | QtCore.Qt.MatchRecursive, 4)
         if(query == self.search_dependencies_query):
+            #Cycle through the results found in the items.
             self.search_dependencies_index = self.search_dependencies_index + 1 
             if self.search_dependencies_index >= len(results):
                 self.search_dependencies_index = 0
         else:
             self.search_dependencies_query = query
-        print("Searching dependencies results lenght: " + len(results).__str__())
         if len(results) > 0:
             print(results[self.search_dependencies_index].text(2))
             self.listdependencies.setCurrentItem(results[self.search_dependencies_index])
@@ -389,6 +430,7 @@ class BuilderWidget(QWidget):
         for child in children:
             salientArtifactFlag=False
             eventType = ""
+            content = ""
             if "keypresses_id" in child.keys():
                 eventType = "keypresses_id"
                 if "content" in child.keys():
@@ -409,29 +451,30 @@ class BuilderWidget(QWidget):
                 if "content" in child.keys():
                     if any(s in child['content'] for s in timedArtifacts):
                         salientArtifactFlag=True
+            #Traffic events hold no 'content' field, so they need to use alternative fields for content. 
             if "traffic_all_id" in child.keys():
                 eventType = "traffic_all_id"
-                if "content" in child.keys():
-                    if any(s in child['content'] for s in trafficArtifacts):
+                content = child['title'].__str__()
+                if "title" in child.keys():
+                    if any(s in child['title'] for s in trafficArtifacts):
                         salientArtifactFlag=True
             if "traffic_xy_id" in child.keys():
+                content = child['y'].__str__()
                 eventType = "traffic_xy_id"
-                if "content" in child.keys():
-                    if any(s in child['content'] for s in trafficThroughputArtifacts):
+                if "y" in child.keys():
+                    if any(s in child['y'] for s in trafficThroughputArtifacts):
                         salientArtifactFlag=True
-
             if "suricata_id" in child.keys():
                 eventType = "suricata_id"
 
-            content = ""
             if "content" in child.keys():
                 content = child['content']
-            if eventType != "traffic_xy_id":
-                newNode = self.listrelationships.add_node(
-                    eventType, 
-                    child['start'], 
-                    content,
-                    parent, isSalientArtifact=salientArtifactFlag)
+
+            newNode = self.listrelationships.add_node(
+                eventType, 
+                child['start'], 
+                content,
+                parent, isSalientArtifact=salientArtifactFlag)
             
     def open_artifacts(self):
         if ProjectController.is_project_loaded():
@@ -471,7 +514,6 @@ class BuilderWidget(QWidget):
                 QMessageBox.critical(self, "Input Error", "Event is not a clicks_id type")
 
     def save_script(self):
-        #if not self.script_file_path:
         new_file_path, filter_type = QFileDialog.getSaveFileName(self, "Save this script as...", "", ".json")
         if new_file_path:
             script_file_path = new_file_path
@@ -560,7 +602,6 @@ class BuilderWidget(QWidget):
 
     def update_tables(self):
         self.listrelationships.clear()
-        #self.listdependencies.clear()
         if ProjectController.is_project_loaded():
             self.populate_trees()
             if ProjectController.get_dependencies_file() != "":
