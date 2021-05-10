@@ -4,7 +4,6 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from UI.BuilderWidget import BuilderWidget
 from UI.RunnerWidget import RunnerWidget
-#from UI.PackagerWidget import PackagerWidget
 from UI.CreateProject import CreateProjectWidget
 from UI.ProjectInfoWidget import ProjectInfoWidget
 from src.ProjectController import ProjectController
