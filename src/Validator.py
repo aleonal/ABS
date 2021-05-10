@@ -25,11 +25,7 @@ class Validator():
 		self.code_index = 0
 		self.terminal = terminal
 		
-		# TEST ON KALI, SHOULD WORK TODO: change this to project folder
-		#self.output_path = os.getcwd() + "/validation_temp/"
-		# I think we should make this folder automatically from the beginning like the events folder 
-		# it's storing but not creating the folder
-		# for now just create the folder in the project
+		# Sets up the validation_temp folder path to store eceld data for validation
 		op = ProjectController.get_project_directory()
 		folder_name = Path("validation_temp/")
 		self.output_path = os.path.join(op,folder_name)
@@ -63,6 +59,7 @@ class Validator():
 
 		try:
 			for item in self.json_script:
+				# The system sleeps for the delta time of the event before running it through the validator loop
 				dt = datetime.datetime.strptime(item["Time"], '%H:%M:%S')
 				delta_time = datetime.timedelta(hours=dt.hour, minutes=dt.minute, seconds=dt.second)
 				time.sleep(delta_time.total_seconds())
@@ -72,30 +69,31 @@ class Validator():
 			print(e)
 
 		self.eceld.stop_collectors()
-
-		# IF YOU WANT TO TEST ECELD WORKING CORRECTLY, UNCOMMENT THIS LINE
 		self.parse_eceld(None)
 
 	def validator_loop(self, item):
 		print(self.executable_script[self.code_index])
 		
+		# If the event is an action, execute it
 		if item['v'] == "action":
 			exec(self.executable_script[self.code_index])
 			self.print_progress("Executed: action at line {}\n".format(self.code_index))
 			self.code_index += 1
 		else:
+			# Otherwise, start the timer for the timeout
 			timer = datetime.datetime.now()
 			cpTimer = datetime.timedelta(hours=timer.hour, minutes=timer.minute, seconds=timer.second)
 
 			while True:
 				self.print_progress("Checking: " + item["Type"] + ": " + item["Attributes"] + "\n")
-				# Check obs
+				# Check observation. self.parse_eceld(item) will return True if the validator validates the ovservation
 				if self.parse_eceld(item):
 					break
 				now = datetime.datetime.now()
 				cpNow = datetime.timedelta(hours=now.hour, minutes=now.minute, seconds=now.second)
 				print("cp Now ", cpNow)
 				print("cpTimer ", cpTimer)
+				# Otherwise, if self.parse_eceld(item) keeps returning False, it will timeout
 				if cpTimer - cpNow < datetime.timedelta(seconds=self.timeout):
 					self.print_progress("Script execution timed out after {} seconds\n".format(self.timeout))
 					raise TimeoutError("Script execcution timed out after {0} seconds.".format(self.timeout))
@@ -120,12 +118,11 @@ class Validator():
 		self.eceld.parse_data_all()
 		self.eceld.export_data(self.output_path)
 
-		#TODO: TEST: check observations. Currently defaults to True, but it must be a conditional
+		# checks observation
 		if item is not None:		
 			return self.check_obs(item)
 		return False
-	
-	#TODO: Need a way to open the eceld_export... folder		
+			
 	def check_obs(self, item):
 		obs = item["Attributes"]
 		print("obs ", obs)
@@ -137,13 +134,16 @@ class Validator():
 					export = d
 		export = self.output_path + "/" + export
 
+		# Checks system calls
 		if item["Type"] == "auditd_id":
 			return self.check_auditd(export, obs)
 
+		# Checks network traffic
 		elif item["Type"] == "traffic_all_id":
 			return self.check_traffic(export, obs)
 		return False
 	
+	# Checks system calls
 	def check_auditd(self, export, obs):
 		with open(export + "/parsed/auditd/auditdData.JSON") as f:
 			data = json.load(f)
@@ -170,6 +170,7 @@ class Validator():
 								return False
 		return False
 
+	# Checks network traffic
 	def check_traffic(self, export, obs):
 		with open(export + "/parsed/tshark/networkDataAll.JSON") as f:
 			data = json.load(f)
